@@ -1,5 +1,5 @@
 // get all menu
-exports.getMenu = (req, res) =>
+exports.getAllMenu = (req, res) =>
 {
     console.log(req);
 
@@ -10,7 +10,7 @@ exports.getMenu = (req, res) =>
 };
 
 // create a meal
-exports.createMenuItem = (req, res) =>
+exports.createMeal = (req, res) =>
 {
     res.status(200).json(
     {
@@ -19,7 +19,7 @@ exports.createMenuItem = (req, res) =>
 };
 
 // update a meal
-exports.updateMenuItem = (req, res) =>
+exports.updateMeal = (req, res) =>
 {
     res.status(200).json(
     {
@@ -28,7 +28,7 @@ exports.updateMenuItem = (req, res) =>
 };
 
 // delete a meal from menu
-exports.deleteMenuItem = (req, res) =>
+exports.deleteMeal = (req, res) =>
 {
     res.status(200).json(
     {

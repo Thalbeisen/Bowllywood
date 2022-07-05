@@ -5,10 +5,9 @@ const stockCtrl = require('../controllers/stock');
 
 // set the routers for each action/methods
 router.get('/', stockCtrl.getAllstock);
-router.post('/create', stockCtrl.createStockItem);
-router.post('/update', stockCtrl.updateStockItem);
-router.post('/update_quantity', stockCtrl.updateStockQuantity);
-router.post('/new_delivery', stockCtrl.setNewDelivery);
-router.delete('/delete', stockCtrl.deleteStockItem);
+router.post('/create', stockCtrl.createStock);
+router.post('/update', stockCtrl.updateStock);
+router.post('/new_delivery', stockCtrl.createNewDelivery);
+router.delete('/delete', stockCtrl.deleteStock);
 
 module.exports = router;
