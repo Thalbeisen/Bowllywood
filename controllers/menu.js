@@ -1,3 +1,7 @@
+/*
+Voir notes
+*/
+
 // get all menu
 exports.getAllMenu = (req, res) =>
 {
