@@ -1,21 +1,63 @@
 const mongoose = require('mongoose');
-const {Schema} = require('mongoose').Schema;
+const {Schema} = mongoose;
 
-const schema = new Schema(
+const stockSchema = new Schema(
 {
-
+    ref:
+    {
+        type: String,
+        required: true
+    },
+    name:
+    {
+        type: String,
+        required: true
+    },
+    quantity:
+    {
+        type: String,
+        required: true
+    },
+    quantityLimit:
+    {
+        type: String,
+        required: true
+    },
+    type:
+    {
+        type: Number,
+        required: true
+    },
+    sheepmentDate:
+    {
+        type: Date,
+        required: true
+    },
+    statut:
+    {
+        type: Number,
+        required: true
+    },
+    supplier:
+    {
+        type: String,
+        required: true
+    },
+    DLC:
+    {
+        type: Date,
+        required: true
+    },
+    updatedAt:
+    {
+        type: Date,
+        required: false
+    },
+    transformedProduct:
+    {
+        type: Object,
+        required: false
+    }
 });
 
-    "ref": "01356405",
-    "name": "Riz",
-    "quantity": "20",
-    "quantityLimit": "30",
-    "type": 1,
-    "sheepmentDate": "2022.02.10",
-    "statut": 1,
-    "supplier": "02121545",
-    "DLC": "",
-    "updatedAt": null,
-    "transformedProduct": null
-
-module.exports = 
+module.exports = mongoose.model('stock', stockSchema);
