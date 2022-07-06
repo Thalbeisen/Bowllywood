@@ -1,10 +1,11 @@
 var Menu = require('../models/menu');
 
 // get all menu
-exports.getAllMenu = (req, res) =>
+exports.getAllMenu = async (req, res) =>
 {
     /*var fnCallback = function (err, docs) {console.log(err) console.log(docs) }
     var meals = Menu.find({}, fnCallback);*/
+    // tjr utiliser await dans une fn asynchrone. ici : est en dehors.
     
     var meals = await Menu.find({});
     console.log(meals)
@@ -13,26 +14,47 @@ exports.getAllMenu = (req, res) =>
     {
         message: 'got the all menu !'
     });
-};
+}
 
-// create a meal
-exports.createMeal = (req, res) =>
+// get all menu
+exports.getOneMeal = async (req, res) =>
 {
-    var meal = new Menu({
-        name: 'Hahiti',
-        category: 1,
-        description: 'Loremm Ipsum',
-        ingredients: [2, 5, 12, 6, 22],
-        allergens: [3],
-        price: '15.2',
-        image: 'img_hahiti.png'
-    });
+    var fnCallback = function (err, docs) {
+        if (err)
+        {
+            console.log("erreur !");
+        }
+        console.log(docs);
+    }
+
+    var meal = await Menu.find({'_id' : req.id}, fnCallback);
 
     res.status(200).json(
     {
-        message: 'Création dun plat'
+        message: 'got the selected meal !'
+    });
+}
+
+// create a meal
+exports.createMeal = async (req, res) =>
+{
+    var meal = await Menu.create(req.body, ()=>{
+        console.log(req.body);
+    });
+    
+    res.status(200).json(
+    {
+        message: 'Crééé ! Rendez-vous sur mongodb'
     });
 };
+
+    // name: 'Hahiti',
+    // category: 1,
+    // description: 'Loremm Ipsum',
+    // ingredients: [2, 5, 12, 6, 22],
+    // allergens: [3],
+    // price: '15.2',
+    // image: 'img_hahiti.png'
 
 // update a meal
 exports.updateMeal = (req, res) =>
