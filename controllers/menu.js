@@ -3,20 +3,16 @@ var Menu = require('../models/menu');
 // get all menu
 exports.getAllMenu = (req, res) =>
 {
-    const filterUser = {};
-    const usersList = await Menu.find(filterUser);
-    res.status(200).json(usersList);
+    /*var fnCallback = function (err, docs) {console.log(err) console.log(docs) }
+    var meals = Menu.find({}, fnCallback);*/
     
-    // var fnCallback = function (err, docs) {console.log(err) console.log(docs) }
-    // var meals = Menu.find({}, fnCallback);
-    
-    // var meals = await Menu.find({});
-    // // console.log(meals)
+    var meals = await Menu.find({});
+    console.log(meals)
 
-    // res.status(200).json(
-    // {
-    //     message: 'got the all menu !'
-    // });
+    res.status(200).json(
+    {
+        message: 'got the all menu !'
+    });
 };
 
 // create a meal
