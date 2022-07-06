@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
-console.log(mongoose)
+const { Schema } = mongoose;
 
-// const { Schema } = mongoose;
+var menuSchema =
+{
+	
+}
 
-
-// module.exports = mongoose.model('menu', franchiseSchema);
+module.exports = mongoose.model('menu', menuSchema);
