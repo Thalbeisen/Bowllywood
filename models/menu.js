@@ -7,32 +7,32 @@ var menuSchema = new Schema(
 	{ 
 		type: String,
 		required: true
-	}
+	},
 	category:
 	{ 
 		type: Number,
 		required: true
-	}
+	},
 	description:
 	{ 
 		type: String,
 		required: false
-	}
+	},
 	ingredients:
 	{ 
 		type: Array,
 		required: false
-	}
+	},
 	allergens:
 	{ 
 		type: Array,
 		required: false
-	}
+	},
 	price:
 	{ 
 		type: String,
 		required: true
-	}
+	},
 	image:
 	{ 
 		type: String,
