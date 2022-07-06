@@ -1,3 +1,5 @@
+const Stock = require('../models/stock');
+
 /**
  * get all the stock items
  */
