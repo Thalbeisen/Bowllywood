@@ -1,6 +1,4 @@
-/*
-Voir notes
-*/
+var Menu = require('./models/menu');
 
 // get all menu
 exports.getAllMenu = (req, res) =>
