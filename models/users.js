@@ -29,6 +29,16 @@ const userSchema = new Schema(
     dbId: {
         type: String,
         required: false,
+    },
+
+    isActive: {
+        type: Boolean,
+        required: false,
+    },
+
+    userToken: {
+        type: String,
+        required: false,
     }
 
 },

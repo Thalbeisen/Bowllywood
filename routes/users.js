@@ -9,6 +9,8 @@ router.get('/', userController.userIndex);
 
 router.get('/:id', userController.userDetails);
 
+router.post('/login', userController.userLogin);
+
 router.post('/', userController.userCreate);
 
 router.patch('/:id', userController.userEdit);
