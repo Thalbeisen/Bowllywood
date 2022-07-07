@@ -10,82 +10,225 @@ const saltRounds = 10;
 
 const jwt = require('jsonwebtoken');
 
-
-//Méthode pour récupérer la liste des utilisateurs au moyen d'un filtre initialisé à vide
-exports.userIndex = async (req, res) => {
-const filterUser = {};
-const usersList = await User.find(filterUser);
-    res.status(200).json(usersList);
-}
-
-//Méthode pour récupérer les détails d'un utilisateur au moyen 
-exports.userDetails = async (req, res) => {
-    const filterUser = {'_id': req.params.id};
-    const usersList = await User.findOne(filterUser);
-    res.status(200).json(usersList);
-}
-
-//Méthode pour créer un utilisateur en utilisant bcrypt hash
-exports.userCreate = async (req, res) => {
-  const passwordHash = await  bcrypt.hash(req.body.password, saltRounds)
-    const user = new User({...req.body, password: passwordHash})
-    //user.isActive = false;
-    const createdUser = await user.save();
-    const userObject = JSON.parse(JSON.stringify(createdUser))
-    delete userObject.password;
-    res.status(201).json(userObject);
-}
-
-//Méthode de connexion de l'utilisateur
-exports.userLogin = async (req, res) => {
-    const user = await User.findOne({
-        "email": req.body.email
-    })
-    if (!user) {
-    return res.status(400).json('Nom d\'utilisateur ou mot de passe invalide!')
-    }
-    const passwordValidation = await bcrypt.compare(req.body.password, user.password);
-    if (!passwordValidation) {
-        return res.status(400).json('Nom d\'utilisateur ou mot de passe invalide!')
-    }
-    console.log('diag ACCESS_TOKEN_SECRET' + process.env.ACCESS_TOKEN_SECRET)
-    console.log('diag REFRESH_TOKEN_SECRET' + process.env.REFRESH_TOKEN_SECRET)
-    user.userToken = jwt.sign({
-        data: user._id
-    }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
-    res.setHeader('Authorization', 'Bearer ' + user.userToken)
-    return res.status(200).json(user.userToken);
-}
-
-//Méthode pour modifier un utilisateur
-exports.userEdit = async (req, res) => {
-    const editedUser = await User.findOne({
-        "_id": req.params.id
-    })
-    .update({...req.body})
-    delete editedUser.password;
-res.status(200).json(editedUser)
-}
-
-//Méthode pour supprimer un utilisateur en utilisant la méthode findOneAndDelete
-exports.userDelete = async (req, res) => {
-    const userToDelete = await User.findOneAndDelete({
-        "_id": req.params.id
-    })
-res.status(200).json({
-    message: 'Utilisateur supprimé avec succès'
-})
-}
-
-exports.userDashboard = (req, res) => {
+//Méthode pour récupérer la liste des utilisateurs
+exports.usersList = async (req, res) => {
     try {
-        const decodedToken = jwt.verify(req.body.userToken, 'secret');
-        res.status(200).json({
-            message: 'Bon, je veux bien l\'admettre, ça vend pas du rêve mais faut imaginer un beau dashboard à la place!'
+        const users = await User.find({});
+        
+        if (!users) {
+            return res.status(404).json({
+                message: 'Aucun utilisateur trouvé'
+            })
+        }
+        const listObject = JSON.parse(JSON.stringify(users))
+        delete listObject.password;
+        res.status(200).send({
+            data: listObject
         })
-    } catch(err) {
-        res.status(401).json({
-            message: 'Jeton Web JSON invalide, accès interdit!'
+    } catch (err) {
+        res.status(500).json({
+            err
+        });
+    }
+}
+
+//Méthode pour récupérer les détails d'un utilisateur pour un id donné
+exports.userDetails = async (req, res) => {
+    try {
+        const filterUser = {'_id': req.params.id};
+        const userDetails = await User.findOne(filterUser)
+
+        if (!userDetails) {
+            return res.status(404).json({
+               message: 'Aucun utilisateur pour l\'id donné',
+            });
+        }
+
+        res.status(200).send({
+            data: userDetails,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error,
+        });
+    }
+}
+
+//Méthode d'édition d'un utilisateur en fonction d'un id donné
+exports.userEdit = async (req, res) => {
+    try {
+        const updatedItems = Object.keys(req.body);
+        const filterUser = {'_id': req.params.id};
+        const selectedUser = await User.findOne(filterUser)
+
+        if (!selectedUser) {
+            return res.status(404).json({
+                message: 'Aucun utilisateur pour l\'id donné'
+            })
+        }
+        updatedItems.forEach((update) => {
+            selectedUser[update] = req.body[update]
+        })
+        await selectedUser.save();
+        res.status(200).json({
+            data: selectedUser
+        })
+    } catch (err) {
+        res.status(500).json({
+            message: err
+        })
+    }
+}
+
+// //Méthode pour créer un utilisateur en utilisant bcrypt hash
+// exports.userNew = async (req, res) => {
+//   const passwordHash = await  bcrypt.hash(req.body.password, saltRounds)
+//     const user = new User({...req.body, password: passwordHash})
+//     //user.isActive = false;
+//     const createdUser = await user.save();
+//     const userObject = JSON.parse(JSON.stringify(createdUser))
+//     delete userObject.password;
+//     res.status(201).json(userObject);
+// }
+
+exports.userNew = async (req, res) => {
+    try {
+        const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
+        const{ lastName, firstName, email, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (user) {
+            return res.status(400).json({
+                message: 'L\'utilisateur existe déjà'
+            })
+        }
+
+        const addUser = new User({
+            lastName,
+            firstName,
+            email,
+            password: passwordHash
+        })
+
+        await addUser.save();
+
+        res.status(201).json({
+            data: userNew
+        })
+
+    } catch (err) {
+        res.status(500)
+    }
+}
+
+
+//Méthode pour connecter un utilisateur via son email/password
+exports.userLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email }).exec();
+
+        if (!user) {
+            return res.status(401).json({
+                message: 'Utilisateur introuvable'
+            });
+        }
+        const passMatch = await bcrypt.compare(password, user.password);
+        if (!passMatch) {
+            return res.status(401).json({
+                message: 'Mot de passe incorrect'
+            });
+        }
+        await user.generateMainToken();
+        await user.generateRefreshToken();
+
+        res.status(200).json({
+            data: user,
+            message: 'Connexion OK!'
+        });
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+//Méthode pour rafraîchir le jeton d'identification
+exports.refreshUserToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: 'Aucun jeton de refresh fourni'
+            })
+        }
+        await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const user = await User.findOne( refreshToken._id ).exec();
+
+        if (!user) {
+            return res.status(401).json({
+                message: 'Utilisateur introuvable'
+            });
+        }
+        await user.generateMainToken();
+        res.status(200).json({
+            data: user.token,
+            message: 'Refresh token successful'
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+//Méthode de suppression utilisant la méthode findOne pour s'assurer que l'id donné existe, et la méthode findOneAndDelete pour supprimer le document
+exports.userDelete = async (req, res) => {
+    try {
+        const filterUser = {'_id': req.params.id};
+        const selectedUser = await User.findOne(filterUser)
+
+        if (!selectedUser) {
+            return res.status(404).json({
+                message: 'Aucun utilisateur trouvé pour l\'id donné'
+            })
+        }
+        await User.findOneAndDelete({
+            "_id": req.params.id
+        })
+        res.status(200).json({
+            message: 'Utilisateur supprimé avec succès'
+        })
+    } catch (err) {
+        res.status(500).json({
+            err
+        });
+    }
+}
+
+exports.userLogout = async (req, res) => {
+    try {
+        const filterUser = {'_id': req.params.id};
+        const selectedUser = await User.findOne(filterUser)
+
+        if (!selectedUser) {
+            return res.status(401).json({
+                message: 'Aucun utilisateur trouvé pour l\'id donné'
+            })
+        }
+        selectedUser.token = '';
+        selectedUser.refreshToken = '';
+        await selectedUser.save();
+        res.status(200).json({
+            message: 'Déconnexion OK'
+        })
+    } catch (err) {
+        res.status(500).json({
+            message: err
         })
     }
 }

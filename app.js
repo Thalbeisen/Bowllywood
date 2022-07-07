@@ -3,7 +3,6 @@ const db = require('./database/dbConnect');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const auth = require('./middlewares/auth');
 
 db.then(() => {
     const connectionStatus = 'connected';
@@ -12,7 +11,6 @@ db.then(() => {
 //const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const rolesRouter = require('./routes/roles');
-const dashboardRouter = require('./routes/dashboard');
 const { connection } = require('mongoose');
 
 const app = express();
@@ -26,6 +24,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
-app.use('/dashboard', auth, dashboardRouter);
 
 module.exports = app;
