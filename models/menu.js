@@ -11,8 +11,10 @@ var menuSchema = new Schema(
 	},
 	category:
 	{ 
-		type: Number,
-		required: true
+		type: String,
+        enum : ['SALE', 'SUCRE'],
+        default: 'SALE',
+        required: true
 	},
 	description:
 	{ 
@@ -44,4 +46,4 @@ var menuSchema = new Schema(
     timestamps: true
 });
 
-module.exports = mongoose.model('menu', menuSchema);
+module.exports = mongoose.model('Menu', menuSchema);

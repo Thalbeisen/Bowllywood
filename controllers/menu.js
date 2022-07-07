@@ -2,109 +2,100 @@ var Menu = require('../models/menu');
 
 /**
  * Get all the meals of the menu.
- * @param  {object} req The request.
- * @param  {object} res The request's response
- * @return {object}     List of the meals.
+ * @param  {object} res          Use the res.status 200 & 500.
+ * @return {object | string}     List of the meals OR an error message.
  */
 exports.getAllMenu = async (req, res) =>
 {
-    var meals = await Menu.find({});
-    res.status(200).json(meals);
+    try 
+    {
+        var meals = await Menu.find({});
+        res.status(200).json(meals);
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
 }
 
 /**
- * ! Passe directement dans le / sans passer par le /:id.
- * ! N'identifie pas /:id comme un paramètre. .params est vide
- * 
- * Get one meal from the menu
- * @param  {object} req The request. Get the .params.id from it.
- * @param  {object} res The request's response
- * @return {object}     The found meal
- * Use of the callBack function of the model.
+ * Get one meal from the menu.
+ * @param  {object} req          Use req.params.id to get the meal we need. 
+ * @param  {object} res          Use the res.status 200 & 500.
+ * @return {object | string}     Informations of the meal OR an error message.
  */
-exports.getOneMeal = (req, res) =>
+exports.getOneMeal = async (req, res) =>
 {
-    /*62c6965ee53ae94e5d980c7b*/
-    Menu.findOne({'_id' : req.params.id}, (err, meal) =>
+    try 
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la récupération !');
-            return;
-        }
+        /*62c69c245821e2d5d1c1a06b*/
+        const meal = await Menu.findOne({'_id' : req.params.id})
         res.status(200).json(meal);
-    });
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
 }
 
 /**
- * Create a meal in ddb
- * @param  {object} req The request.
- * @param  {object} res The request's response
- * @return {} 
+ * Create a meal from the menu list (a bowl).
+ * @param  {object} req          Create the meal with the req.body.
+ * @param  {object} res          Use res.status 201 & 500.
+ * @return {object | string}     The informations of the created meal OR an error message.
  * 
- * Use of Model.create. Does the same thing of : new Menu({...}).save();
+ * Une fois créé, redirection vers sa page de détails ?
  */
-exports.createMeal = (req, res) =>
+exports.createMeal = async (req, res) =>
 {
-    Menu.create(req.body, (err, justCreatedMeal) =>
+    try 
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la création !');
-            return;
-        }
-
-        // une fois créé, redirection sur la page des détails de la recette ?
-        res.status(200).json(
-        {
-            message: 'Crééé ! Rendez-vous sur mongodb'
-        });
-    });
-};
+        const newMeal = await new Menu({...req.body}).save();
+        // 'Créé ! Rendez-vous sur mongodb'
+        res.status(201).json(newMeal);
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
+}
 
 /**
- * update a meal
- * @param  {object} req The request, use its .params.id to get the meal we want to update.
- * @param  {object} res The request's response
- * @return {} 
+ * Update a meal.
+ * @param  {object} req          Get the meal to update with req.params.id, & update it with req.body.
+ * @param  {object} res          Use res.status 200? & 500
+ * @return {object | string}     The infos of the update state OR an error message.
+ * 
+ * Une fois mis à jour, redirection vers sa page de détails ?
  */
 exports.updateMeal = async (req, res) =>
 {
-    var foundMeal = await Menu.findOne({'_id': req.params.id});
-    
-    foundMeal.update({...req.body}, (err, updatedMeal) =>
+    try 
     {
-        // si erreur, reste sur la page de modificaition de la recette avec message toast ?
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la mise à jour !');
-            return;
-        }
-
-        // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
+        var updatedMeal = await Menu.findOne({'_id': req.params.id}).update({...req.body});
         res.status(200).json(updatedMeal);
-    });
-};
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
+}
 
 /**
- * Delete a meal from menu
- * @param  {object} req The request, use .params.id to get the meal to delete.
- * @param  {object} res The request's response
- * @return {} 
+ * Delete a meal from the menu.
+ * @param  {object} req          Get the meal to delete with req.params.id.
+ * @param  {object} res          Use res.status 200 & 500.
+ * @return {object | string}     The infos of the update state OR an error message.
  */
-exports.deleteMeal = (req, res) =>
+exports.deleteMeal = async (req, res) =>
 {
-    Menu.findByIdAndDelete({'_id': req.params.id}, (err, docs) =>
+    try 
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la suppression !');
-            return;
-        }
-        res.status(200).json(docs);
-    })
-};
+        await Menu.findByIdAndDelete({'_id': req.params.id}) 
+        res.status(200).json('Suppression réussie');
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
+}

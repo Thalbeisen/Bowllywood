@@ -15,8 +15,7 @@ db.then(() =>
 // get routers
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const menuRouter = require('./routes/menu');
-const stockRouter = require('./routes/stock');
+const  menuRouter = require('./routes/menu');
 const { connection } = require('mongoose');
 
 const app = express();
@@ -31,6 +30,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/menu', menuRouter);
-app.use('/stock', stockRouter);
 
 module.exports = app;
