@@ -11,7 +11,14 @@ const saltRounds = 10;
 //J'importe JWT pour générer mes jetons d'authentification
 const jwt = require('jsonwebtoken');
 
-//Méthode pour récupérer la liste des utilisateurs
+const generateToken = (payload, secret, ttl) => jwt.sign(payload, secret, {expiresIn: ttl})
+
+/**
+ * Méthode de récupération des utilisateurs
+ * @param {Object} req 
+ * @param {Object | String} res 
+ * @returns 
+ */
 exports.usersList = async (req, res) => {
     try {
         const users = await User.find({});
@@ -33,7 +40,12 @@ exports.usersList = async (req, res) => {
     }
 }
 
-//Méthode pour récupérer les détails d'un utilisateur pour un id donné
+/**
+ * Méthode pour récupérer les détails d'un utilisateur en fonction d'un id donné
+ * @param {Object} req 
+ * @param {Object | String} res 
+ * @returns 
+ */
 exports.userDetails = async (req, res) => {
     try {
         const filterUser = {'_id': req.params.id};
@@ -55,7 +67,12 @@ exports.userDetails = async (req, res) => {
     }
 }
 
-//Méthode d'édition d'un utilisateur en fonction d'un id donné
+/**
+ * Méthode d'édition de l'utilisateur
+ * @param {Object} req 
+ * @param {Object | String} res 
+ * @returns 
+ */
 exports.userEdit = async (req, res) => {
     try {
         const updatedItems = Object.keys(req.body);
@@ -81,7 +98,11 @@ exports.userEdit = async (req, res) => {
     }
 }
 
-//Méthode pour créer un utilisateur en utilisant bcrypt hash
+/**
+ * Méthode pour créer un utilisateur utilisant bcrypt hash
+ * @param {Object} req 
+ * @param {Object | String} res 
+ */
 exports.userNew = async (req, res) => {
     try {
   const passwordHash = await  bcrypt.hash(req.body.password, saltRounds)
@@ -97,61 +118,67 @@ exports.userNew = async (req, res) => {
 }
 }
 
-//Méthode pour connecter un utilisateur via son email/password
+/**
+ * Méthode pour connecter un utilisateur avec son email/password
+ * @param {Object} req 
+ * @param {Object} res
+ * @returns {String} 
+ */
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email }).exec();
 
         if (!user) {
-            return res.status(401).json({
-                message: 'Utilisateur introuvable'
-            });
+            throw {
+                    message: 'Identifiant/Mot de passe incorrect', 
+                    code: 422
+                }
         }
         const passMatch = await bcrypt.compare(password, user.password);
         if (!passMatch) {
-            return res.status(401).json({
-                message: 'Mot de passe incorrect'
-            });
+            throw {
+                message: 'Identifiant/Mot de passe incorrect', 
+                code: 422
+            }
         }
-        await user.generateMainToken();
-        await user.generateRefreshToken();
-
+        const token = generateToken({id: user._id}, process.env.ACCESS_TOKEN_SECRET, '40s')
+        const refresh_token = generateToken({id: user._id}, process.env.REFRESH_TOKEN_SECRET, '5m')
         res.status(200).json({
-            data: user,
-            message: 'Connexion OK!'
+            token, refresh_token
         });
     } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            err
+        const code = err.code ?? 500
+        res.status(code).json({
+            message: err.message
         })
     }
 }
 
-//Méthode pour rafraîchir le jeton d'identification
+/**
+ * Méthode pour rafraîchir un jeton d'authentification
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 exports.refreshUserToken = async (req, res) => {
     try {
-        const { refreshToken } = req.body;
-
-        if (!refreshToken) {
-            return res.status(401).json({
-                message: 'Aucun jeton de refresh fourni'
-            })
-        }
-        await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const user = await User.findOne( refreshToken._id ).exec();
-
-        if (!user) {
-            return res.status(401).json({
-                message: 'Utilisateur introuvable'
-            });
-        }
-        await user.generateMainToken();
-        res.status(200).json({
-            data: user.token,
-            message: 'Refresh token successful'
-        })
+        const authHeader = req.headers['authorization'];
+    const authToken = authHeader && authHeader.split(' ')[1]
+    if (!authToken) {
+        throw {
+                message: 'Unauthorized', 
+                code: 401
+            }
+    }
+    console.log(authToken)
+    const user = await jwt.verify(authToken, process.env.REFRESH_TOKEN_SECRET)
+    delete user.iat;
+    delete user.exp;
+    const token = generateToken(user, process.env.ACCESS_TOKEN_SECRET, '30s');
+    const refresh_token = generateToken(user, process.env.REFRESH_TOKEN_SECRET, '5m');
+    res.status(200).json({
+        token, refresh_token
+    })
     } catch (err) {
         console.log(err);
         res.status(500).json({
