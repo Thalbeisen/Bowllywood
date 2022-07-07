@@ -15,8 +15,15 @@ const Stock = require('../models/stock');
  */
 exports.getAllstock = async (req, res) =>
 {
-    var stocks = await Stock.find({});
-    res.status(200).json(stocks);
+    try 
+    {
+        var stocks = await Stock.find({});
+        res.status(200).json(stocks);
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
 };
 
 /**
@@ -25,18 +32,19 @@ exports.getAllstock = async (req, res) =>
  * @param  {object} res The request's response
  * @return {} 
  */
-exports.getOneStock = (req, res) =>
+exports.getOneStock = async (req, res) =>
 {
-    Stock.findOne({'_id' : req.params.id}, (err, stock) =>
+    try 
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la récupération !');
-            return;
-        }
-        res.status(200).json(stock);
-    });
+        var stock = await Stock.findOne({'_id' : req.params.id});
+        
+        // throw 
+        res.status(201).json(stock);
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
 };
 
 /**
@@ -47,35 +55,16 @@ exports.getOneStock = (req, res) =>
  */
 exports.createStock = async (req, res) =>
 {
-    /*Stock.create(req.body, (err, justCreatedStock) =>
+    try
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la création !');
-            return;
-        }
-
-        // une fois créé, redirection sur la page des détails du produit ?
-        res.status(200).json(
-        {
-            message: 'Créé ! Rendez-vous sur mongodb'
-        });
-    */
-
-    try {
-        const stock = new Stock({...req.body});
-        await stock.save();
+        const stock = await new Stock({...req.body}).save();
         res.status(201).json(stock);
-    } catch(e) {
-
-        res.status(500).json(e.message);
-        // console.log(e);
     }
-
-
+    catch(err)
+    {
+        res.status(500).json(err.message);
+    }
 }
-
 
 /**
  * Update informations of a product from Stock
@@ -88,21 +77,19 @@ exports.createStock = async (req, res) =>
  */
 exports.updateStock = async (req, res) =>
 {
-    var foundStock = await Stock.findOne({'_id': req.params.id});
-
-    foundStock.update({...req.body}, (err, updatedStock) =>
+    try 
     {
-        // si erreur, reste sur la page de modificaition de la recette avec message toast ?
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la mise à jour !');
-            return;
-        }
+        var foundStock = await Stock.findOne({'_id': req.params.id});
+        foundStock.update({...req.body})
 
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
         res.status(200).json(updatedStock);
-    });
+    }
+    catch (err)
+    {
+        // 
+        res.status(500).json(err.message);
+    }
 };
 
 /**
@@ -127,14 +114,15 @@ exports.createNewDelivery = (req, res) =>
  */
 exports.deleteStock = (req, res) =>
 {
-    Stock.findByIdAndDelete({'_id': req.params.id}, (err, docs) =>
+
+    try 
     {
-        if (err)
-        {
-            console.log(err)
-            res.status(200).json('Erreur lors de la suppression !');
-            return;
-        }
-        res.status(200).json(docs);
-    });
+        var deletedStock = await Stock.findByIdAndDelete({'_id': req.params.id})
+        // une fois supprimé, retour sur la liste avec msg toast ?
+        res.status(200).json('Supperssion réussi');
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
 };
