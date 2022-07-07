@@ -4,6 +4,8 @@ const router = express.Router();
 
 const userController = require('../controllers/users');
 
+const userLogin = require('../middlewares/auth');
+
 /* GET users listing. */
 router.get('/', userController.userIndex);
 

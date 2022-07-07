@@ -1,3 +1,6 @@
+//J'importe mon .env
+require('dotenv').config();
+
 //J'importe mon modèle Users
 const User = require('../models/users');
 
@@ -6,6 +9,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const jwt = require('jsonwebtoken');
+
 
 //Méthode pour récupérer la liste des utilisateurs au moyen d'un filtre initialisé à vide
 exports.userIndex = async (req, res) => {
@@ -37,7 +41,6 @@ exports.userLogin = async (req, res) => {
     const user = await User.findOne({
         "email": req.body.email
     })
-    console.log(user);
     if (!user) {
     return res.status(400).json('Nom d\'utilisateur ou mot de passe invalide!')
     }
@@ -45,9 +48,12 @@ exports.userLogin = async (req, res) => {
     if (!passwordValidation) {
         return res.status(400).json('Nom d\'utilisateur ou mot de passe invalide!')
     }
+    console.log('diag ACCESS_TOKEN_SECRET' + process.env.ACCESS_TOKEN_SECRET)
+    console.log('diag REFRESH_TOKEN_SECRET' + process.env.REFRESH_TOKEN_SECRET)
     user.userToken = jwt.sign({
         data: user._id
-    }, 'secret', {expiresIn: '15m'});
+    }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
+    res.setHeader('Authorization', 'Bearer ' + user.userToken)
     return res.status(200).json(user.userToken);
 }
 
@@ -69,4 +75,17 @@ exports.userDelete = async (req, res) => {
 res.status(200).json({
     message: 'Utilisateur supprimé avec succès'
 })
+}
+
+exports.userDashboard = (req, res) => {
+    try {
+        const decodedToken = jwt.verify(req.body.userToken, 'secret');
+        res.status(200).json({
+            message: 'Bon, je veux bien l\'admettre, ça vend pas du rêve mais faut imaginer un beau dashboard à la place!'
+        })
+    } catch(err) {
+        res.status(401).json({
+            message: 'Jeton Web JSON invalide, accès interdit!'
+        })
+    }
 }
