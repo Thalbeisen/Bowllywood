@@ -1,10 +1,3 @@
-/**
- * 
- * @param  {object} req The request.
- * @param  {object} res The request's response
- * @return {}     
- */
-
 var Menu = require('../models/menu');
 
 /**

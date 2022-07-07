@@ -1,5 +1,16 @@
 /**
+ * 
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {}     
+ */
+
+
+/**
  * get all the stock items
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.getAllstock = (req, res) =>
 {
@@ -10,7 +21,24 @@ exports.getAllstock = (req, res) =>
 };
 
 /**
+ * get all the stock items
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
+ */
+exports.getOneStock = (req, res) =>
+{
+    res.status(200).json(
+    {
+        message: 'get one Stock'
+    });
+};
+
+/**
  * ? create an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.createStock = (req, res) =>
 {
@@ -22,6 +50,9 @@ exports.createStock = (req, res) =>
 
 /**
  * Update all the informations of an item from Stock
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.updateStock = (req, res) =>
 {
@@ -33,6 +64,9 @@ exports.updateStock = (req, res) =>
 
 /**
  * set a new delivery for an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.createNewDelivery = (req, res) =>
 {
@@ -44,6 +78,9 @@ exports.createNewDelivery = (req, res) =>
 
 /**
  * delete permanently an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.deleteStock = (req, res) =>
 {
