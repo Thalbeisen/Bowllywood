@@ -1,7 +1,17 @@
+/**
+ * 
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {}     
+ */
+
 const Stock = require('../models/stock');
 
 /**
  * get all the stock items
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
 exports.getAllstock = (req, res) =>
 {
@@ -12,9 +22,26 @@ exports.getAllstock = (req, res) =>
 };
 
 /**
- * ? create an item
+ * get all the stock items
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
-exports.createStockItem = (req, res) =>
+exports.getOneStock = (req, res) =>
+{
+    res.status(200).json(
+    {
+        message: 'get one Stock'
+    });
+};
+
+/**
+ * ? create an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
+ */
+exports.createStock = (req, res) =>
 {
     res.status(200).json(
     {
@@ -23,22 +50,15 @@ exports.createStockItem = (req, res) =>
 };
 
 /**
- * Update the quantity of an item
+ * Update informations of an item from Stock
  * In case the its stock is resolve
  * The status will be calculated thanks to the quantityLimit
+ * 
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
-exports.updateStockQuantity = (req, res) =>
-{
-    res.status(200).json(
-    {
-        message: 'update le status d\'un item en stock (si il est de nouveau en stock par exemple)'
-    });
-};
-
-/**
- * Update all the informations of an item from Stock
- */
-exports.updateStockItem = (req, res) =>
+exports.updateStock = (req, res) =>
 {
     res.status(200).json(
     {
@@ -48,8 +68,11 @@ exports.updateStockItem = (req, res) =>
 
 /**
  * set a new delivery for an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
-exports.setNewDelivery = (req, res) =>
+exports.createNewDelivery = (req, res) =>
 {
     res.status(200).json(
     {
@@ -59,8 +82,11 @@ exports.setNewDelivery = (req, res) =>
 
 /**
  * delete permanently an item
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
  */
-exports.deleteStockItem = (req, res) =>
+exports.deleteStock = (req, res) =>
 {
     res.status(200).json(
     {
