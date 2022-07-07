@@ -8,7 +8,21 @@ const User = require('../models/users');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+//J'importe JWT pour générer mes jetons d'authentification
 const jwt = require('jsonwebtoken');
+
+//J'importe nodemailer pour pouvoir envoyer des mails de validation
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    name: 'ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'knatxwtetdtha6ge@ethereal.email',
+        pass: 'Ws7nSeDcWwMce4AbWc'
+    }
+});
 
 //Méthode pour récupérer la liste des utilisateurs
 exports.usersList = async (req, res) => {
@@ -80,48 +94,21 @@ exports.userEdit = async (req, res) => {
     }
 }
 
-// //Méthode pour créer un utilisateur en utilisant bcrypt hash
-// exports.userNew = async (req, res) => {
-//   const passwordHash = await  bcrypt.hash(req.body.password, saltRounds)
-//     const user = new User({...req.body, password: passwordHash})
-//     //user.isActive = false;
-//     const createdUser = await user.save();
-//     const userObject = JSON.parse(JSON.stringify(createdUser))
-//     delete userObject.password;
-//     res.status(201).json(userObject);
-// }
-
+//Méthode pour créer un utilisateur en utilisant bcrypt hash
 exports.userNew = async (req, res) => {
     try {
-        const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
-        const{ lastName, firstName, email, password } = req.body;
-
-        const user = await User.findOne({ email });
-
-        if (user) {
-            return res.status(400).json({
-                message: 'L\'utilisateur existe déjà'
-            })
-        }
-
-        const addUser = new User({
-            lastName,
-            firstName,
-            email,
-            password: passwordHash
-        })
-
-        await addUser.save();
-
-        res.status(201).json({
-            data: userNew
-        })
-
-    } catch (err) {
-        res.status(500)
-    }
+  const passwordHash = await  bcrypt.hash(req.body.password, saltRounds)
+    const user = new User({...req.body, password: passwordHash})
+    const createdUser = await user.save();
+    const userObject = JSON.parse(JSON.stringify(createdUser))
+    delete userObject.password;
+    res.status(201).json(userObject);
+} catch (err) {
+    res.status(400).json({
+        message: 'L\'utilisateur existe déjà'
+    })
 }
-
+}
 
 //Méthode pour connecter un utilisateur via son email/password
 exports.userLogin = async (req, res) => {
