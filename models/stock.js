@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-const stockSchema = new Schema(
+var stockSchema = new Schema(
 {
     ref:
     {
@@ -25,7 +25,9 @@ const stockSchema = new Schema(
     },
     type:
     {
-        type: Number,
+        type: String,
+        enum : ['RAW', 'TRANS'],
+        default: 'RAW',
         required: true
     },
     sheepmentDate:
@@ -33,9 +35,11 @@ const stockSchema = new Schema(
         type: Date,
         required: true
     },
-    statut:
+    status:
     {
-        type: Number,
+        type: String,
+        enum : ['EN_STOCK', 'ALIMENTER', 'RUPTURE'],
+        default: 'EN_STOCK',
         required: true
     },
     supplier:
@@ -48,16 +52,14 @@ const stockSchema = new Schema(
         type: Date,
         required: true
     },
-    updatedAt:
-    {
-        type: Date,
-        required: false
-    },
     transformedProduct:
     {
-        type: Object,
+        type: String,
         required: false
     }
+},
+{
+    timestamps: true
 });
 
-module.exports = mongoose.model('stock', stockSchema);
+module.exports = mongoose.model('Stock', stockSchema);
