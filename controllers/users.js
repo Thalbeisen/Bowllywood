@@ -11,19 +11,6 @@ const saltRounds = 10;
 //J'importe JWT pour générer mes jetons d'authentification
 const jwt = require('jsonwebtoken');
 
-//J'importe nodemailer pour pouvoir envoyer des mails de validation
-const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    name: 'ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-        user: 'knatxwtetdtha6ge@ethereal.email',
-        pass: 'Ws7nSeDcWwMce4AbWc'
-    }
-});
-
 //Méthode pour récupérer la liste des utilisateurs
 exports.usersList = async (req, res) => {
     try {
