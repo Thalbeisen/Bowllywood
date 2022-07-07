@@ -1,72 +1,117 @@
+/**
+ * 
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {}     
+ */
+
 var Menu = require('../models/menu');
 
-// get all menu
+/**
+ * Get all the meals of the menu.
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {object}     List of the meals.
+ */
 exports.getAllMenu = async (req, res) =>
 {
     var meals = await Menu.find({});
-    console.log(meals)
-
-    res.status(200).json(
-    {
-        message: 'got the all menu !'
-    });
+    res.status(200).json(meals);
 }
 
-// get one meal from the menu
+/**
+ * ! Passe directement dans le / sans passer par le /:id.
+ * ! N'identifie pas /:id comme un paramètre. .params est vide
+ * 
+ * Get one meal from the menu
+ * @param  {object} req The request. Get the .params.id from it.
+ * @param  {object} res The request's response
+ * @return {object}     The found meal
+ * Use of the callBack function of the model.
+ */
 exports.getOneMeal = (req, res) =>
 {
-    var fnCallback = function (err, meal)
+    /*62c6965ee53ae94e5d980c7b*/
+    Menu.findOne({'_id' : req.params.id}, (err, meal) =>
     {
-        res.status(200).json(
+        if (err)
         {
-            message: 'got the selected meal !'
-        });
-    }
-    Menu.find({'_id' : "62c597644e894ead12790f21"}, 'name', fnCallback);
+            console.log(err)
+            res.status(200).json('Erreur lors de la récupération !');
+            return;
+        }
+        res.status(200).json(meal);
+    });
 }
 
-// create a meal
-exports.createMeal = async (req, res) =>
+/**
+ * Create a meal in ddb
+ * @param  {object} req The request.
+ * @param  {object} res The request's response
+ * @return {} 
+ * 
+ * Use of Model.create. Does the same thing of : new Menu({...}).save();
+ */
+exports.createMeal = (req, res) =>
 {
-    var meal = await Menu.create(req.body, ()=>{
-        console.log(req.body);
-    });
-    
-    res.status(200).json(
+    Menu.create(req.body, (err, justCreatedMeal) =>
     {
-        message: 'Crééé ! Rendez-vous sur mongodb'
-    });
-};
+        if (err)
+        {
+            console.log(err)
+            res.status(200).json('Erreur lors de la création !');
+            return;
+        }
 
-// update a meal
-exports.updateMeal = (req, res) =>
-{
-    res.status(200).json(
-    {
-        message: 'update dun plat'
-    });
-};
-
-// delete a meal from menu
-exports.deleteMeal = (req, res) =>
-{
-    res.status(200).json(
-    {
-        message: 'Suppression dun plat'
-    });
-};
-
-/*exports.testGetSomefields = (req, res) =>
-{
-    var fnCallback = function (err, docs) 
-    {
-        console.log(docs)
+        // une fois créé, redirection sur la page des détails de la recette ?
         res.status(200).json(
         {
-            message: 'get all menu'
+            message: 'Crééé ! Rendez-vous sur mongodb'
         });
-    }
+    });
+};
 
-    var filters = {name: 'Hahiti'}
-    Menu.find(filters, 'name description' fnCallBack)
-}*/
+/**
+ * update a meal
+ * @param  {object} req The request, use its .params.id to get the meal we want to update.
+ * @param  {object} res The request's response
+ * @return {} 
+ */
+exports.updateMeal = async (req, res) =>
+{
+    var foundMeal = await Menu.findOne({'_id': req.params.id});
+    
+    foundMeal.update({...req.body}, (err, updatedMeal) =>
+    {
+        // si erreur, reste sur la page de modificaition de la recette avec message toast ?
+        if (err)
+        {
+            console.log(err)
+            res.status(200).json('Erreur lors de la mise à jour !');
+            return;
+        }
+
+        // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
+        res.status(200).json(updatedMeal);
+    });
+};
+
+/**
+ * Delete a meal from menu
+ * @param  {object} req The request, use .params.id to get the meal to delete.
+ * @param  {object} res The request's response
+ * @return {} 
+ */
+exports.deleteMeal = (req, res) =>
+{
+    Menu.findByIdAndDelete({'_id': req.params.id}, (err, docs) =>
+    {
+        if (err)
+        {
+            console.log(err)
+            res.status(200).json('Erreur lors de la suppression !');
+            return;
+        }
+        res.status(200).json(docs);
+    })
+};
