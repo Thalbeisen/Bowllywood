@@ -13,7 +13,7 @@ const prospectSchema = new Schema(
         },
         phone: {
             type: String,
-            require: true,
+            required: true,
         },
         email: {
             type: String,
@@ -21,37 +21,37 @@ const prospectSchema = new Schema(
         },
         city: {
             type: String,
-            require: true,
+            required: true,
         },
         estimatedAmount: {
             type: Number,
-            require: true,
+            required: true,
         },
         hopedFinancing: {
             type: Number,
-            require: true,
+            required: true,
         },
         shopLocation: {
             type: String,
-            require: true,
+            required: true,
         },
         foodServiceExperience: {
             type: Number,
-            require: true,
+            required: true,
         },
         conditionOfUse: {
             type: Boolean,
-            require: true,
+            required: true,
         },
         status: {
             type: String,
             enum: ['PENDING', 'REFUSED', 'ACCEPTED'],
             default: 'PENDING',
-            require: true,
+            required: true,
         },
         archive: {
             type: Boolean,
-            require: true,
+            required: true,
             default: false,
         },
     },
