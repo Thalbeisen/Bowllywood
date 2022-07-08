@@ -210,26 +210,3 @@ exports.userDelete = async (req, res) => {
         });
     }
 }
-
-exports.userLogout = async (req, res) => {
-    try {
-        const filterUser = {'_id': req.params.id};
-        const selectedUser = await User.findOne(filterUser)
-
-        if (!selectedUser) {
-            return res.status(401).json({
-                message: 'Aucun utilisateur trouvé pour l\'id donné'
-            })
-        }
-        selectedUser.token = '';
-        selectedUser.refreshToken = '';
-        await selectedUser.save();
-        res.status(200).json({
-            message: 'Déconnexion OK'
-        })
-    } catch (err) {
-        res.status(500).json({
-            message: err
-        })
-    }
-}

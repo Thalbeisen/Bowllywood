@@ -16,8 +16,6 @@ router.post('/login', userController.userLogin);
 
 router.patch('/:id', auth, userController.userEdit);
 
-router.get('/logout', userController.userLogout);
-
 router.post('/refresh', userController.refreshUserToken);
 
 router.delete('/:id', auth, userController.userDelete);

@@ -1,7 +1,12 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken')
 
-
+/**
+ * Middleware gérant l'authentification au niveau de l'API
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const auth = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]
