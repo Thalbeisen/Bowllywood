@@ -37,30 +37,17 @@ exports.getProspectRequestDetail = async (req, res) => {
         const subscriptionResquestDetail = await Prospect.findById(
             req.params.id
         ).exec();
+
+        if (!subscriptionResquestDetail) {
+            res.status(404).json({
+                message: "Ce prospect n'existe pas",
+            });
+        }
+
         res.status(200).json(subscriptionResquestDetail);
     } catch (error) {
         res.status(403).json({
             message: "Impossible d'accéder au contenu du prospect",
-        });
-    }
-};
-
-// Need token
-
-/**
- * Retrieve all prospect request from an user
- * @param {Request} req
- * @param {Response} res
- */
-exports.getAllProspectRequestFromUser = async (req, res) => {
-    try {
-        const allSubscriptionResquestFromUser = await Prospect.findById(
-            req.params.id
-        ).exec();
-        res.status(200).json(allSubscriptionResquestFromUser);
-    } catch (error) {
-        res.status(403).json({
-            message: "Impossible d'accéder aux demandes de cet utilisateur",
         });
     }
 };
@@ -75,6 +62,11 @@ exports.getAllProspectRequestFromUser = async (req, res) => {
 exports.getAllProspectRequest = async (req, res) => {
     try {
         const allSubscriptionResquest = await Prospect.find({});
+        if (!allSubscriptionResquest) {
+            res.status(404).json({
+                message: 'La liste de prospect est vide',
+            });
+        }
         res.status(200).json(allSubscriptionResquest);
     } catch (error) {
         res.status(403).json({
@@ -96,6 +88,12 @@ exports.deleteProspectRequest = async (req, res) => {
         const suppressSubsriptionRequest = await Prospect.findByIdAndDelete(
             req.params.id
         );
+        if (!suppressSubsriptionRequest) {
+            res.status(404).json({
+                message:
+                    'Une erreur est survenue lors de la tentative de suppression',
+            });
+        }
         res.status(200).json(suppressSubsriptionRequest);
     } catch (error) {
         res.status(403).json({
