@@ -14,7 +14,7 @@
     "plugins": ["prettier"],
     "rules": {
     "prettier/prettier": ["error", {
-      "endOfLine" : "none"
+      "endOfLine" : "auto"
     }]
     }
 }
