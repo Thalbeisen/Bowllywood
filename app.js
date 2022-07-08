@@ -5,7 +5,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-// ddb connexion
 db.then(() =>
 {
     const connectionStatus = 'connected';
@@ -13,9 +12,10 @@ db.then(() =>
 })
 
 // get routers
-const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const  menuRouter = require('./routes/menu');
+const rolesRouter = require('./routes/roles');
+
 const { connection } = require('mongoose');
 
 const app = express();
@@ -27,8 +27,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // use routers
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/menu', menuRouter);
+app.use('/roles', rolesRouter);
 
 module.exports = app;

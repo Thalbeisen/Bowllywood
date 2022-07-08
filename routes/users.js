@@ -4,9 +4,20 @@ const router = express.Router();
 
 const userController = require('../controllers/users');
 
-/* GET users listing. */
-router.get('/', userController.userIndex);
+const auth = require('../middlewares/auth');
 
-router.post('/', userController.userCreate);
+router.post('/add', userController.userNew);
+
+router.get('/', auth, userController.usersList);
+
+router.get('/:id', auth, userController.userDetails);
+
+router.post('/login', userController.userLogin);
+
+router.patch('/:id', auth, userController.userEdit);
+
+router.post('/refresh', userController.refreshUserToken);
+
+router.delete('/:id', auth, userController.userDelete);
 
 module.exports = router;
