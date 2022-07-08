@@ -7,14 +7,14 @@ const db = require('./database/dbConnect');
 
 db.then(() => {
     const connectionStatus = 'connected';
-    console.log(connectionStatus);
+    return connectionStatus;
 });
 
 // get routers
 const usersRouter = require('./routes/users');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
-const rolesRouter = require('./routes/roles');
+const prospectsRouter = require('./routes/prospects');
 
 const app = express();
 
@@ -28,6 +28,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
-app.use('/roles', rolesRouter);
+app.use('/prospects', prospectsRouter);
 
 module.exports = app;

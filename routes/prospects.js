@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // Controllers
-const prospectsCtrl = require('../controllers/prospectsCtrl');
+const prospectsCtrl = require('../controllers/prospects');
 
 router.post('/', prospectsCtrl.createProspectRequest);
 // id de la demande
