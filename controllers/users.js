@@ -17,9 +17,8 @@ const generateToken = (payload, secret, ttl) =>
 
 /**
  * Méthode de récupération des utilisateurs
- * @param {Object} req
- * @param {Object | String} res
- * @returns
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.usersList = async (req, res) => {
     try {
@@ -44,9 +43,8 @@ exports.usersList = async (req, res) => {
 
 /**
  * Méthode pour récupérer les détails d'un utilisateur en fonction d'un id donné
- * @param {Object} req
- * @param {Object | String} res
- * @returns
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.userDetails = async (req, res) => {
     try {
@@ -73,7 +71,6 @@ exports.userDetails = async (req, res) => {
  * Méthode d'édition de l'utilisateur
  * @param {Request} req
  * @param {Response} res
- * @returns
  */
 exports.userEdit = async (req, res) => {
     try {
