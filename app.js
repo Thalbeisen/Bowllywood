@@ -1,22 +1,20 @@
-// required 
+// required
 const express = require('express');
-const db = require('./database/dbConnect');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const db = require('./database/dbConnect');
 
-db.then(() =>
-{
+db.then(() => {
     const connectionStatus = 'connected';
-    console.log(connectionStatus)
-})
+    console.log(connectionStatus);
+});
 
 // get routers
 const usersRouter = require('./routes/users');
-const  menuRouter = require('./routes/menu');
+const stockRouter = require('./routes/stock');
+const menuRouter = require('./routes/menu');
 const rolesRouter = require('./routes/roles');
-
-const { connection } = require('mongoose');
 
 const app = express();
 
@@ -28,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // use routers
 app.use('/users', usersRouter);
+app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
 app.use('/roles', rolesRouter);
 
