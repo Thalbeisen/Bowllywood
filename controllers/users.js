@@ -69,27 +69,25 @@ exports.userDetails = async (req, res) => {
 
 /**
  * Méthode d'édition de l'utilisateur
- * @param {Object} req 
- * @param {Object | String} res 
+ * @param {Request} req 
+ * @param {Response} res 
  * @returns 
  */
 exports.userEdit = async (req, res) => {
     try {
-        const updatedItems = Object.keys(req.body);
-        const filterUser = {'_id': req.params.id};
-        const selectedUser = await User.findOne(filterUser)
+    
+        const selectedUser = await User.findOne({'_id': req.params.id})
 
         if (!selectedUser) {
             return res.status(404).json({
                 message: 'Aucun utilisateur pour l\'id donné'
             })
         }
-        updatedItems.forEach((update) => {
-            selectedUser[update] = req.body[update]
-        })
-        await selectedUser.save();
+        
+        await User.updateOne({'_id': req.params.id}, {...req.body});
+        const updatedUser = await User.findOne({'_id': req.params.id}, {password: 0, createdAt: 0, __v: 0})
         res.status(200).json({
-            data: selectedUser
+            data: updatedUser
         })
     } catch (err) {
         res.status(500).json({
@@ -100,8 +98,8 @@ exports.userEdit = async (req, res) => {
 
 /**
  * Méthode pour créer un utilisateur utilisant bcrypt hash
- * @param {Object} req 
- * @param {Object | String} res 
+ * @param {Request} req 
+ * @param {Response} res 
  */
 exports.userNew = async (req, res) => {
     try {
@@ -120,9 +118,8 @@ exports.userNew = async (req, res) => {
 
 /**
  * Méthode pour connecter un utilisateur avec son email/password
- * @param {Object} req 
- * @param {Object} res
- * @returns {String} 
+ * @param {Request} req 
+ * @param {Response} res
  */
 exports.userLogin = async (req, res) => {
     try {
@@ -142,8 +139,8 @@ exports.userLogin = async (req, res) => {
                 code: 422
             }
         }
-        const token = generateToken({id: user._id}, process.env.ACCESS_TOKEN_SECRET, '40s')
-        const refresh_token = generateToken({id: user._id}, process.env.REFRESH_TOKEN_SECRET, '5m')
+        const token = generateToken({id: user._id}, process.env.ACCESS_TOKEN_SECRET, '10m')
+        const refresh_token = generateToken({id: user._id}, process.env.REFRESH_TOKEN_SECRET, '7h')
         res.status(200).json({
             token, refresh_token
         });
@@ -157,8 +154,8 @@ exports.userLogin = async (req, res) => {
 
 /**
  * Méthode pour rafraîchir un jeton d'authentification
- * @param {Object} req 
- * @param {Object} res 
+ * @param {Request} req 
+ * @param {Response} res 
  */
 exports.refreshUserToken = async (req, res) => {
     try {
@@ -174,8 +171,8 @@ exports.refreshUserToken = async (req, res) => {
     const user = await jwt.verify(authToken, process.env.REFRESH_TOKEN_SECRET)
     delete user.iat;
     delete user.exp;
-    const token = generateToken(user, process.env.ACCESS_TOKEN_SECRET, '30s');
-    const refresh_token = generateToken(user, process.env.REFRESH_TOKEN_SECRET, '5m');
+    const token = generateToken(user, process.env.ACCESS_TOKEN_SECRET, '10m');
+    const refresh_token = generateToken(user, process.env.REFRESH_TOKEN_SECRET, '7h');
     res.status(200).json({
         token, refresh_token
     })
@@ -190,8 +187,7 @@ exports.refreshUserToken = async (req, res) => {
 //Méthode de suppression utilisant la méthode findOne pour s'assurer que l'id donné existe, et la méthode findOneAndDelete pour supprimer le document
 exports.userDelete = async (req, res) => {
     try {
-        const filterUser = {'_id': req.params.id};
-        const selectedUser = await User.findOne(filterUser)
+        const selectedUser = await User.findOne({'_id': req.params.id})
 
         if (!selectedUser) {
             return res.status(404).json({
