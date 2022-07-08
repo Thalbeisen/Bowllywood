@@ -1,5 +1,6 @@
 // requires
 const express = require('express');
+
 const router = express.Router();
 const stockCtrl = require('../controllers/stock');
 
