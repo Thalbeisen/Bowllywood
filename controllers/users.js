@@ -1,9 +1,6 @@
 // J'importe mon .env
 require('dotenv').config();
 
-// J'importe mon modèle Users
-const User = require('../models/users');
-
 // J'importe bcrypt pour hasher mes mots de passe et paramètre le nombre de passes
 const bcrypt = require('bcrypt');
 
@@ -11,6 +8,9 @@ const saltRounds = 10;
 
 // J'importe JWT pour générer mes jetons d'authentification
 const jwt = require('jsonwebtoken');
+
+// J'importe mon modèle Users
+const User = require('../models/users');
 
 const generateToken = (payload, secret, ttl) =>
     jwt.sign(payload, secret, { expiresIn: ttl });
@@ -25,7 +25,7 @@ exports.usersList = async (req, res) => {
         const users = await User.find({});
 
         if (!users) {
-            return res.status(404).json({
+            res.status(404).json({
                 message: 'Aucun utilisateur trouvé',
             });
         }
@@ -52,7 +52,7 @@ exports.userDetails = async (req, res) => {
         const userDetails = await User.findOne(filterUser);
 
         if (!userDetails) {
-            return res.status(404).json({
+            res.status(404).json({
                 message: "Aucun utilisateur pour l'id donné",
             });
         }
@@ -77,7 +77,7 @@ exports.userEdit = async (req, res) => {
         const selectedUser = await User.findOne({ _id: req.params.id });
 
         if (!selectedUser) {
-            return res.status(404).json({
+            res.status(404).json({
                 message: "Aucun utilisateur pour l'id donné",
             });
         }
@@ -128,31 +128,31 @@ exports.userLogin = async (req, res) => {
         const user = await User.findOne({ email }).exec();
 
         if (!user) {
-            throw {
-                message: 'Identifiant/Mot de passe incorrect',
-                code: 422,
-            };
+            const error = new Error('Identifiant/Mot de passe incorrect');
+            error.code = 422;
+            throw error;
         }
         const passMatch = await bcrypt.compare(password, user.password);
         if (!passMatch) {
-            throw {
-                message: 'Identifiant/Mot de passe incorrect',
-                code: 422,
-            };
+            const error = new Error('Identifiant/Mot de passe incorrect');
+            error.code = 422;
+            throw error;
         }
+        /* eslint-disable no-underscore-dangle */
         const token = generateToken(
             { id: user._id },
             process.env.ACCESS_TOKEN_SECRET,
             '10m'
         );
-        const refresh_token = generateToken(
+        /* eslint-disable no-underscore-dangle */
+        const refreshToken = generateToken(
             { id: user._id },
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );
         res.status(200).json({
             token,
-            refresh_token,
+            refreshToken,
         });
     } catch (err) {
         const code = err.code ?? 500;
@@ -172,12 +172,10 @@ exports.refreshUserToken = async (req, res) => {
         const authHeader = req.headers.authorization;
         const authToken = authHeader && authHeader.split(' ')[1];
         if (!authToken) {
-            throw {
-                message: 'Unauthorized',
-                code: 401,
-            };
+            const error = new Error('Unauthorized');
+            error.code = 401;
+            throw error;
         }
-        console.log(authToken);
         const user = await jwt.verify(
             authToken,
             process.env.REFRESH_TOKEN_SECRET
@@ -189,17 +187,16 @@ exports.refreshUserToken = async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             '10m'
         );
-        const refresh_token = generateToken(
+        const refreshToken = generateToken(
             user,
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );
         res.status(200).json({
             token,
-            refresh_token,
+            refreshToken,
         });
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             err,
         });
@@ -212,7 +209,7 @@ exports.userDelete = async (req, res) => {
         const selectedUser = await User.findOne({ _id: req.params.id });
 
         if (!selectedUser) {
-            return res.status(404).json({
+            res.status(404).json({
                 message: "Aucun utilisateur trouvé pour l'id donné",
             });
         }
