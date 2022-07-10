@@ -37,12 +37,12 @@ exports.getOneStock = async (req, res) => {
 exports.createStock = async (req, res) => {
     try {
         // set the status thanks to the given quantity
-        const quantityLimit = parseInt(req.body.quantityLimit);
-        const quantity = parseInt(req.body.quantity);
+        const quantityLimit = Number(req.body.quantityLimit);
+        const quantity = Number(req.body.quantity);
 
         // compare quantity with quantityLimit to determine the value of 'status'.
         // first, compare with 0, not with <= quantityLimit.
-        if (quantity == '0') req.body.status = 'RUPTURE';
+        if (quantity === 0) req.body.status = 'RUPTURE';
         else if (quantity <= quantityLimit) req.body.status = 'ALIMENTER';
         else if (quantity > quantityLimit) req.body.status = 'EN_STOCK';
         else req.body.status = 'EN_STOCK';
@@ -65,12 +65,12 @@ exports.createStock = async (req, res) => {
 exports.updateStock = async (req, res) => {
     try {
         // set the status thanks to the given quantity
-        const quantityLimit = parseInt(req.body.quantityLimit);
-        const quantity = parseInt(req.body.quantity);
+        const quantityLimit = Number(req.body.quantityLimit);
+        const quantity = Number(req.body.quantity);
 
         // compare quantity with quantityLimit to determine the value of 'status'.
         // first, compare with 0, not with <= quantityLimit.
-        if (quantity == '0') req.body.status = 'RUPTURE';
+        if (quantity === 0) req.body.status = 'RUPTURE';
         else if (quantity <= quantityLimit) req.body.status = 'ALIMENTER';
         else if (quantity > quantityLimit) req.body.status = 'EN_STOCK';
         else req.body.status = 'EN_STOCK';
