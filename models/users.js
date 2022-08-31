@@ -43,6 +43,11 @@ const userSchema = new Schema(
             type: String,
         },
 
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+
         roles: [
             {
                 // Clé étrangère rôles

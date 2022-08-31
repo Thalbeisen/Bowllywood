@@ -10,7 +10,12 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
 // J'importe mon modèle Users
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
 const User = require('../models/users');
+const sendConfirmationEmail = require('./mailController');
+
+// J'importe Nodemailer pour le mail de vérification
 
 const generateToken = (payload, secret, ttl) =>
     jwt.sign(payload, secret, { expiresIn: ttl });
@@ -107,12 +112,19 @@ exports.userNew = async (req, res) => {
         const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
         const user = new User({ ...req.body, password: passwordHash });
         const createdUser = await user.save();
+        const confirmationCode = uuidv4();
+        nodemailer.sendConfirmationEmail(
+            user.firstName,
+            user.lastName,
+            user.email,
+            confirmationCode
+        );
         const userObject = JSON.parse(JSON.stringify(createdUser));
         delete userObject.password;
         res.status(201).json(userObject);
     } catch (err) {
         res.status(400).json({
-            message: "L'utilisateur existe déjà",
+            message: err,
         });
     }
 };
