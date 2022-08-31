@@ -6,6 +6,10 @@ const userController = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
+const permsList = require('../conf/perms');
+
+const checkUserPerms = require('../middlewares/checkUserPerms');
+
 router.get('/', auth, userController.usersList);
 
 router.post('/add', userController.userNew);
@@ -18,6 +22,6 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', auth, userController.userDelete);
+router.delete('/:id', checkUserPerms(permsList.PDG), userController.userDelete);
 
 module.exports = router;

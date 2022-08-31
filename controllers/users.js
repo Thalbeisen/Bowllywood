@@ -140,13 +140,13 @@ exports.userLogin = async (req, res) => {
         }
         /* eslint-disable no-underscore-dangle */
         const token = generateToken(
-            { id: user._id },
+            { id: user._id, roleID: user.roles },
             process.env.ACCESS_TOKEN_SECRET,
             '10m'
         );
         /* eslint-disable no-underscore-dangle */
         const refreshToken = generateToken(
-            { id: user._id },
+            { id: user._id, roleID: user.roles },
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );

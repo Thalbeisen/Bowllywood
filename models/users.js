@@ -45,10 +45,10 @@ const userSchema = new Schema(
 
         roles: [
             {
-                //Clé étrangère rôles
+                // Clé étrangère rôles
                 type: Schema.Types.ObjectId,
-                ref: 'Role'
-            }
+                ref: 'Role',
+            },
         ],
 
         franchiseRequests: [
