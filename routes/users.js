@@ -14,6 +14,8 @@ router.get('/', auth, userController.usersList);
 
 router.post('/add', userController.userNew);
 
+router.get('/:id/validate/:uniqueString', userController.userValidate);
+
 router.get('/:id', auth, userController.userDetails);
 
 router.patch('/:id', auth, userController.userEdit);

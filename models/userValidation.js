@@ -13,9 +13,8 @@ const userValidationSchema = new Schema({
     },
     createdAt: {
         type: Date,
-    },
-    expiresAt: {
-        type: Date,
+        default: Date.now,
+        expires: 1800,
     },
 });
 
