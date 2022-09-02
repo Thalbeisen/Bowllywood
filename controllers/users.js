@@ -12,8 +12,27 @@ const jwt = require('jsonwebtoken');
 // J'importe Nodemailer pour le mail de vérification
 const nodemailer = require('nodemailer');
 
+// J'importe fs
+const fs = require('fs');
+const path = require('path');
+
 // J'importe Handlebars pour mes mails
 const handlebars = require('handlebars');
+
+handlebars.registerHelper(
+    'link',
+    (text, url) =>
+        new handlebars.SafeString(
+            `<a href='${url}' class="validateButton">${text}</a>`
+        )
+);
+
+const mailValidateTemplate = fs.readFileSync(
+    path.join(__dirname, '../assets/handlebarsTemplates/mailValidate.hbs'),
+    'utf8'
+);
+
+const mailTemplate = handlebars.compile(mailValidateTemplate);
 
 // J'importe le  package uuidv4 pour générer un uuid aléatoire
 const { v4: uuidv4 } = require('uuid');
@@ -151,16 +170,26 @@ exports.userNew = async (req, res) => {
 };
 
 const sendEmailValidation = ({ _id, email }) => {
-    const hostURL = 'http://localhost:3000';
     const uniqueString = uuidv4() + _id;
+    const mailHtml = mailTemplate({
+        url: `http://localhost:3000/users/${_id}/validate/${uniqueString}`,
+    });
     const mailContent = {
         from: 'admin@bollywood.fr',
         to: email,
         subject: 'Bowllywood - Vérification de ton email',
-        html: `<h1>Bienvenue chez Bowllywood !</h1><p>Tu auras bientôt accès à un univers de bowls à 
-        découvrir mais d'abord, nous te demandons de vérifier ton mail! 
-        <a href=${`${hostURL}/users/${_id}/validate/${uniqueString}`}>Clique sur ce lien pour valider</a></p>`,
+        attachment: [
+            {
+                filename: 'Bowllywood.png',
+                path: path.join(
+                    'https://img2.freepng.fr/20180417/vrq/kisspng-tiki-bar-cuisine-of-hawaii-hawaiian-mask-5ad5ad26034541.3539464215239529340134.jpg'
+                ),
+                cid: 'Bowllywood',
+            },
+        ],
+        html: mailHtml,
     };
+    console.log(mailContent.attachment);
     bcrypt
         .hash(uniqueString, saltRounds)
         .then((hashedUniqueString) => {
