@@ -7,7 +7,7 @@ exports.rolesList = async (req, res) => {
 
         if (!roles) {
             res.status(404).json({
-                message: "Aucun rôle trouvé"
+                message: 'Aucun rôle trouvé',
             });
         }
         const listObject = JSON.parse(JSON.stringify(roles));
@@ -17,22 +17,23 @@ exports.rolesList = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             err,
-        })
+        });
     }
-}
+};
 
 exports.roleNew = async (req, res) => {
     try {
-        const role = new Role({...req.body});
+        const role = new Role({ ...req.body });
         const createdRole = await role.save();
         const roleObject = JSON.parse(JSON.stringify(createdRole));
         res.status(201).json(roleObject);
     } catch (err) {
         res.status(400).json({
-            message: "Impossible de créer le rôle, veuillez contacter votre administrateur système"
-        })
+            message:
+                'Impossible de créer le rôle, veuillez contacter votre administrateur système',
+        });
     }
-}
+};
 
 exports.roleDetails = async (req, res) => {
     try {
@@ -40,8 +41,8 @@ exports.roleDetails = async (req, res) => {
         const roleDetails = await Role.findOne(filteredRole);
         if (!roleDetails) {
             res.status(404).json({
-                message: "Aucun rôle trouvé pour l'id donné"
-            })
+                message: "Aucun rôle trouvé pour l'id donné",
+            });
         }
         res.status(200).send({
             data: roleDetails,
@@ -49,9 +50,9 @@ exports.roleDetails = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             err,
-        })
+        });
     }
-}
+};
 
 exports.roleDelete = async (req, res) => {
     try {
@@ -59,18 +60,18 @@ exports.roleDelete = async (req, res) => {
 
         if (!selectedRole) {
             res.status(404).json({
-                message: "Aucun rôle trouvé pour l'id donné"
+                message: "Aucun rôle trouvé pour l'id donné",
             });
         }
         await Role.findOneAndDelete({
             _id: req.params.id,
         });
         res.status(200).json({
-            message: "Rôle supprimé avec succès"
+            message: 'Rôle supprimé avec succès',
         });
     } catch (err) {
         res.status(500).json({
             err,
-        })
+        });
     }
-}
+};
