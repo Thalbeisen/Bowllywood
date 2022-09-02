@@ -12,6 +12,9 @@ const jwt = require('jsonwebtoken');
 // J'importe Nodemailer pour le mail de vérification
 const nodemailer = require('nodemailer');
 
+// J'importe Handlebars pour mes mails
+const handlebars = require('handlebars');
+
 // J'importe le  package uuidv4 pour générer un uuid aléatoire
 const { v4: uuidv4 } = require('uuid');
 
@@ -153,8 +156,10 @@ const sendEmailValidation = ({ _id, email }) => {
     const mailContent = {
         from: 'admin@bollywood.fr',
         to: email,
-        subject: 'Vérification de ton email',
-        html: `<h1>Bienvenue chez Bollywood !</h1><p>Tu auras bientôt accès à un univers de bowls à découvrir mais d'abord, nous te demandons de vérifier ton mail! <a href=${`${hostURL}/users/${_id}/validate/${uniqueString}`}>Clique sur ce lien pour valider</a></p>`,
+        subject: 'Bowllywood - Vérification de ton email',
+        html: `<h1>Bienvenue chez Bowllywood !</h1><p>Tu auras bientôt accès à un univers de bowls à 
+        découvrir mais d'abord, nous te demandons de vérifier ton mail! 
+        <a href=${`${hostURL}/users/${_id}/validate/${uniqueString}`}>Clique sur ce lien pour valider</a></p>`,
     };
     bcrypt
         .hash(uniqueString, saltRounds)
@@ -183,15 +188,23 @@ const sendEmailValidation = ({ _id, email }) => {
         });
 };
 
-exports.userValidate = async (req) => {
+exports.userValidate = async (req, res) => {
     try {
         const selectedUser = await User.findOne({ _id: req.params.id });
         if (!selectedUser) {
-            console.log('et non');
+            res.status(404).json({
+                message: "Aucun utilisateur trouvé pour l'id donné",
+            });
         }
         await User.updateOne({ _id: req.params.id }, { isVerified: true });
+        res.status(200).json({
+            message: 'Utilisateur activé',
+        });
     } catch (err) {
-        console.log('echec');
+        res.status(500).json({
+            message:
+                'Une erreur est survenue, veuillez réessayer dans un instant',
+        });
     }
 };
 
