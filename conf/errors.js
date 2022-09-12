@@ -26,6 +26,9 @@ const getEntityDesc = function (entity) {
         case 'STOCK':
             entityDesc = 'du produit ';
             break;
+        case 'REVIEW':
+            entityDesc = "de l'avis ";
+            break;
         default:
             entityDesc = '';
             break;
@@ -34,31 +37,28 @@ const getEntityDesc = function (entity) {
     return entityDesc;
 };
 
-
 /** Errors list * */
-errorsList {
-	createError = function (entity) {
-	    errorEntity = getEntityDesc(entity);
+const errorsList = {
+    createError(entity) {
+        errorEntity = getEntityDesc(entity);
 
-	    return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
-	},
+        return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
+    },
 
-	updateError : {
-	    'Une erreur est survenue lors de la modification. Veuillez réessayer plus tard.';
-	},
+    updateError:
+        'Une erreur est survenue lors de la modification. Veuillez réessayer plus tard.',
 
-	deleteError : {
-		'Une erreur est survenue lors de la tentative de suppression.';
-	},
+    deleteError: 'Une erreur est survenue lors de la tentative de suppression.',
 
-	emptyList : {
-		'Aucune données n\'a été trouvé.';
-	},
+    emptyList: "Aucune données n'a été trouvé.",
 
-	listError : {
-		"Impossible d'accéder à la liste demandée."
-	},
+    listError: "Impossible d'accéder à la liste demandée.",
 
-}
+    emptyData(entity) {
+        errorEntity = getEntityDesc(entity);
 
-module.exports = erroList;
+        return `Aucune donnée ${errorEntity} n'a été trouvé.`;
+    },
+};
+
+module.exports = errorsList;
