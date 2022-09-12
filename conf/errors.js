@@ -7,7 +7,7 @@
 let entityDesc;
 let errorEntity;
 
-exports.getEntityDesc = (entity) => {
+const getEntityDesc = (entity) => {
     switch (entity) {
         case 'USER':
             entityDesc = 'de votre compte ';
@@ -36,11 +36,20 @@ exports.getEntityDesc = (entity) => {
 };
 
 /** Errors list * */
-exports.updateError =
-    'Une erreur est survenue lors de la modification. Veuillez réessayer plus tard.';
+const errorsList = {
+    createError(entity) {
+        errorEntity = getEntityDesc(entity);
 
-exports.createError = (entity) => {
-    errorEntity = module.getEntityDesc(entity);
+        return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
+    },
 
-    return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
+    updateError: `Une erreur est survenue lors de la modification de ${errorEntity}. Veuillez réessayer plus tard.`,
+
+    deleteError: `Une erreur est survenue lors de la tentative de suppression de ${errorEntity}.`,
+
+    emptyList: "Aucune données n'a été trouvé.",
+
+    listError: "Impossible d'accéder à la liste demandée.",
 };
+
+module.exports = errorsList;
