@@ -1,5 +1,9 @@
 const Prospect = require('../models/prospects');
 const User = require('../models/users');
+const { createError } = require('../conf/errors');
+
+const entity = 'PROSPECT';
+
 /**
  * Create a prospect request with or without authentification
  * @param {Request} req
@@ -21,7 +25,7 @@ exports.createProspectRequest = async (req, res) => {
         res.status(201).json(subscriptionRequest);
     } catch (error) {
         res.status(400).json({
-            message: 'La création du prospect a échoué',
+            message: createError(entity),
         });
     }
 };
