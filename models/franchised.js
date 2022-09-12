@@ -19,6 +19,11 @@ const franchisedSchema = new Schema(
             type: String,
             required: true,
         },
+        archived: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
         validatedProspect: [
             {
                 // Clé étrangère rôles

@@ -13,9 +13,9 @@ const auth = require('../middlewares/auth');
 // edit
 // router.patch('/', auth, franchisedCtrl.);
 // getInfos
-router.get('/:id', auth, franchisedCtrl.getFranchisedDetail);
+router.get('/:id', franchisedCtrl.getFranchisedDetail);
 // getList
-router.get('/', auth, franchisedCtrl.getAllFranchised);
+router.get('/', franchisedCtrl.getAllFranchised);
 // delete (archiver)
 // router.delete('/', auth, franchisedCtrl.);
 module.exports = router;
