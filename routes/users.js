@@ -24,6 +24,6 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', checkUserPerms(permsList.PDG), userController.userDelete);
+router.delete('/:id', userController.userDelete);
 
 module.exports = router;
