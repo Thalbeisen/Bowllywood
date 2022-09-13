@@ -16,8 +16,8 @@ const rolesRouter = require('./routes/roles');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
 const prospectsRouter = require('./routes/prospects');
-// const reviewRouter = require('./routes/review');
 const reservRouter = require('./routes/reserv');
+const reviewRouter = require('./routes/review');
 
 const app = express();
 
@@ -37,7 +37,7 @@ app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
 app.use('/prospects', prospectsRouter);
-// app.use('/review', reviewRouter);
 app.use('/reservation', reservRouter);
+app.use('/review', reviewRouter);
 
 module.exports = app;

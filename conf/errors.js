@@ -42,7 +42,7 @@ const errorsList = {
     createError(entity) {
         errorEntity = getEntityDesc(entity);
 
-        return `La création ${errorEntity}a échoué. ` + this.contactIfPersist;
+        return `La création ${errorEntity}a échoué. ${this.contactIfPersist}`;
     },
 
     updateError:
@@ -60,7 +60,8 @@ const errorsList = {
         return `Aucune donnée ${errorEntity} n'a été trouvé.`;
     },
 
-    errorOccured: 'Une erreur est apparue durant le traitenemnt de votre requête : ',
+    errorOccured:
+        'Une erreur est apparue durant le traitenemnt de votre requête : ',
 
     alreadyDeleted(entity) {
         errorEntity = getEntityDesc(entity);
@@ -68,9 +69,10 @@ const errorsList = {
         return `La suppression ${errorEntity}a déjà été effectué.`;
     },
 
-    itemNotFound: ' L\'élément n\'existe pas ou été supprimé.',
+    itemNotFound: " L'élément n'existe pas ou été supprimé.",
 
-    contactIfPersist: "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
+    contactIfPersist:
+        "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
 };
 
 module.exports = errorsList;
