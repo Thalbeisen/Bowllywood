@@ -1,5 +1,5 @@
 const Reserv = require('../models/reserv');
-const User = require('../models/users');
+// const User = require('../models/users');
 const errors = require('../conf/errors');
 
 const entity = 'RESERV';
@@ -14,11 +14,10 @@ const entity = 'RESERV';
 exports.createReserv = async (req, res) => {
     try {
         const newReserv = await new Reserv({ ...req.body }).save();
-        if (newReserv == null) res.status(404).json(createError(entity));
+        if (newReserv == null) res.status(404).json(errors.createError(entity));
 
         res.status(201).json(newReserv);
     } catch (err) {
-        console.log(err)
         res.status(400).json(errors.errorOccured + err.message);
     }
 };
@@ -89,20 +88,17 @@ exports.updateReserv = async (req, res) => {
  * @param  {object}      res
  * @return {Obj | null}  deletedDate    The date or Null
  */
-this.getDeletedDate = async function (req, res) {
-    try 
-    {
+this.getDeletedDate = async (req, res) => {
+    try {
         const reservation = await Reserv.findOne({
             _id: req.params.id,
         }).exec();
 
-        return (reservation) ? reservation.deletedAt : null;
-    }
-    catch (err)
-    {
+        return reservation ? reservation.deletedAt : null;
+    } catch (err) {
         res.status(500).json(err.message);
     }
-}
+};
 
 /**
  * Archive a specific reservation
@@ -114,7 +110,7 @@ exports.deleteReserv = async (req, res) => {
         // check if the reservation has been deleted
         const deletedDate = await this.getDeletedDate(req, res);
         if (deletedDate) {
-            res.status(403).json(errors.alreadyDeleted(entity))
+            res.status(403).json(errors.alreadyDeleted(entity));
             return;
         }
 
@@ -124,12 +120,12 @@ exports.deleteReserv = async (req, res) => {
             deletedAt: Date.now(),
         });
 
-        if (archivedReserv == null) res.status(404).json(errors.deleteError + errors.itemNotFound);
+        if (archivedReserv == null)
+            res.status(404).json(errors.deleteError + errors.itemNotFound);
 
         if (!archivedReserv) res.status(400).json(errors.deleteError);
 
         res.status(200).json(archivedReserv);
-
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
