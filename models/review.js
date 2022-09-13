@@ -28,15 +28,6 @@ const reviewSchema = new Schema(
             maxLength: 500,
             required: true,
         },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            expires: 1800,
-        },
-        updatedAt: {
-            type: Date,
-            required: false,
-        },
         deletedAt: {
             type: Date,
             required: false,

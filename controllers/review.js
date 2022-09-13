@@ -27,16 +27,13 @@ exports.createReview = async (req, res) => {
  */
 exports.getAllReview = async (req, res) => {
     try {
-        const reviews = await Review.find({});
+        const reviews = await Review.find({ deletedAt: '' });
 
-        if (!reviews) {
-            res.status(404).json(errors.emptyList);
-        }
+        if (!reviews) res.status(404).json(errors.emptyList);
 
         res.status(200).json(reviews);
     } catch (err) {
-        // res.status(500).json(err.message);
-        res.status(403).json(errors.listError);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -51,9 +48,11 @@ exports.updateReview = async (req, res) => {
             ...req.body,
         });
 
+        if (!updatedReview) res.status(404).json(errors.updateError);
+
         res.status(200).json(updatedReview);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.err.message);
 
         res.status(403).json(errors.updateError);
     }
@@ -66,19 +65,16 @@ exports.updateReview = async (req, res) => {
  * @return {Obj | null}  deletedDate    The date or Null
  */
 this.getDeletedDate = async function (req, res) {
-    try 
-    {
+    try {
         const review = await Review.findOne({
             _id: req.params.id,
         }).exec();
 
-        return (review) ? review.deletedAt : null;
-    }
-    catch (err)
-    {
+        return review ? review.deletedAt : null;
+    } catch (err) {
         res.status(500).json(err.message);
     }
-}
+};
 
 /**
  * Archive a specific review
@@ -91,7 +87,7 @@ exports.deleteReview = async (req, res) => {
         // check if the review has been deleted
         const deletedDate = await this.getDeletedDate(req, res);
         if (deletedDate) {
-            res.status(403).json(errors.alreadyDeleted(entity))
+            res.status(403).json(errors.alreadyDeleted(entity));
             return;
         }
 
@@ -101,12 +97,12 @@ exports.deleteReview = async (req, res) => {
             deletedAt: Date.now(),
         });
 
-        if (archivedReview == null) res.status(404).json(errors.deleteError + errors.itemNotFound);
+        if (archivedReview == null)
+            res.status(404).json(errors.deleteError + errors.itemNotFound);
 
         if (!archivedReview) res.status(400).json(errors.deleteError);
 
         res.status(200).json(archivedReview);
-
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
