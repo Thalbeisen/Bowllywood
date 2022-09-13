@@ -9,7 +9,7 @@ const entity = 'PROSPECT';
  * @param {Request} req
  * @param {Response} res
  */
-exports.createProspectRequest = async (req, res) => {
+exports.addProspectRequest = async (req, res) => {
     try {
         const prospect = new Prospect({
             ...req.body,
@@ -30,7 +30,6 @@ exports.createProspectRequest = async (req, res) => {
     }
 };
 
-// Need token
 /**
  * Retrieve a specific prospect informations
  * @param {Request} req
@@ -56,8 +55,6 @@ exports.getProspectRequestDetail = async (req, res) => {
     }
 };
 
-// Need token
-
 /**
  * Retrieve every prospect request
  * @param {Request} req
@@ -80,10 +77,8 @@ exports.getAllProspectRequest = async (req, res) => {
     }
 };
 
-// Need token
-
 /**
- * Suppress a prospect request
+ * Archive a prospect request
  * @param {Request} req
  * @param {Response} res
  */
@@ -111,22 +106,18 @@ exports.deleteProspectRequest = async (req, res) => {
     }
 };
 
-// Need token
-
 /**
- * Update a prospect request status and archive key
+ * Edit a prospect request status
  * @param {Request} req
  * @param {Response} res
  */
-exports.updateProspectRequest = async (req, res) => {
+exports.editProspectRequest = async (req, res) => {
     try {
-        const refuseSubscriptionRequest = await Prospect.findByIdAndUpdate(
-            req.params.id,
-            {
+        const changeSubscriptionRequestStatus =
+            await Prospect.findByIdAndUpdate(req.params.id, {
                 ...req.body,
-            }
-        );
-        res.status(200).json(refuseSubscriptionRequest);
+            });
+        res.status(200).json(changeSubscriptionRequestStatus);
     } catch (error) {
         res.status(403).json({
             message:
