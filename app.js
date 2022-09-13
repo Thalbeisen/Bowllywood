@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const db = require('./database/dbConnect');
+const auth = require('./middlewares/auth');
 
 db.then(() => {
     const connectionStatus = 'connected';
@@ -35,7 +36,7 @@ app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
-app.use('/prospects', prospectsRouter);
+app.use('/prospects', auth, prospectsRouter);
 app.use('/franchised', franchisedRouter);
 
 module.exports = app;

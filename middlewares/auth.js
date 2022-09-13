@@ -18,6 +18,7 @@ const auth = async (req, res, next) => {
         if (!user) {
             throw new Error();
         }
+        req.body.userID = user.id;
         next();
     } catch (err) {
         res.status(401).json({
