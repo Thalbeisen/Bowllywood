@@ -6,9 +6,7 @@ const userController = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
-const permsList = require('../conf/perms');
-
-const checkUserPerms = require('../middlewares/checkUserPerms');
+const { ceoAUTH } = require('../middlewares/checkUserPerms');
 
 router.get('/', auth, userController.usersList);
 
@@ -24,6 +22,6 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', userController.userDelete);
+router.delete('/:id', auth, ceoAUTH, userController.userDelete);
 
 module.exports = router;

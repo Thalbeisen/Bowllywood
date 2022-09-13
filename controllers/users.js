@@ -245,7 +245,7 @@ exports.userValidate = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email }).exec();
+        const user = await User.findOne({ email }).populate('roles').exec();
 
         if (!user) {
             const error = new Error('Identifiant/Mot de passe incorrect');
