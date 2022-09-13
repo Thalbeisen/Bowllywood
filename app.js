@@ -11,7 +11,7 @@ db.then(() => {
 });
 
 // get routers
-// const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
 const rolesRouter = require('./routes/roles');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
@@ -32,7 +32,7 @@ app.use(
 );
 
 // use routers
-// app.use('/users', usersRouter);
+app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);

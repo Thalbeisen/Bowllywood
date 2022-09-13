@@ -40,7 +40,7 @@ const reservSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            default: Date.now,
+            default: Date.now(),
             expires: 1800,
         },
         updatedAt: {
