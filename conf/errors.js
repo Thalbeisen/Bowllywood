@@ -27,6 +27,9 @@ const getEntityDesc = (entity) => {
         case 'STOCK':
             entityDesc = 'du produit ';
             break;
+        case 'FRANCHISED':
+            entityDesc = 'du franchisé ';
+            break;
         default:
             entityDesc = '';
             break;
@@ -43,9 +46,17 @@ const errorsList = {
         return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
     },
 
-    updateError: `Une erreur est survenue lors de la modification de ${errorEntity}. Veuillez réessayer plus tard.`,
+    updateError(entity) {
+        errorEntity = getEntityDesc(entity);
 
-    deleteError: `Une erreur est survenue lors de la tentative de suppression de ${errorEntity}.`,
+        return `Une erreur est survenue lors de la modification ${errorEntity}. Veuillez réessayer plus tard.`;
+    },
+
+    deleteError(entity) {
+        errorEntity = getEntityDesc(entity);
+
+        return `Une erreur est survenue lors de la tentative de suppression ${errorEntity}.`;
+    },
 
     emptyList: "Aucune données n'a été trouvé.",
 
