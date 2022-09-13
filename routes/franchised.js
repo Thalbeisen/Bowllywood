@@ -6,16 +6,14 @@ const router = express.Router();
 const franchisedCtrl = require('../controllers/franchised');
 
 // Middlewares
-const auth = require('../middlewares/auth');
+// const auth = require('../middlewares/auth');
 
-// add
-// router.post('/', auth, franchisedCtrl.);
 // edit
-// router.patch('/', auth, franchisedCtrl.);
+router.patch('/:id', franchisedCtrl.editFranchised);
+// delete
+router.delete('/:id', franchisedCtrl.deleteFranchised);
 // getInfos
 router.get('/:id', franchisedCtrl.getFranchisedDetail);
 // getList
 router.get('/', franchisedCtrl.getAllFranchised);
-// delete (archiver)
-// router.delete('/', auth, franchisedCtrl.);
 module.exports = router;
