@@ -1,6 +1,6 @@
 const Prospect = require('../models/prospects');
 const User = require('../models/users');
-const { createError } = require('../conf/errors');
+const errorsList = require('../conf/errors');
 
 const entity = 'PROSPECT';
 
@@ -9,24 +9,21 @@ const entity = 'PROSPECT';
  * @param {Request} req
  * @param {Response} res
  */
-exports.addProspectRequest = async (req, res) => {
+exports.createProspectRequest = async (req, res) => {
     try {
         const prospect = new Prospect({
             ...req.body,
         });
         const subscriptionRequest = await prospect.save();
-        if (req.body?.id) {
-            const user = User.findOne({
-                _id: req.body.id,
-            });
-            user.franchiseRequests.push(subscriptionRequest.id);
-        }
-
+        const user = await User.findOne({
+            _id: req.body.userID,
+        });
+        // eslint-disable-next-line no-underscore-dangle
+        user.franchiseRequests.push(subscriptionRequest._id);
+        user.save();
         res.status(201).json(subscriptionRequest);
     } catch (error) {
-        res.status(400).json({
-            message: createError(entity),
-        });
+        res.status(400).json(errorsList.createError(entity));
     }
 };
 
@@ -42,16 +39,12 @@ exports.getProspectRequestDetail = async (req, res) => {
         ).exec();
 
         if (!subscriptionResquestDetail) {
-            res.status(404).json({
-                message: "Ce prospect n'existe pas",
-            });
+            res.status(404).json(errorsList.emptyList);
         }
 
         res.status(200).json(subscriptionResquestDetail);
     } catch (error) {
-        res.status(403).json({
-            message: "Impossible d'accéder au contenu du prospect",
-        });
+        res.status(403).json(errorsList.listError);
     }
 };
 
@@ -64,16 +57,11 @@ exports.getAllProspectRequest = async (req, res) => {
     try {
         const allSubscriptionResquest = await Prospect.find({});
         if (!allSubscriptionResquest) {
-            res.status(404).json({
-                message: 'La liste de prospect est vide',
-            });
+            res.status(404).json(errorsList.emptyList);
         }
         res.status(200).json(allSubscriptionResquest);
     } catch (error) {
-        res.status(403).json({
-            message:
-                "Impossible d'accéder à la liste de toutes les demandes de prospect",
-        });
+        res.status(403).json(errorsList.listError);
     }
 };
 
@@ -92,17 +80,11 @@ exports.deleteProspectRequest = async (req, res) => {
             }
         );
         if (!suppressSubsriptionRequest) {
-            res.status(404).json({
-                message:
-                    'Une erreur est survenue lors de la tentative de suppression',
-            });
+            res.status(404).json(errorsList.emptyList);
         }
         res.status(200).json(suppressSubsriptionRequest);
     } catch (error) {
-        res.status(403).json({
-            message:
-                'Une erreur est survenue lors de la tentative de suppression',
-        });
+        res.status(403).json(errorsList.deleteError);
     }
 };
 
@@ -119,9 +101,6 @@ exports.editProspectRequest = async (req, res) => {
             });
         res.status(200).json(changeSubscriptionRequestStatus);
     } catch (error) {
-        res.status(403).json({
-            message:
-                'Une erreur est survenue lors de la tentative de modification',
-        });
+        res.status(403).json(errorsList.updateError);
     }
 };
