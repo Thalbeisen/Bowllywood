@@ -1,4 +1,7 @@
 const Prospect = require('../models/prospects');
+const errorsList = require('../conf/errors');
+
+const entity = 'FRANCHISED';
 
 /**
  * Retrieve every franchised.
@@ -12,15 +15,11 @@ exports.getAllFranchised = async (req, res) => {
             'lastname firstname phone email status'
         ).exec();
         if (!allFranchised) {
-            res.status(404).json({
-                message: 'La liste de franchisés est vide',
-            });
+            res.status(404).json(errorsList.emptyList);
         }
         res.status(200).json(allFranchised);
     } catch (error) {
-        res.status(403).json({
-            message: "Impossible d'accéder à la liste de touts les franchisés",
-        });
+        res.status(403).json(errorsList.listError);
     }
 };
 
@@ -40,16 +39,12 @@ exports.getFranchisedDetail = async (req, res) => {
             !subscriptionResquestDetail ||
             subscriptionResquestDetail.status !== 'ACCEPTED'
         ) {
-            res.status(404).json({
-                message: "Ce franchisé n'existe pas",
-            });
+            res.status(404).json(errorsList.emptyList);
         }
 
         res.status(200).json(subscriptionResquestDetail);
     } catch (error) {
-        res.status(403).json({
-            message: "Impossible d'accéder au contenu du prospect",
-        });
+        res.status(403).json(errorsList.listError);
     }
 };
 
@@ -64,17 +59,11 @@ exports.deleteFranchised = async (req, res) => {
             req.params.id
         );
         if (!deletingFranchised || deletingFranchised.status !== 'ACCEPTED') {
-            res.status(404).json({
-                message:
-                    'Une erreur est survenue lors de la tentative de suppression',
-            });
+            res.status(404).json(errorsList.emptyList);
         }
         res.status(200).json(deletingFranchised);
     } catch (error) {
-        res.status(403).json({
-            message:
-                'Une erreur est survenue lors de la tentative de suppression',
-        });
+        res.status(403).json(errorsList.deleteError(entity));
     }
 };
 
@@ -92,15 +81,10 @@ exports.editFranchised = async (req, res) => {
             }
         );
         if (!updateFranchised || updateFranchised.status !== 'ACCEPTED') {
-            res.status(404).json({
-                message: 'Aucun résultat trouvé',
-            });
+            res.status(404).json(errorsList.emptyList);
         }
         res.status(200).json(updateFranchised);
     } catch (error) {
-        res.status(403).json({
-            message:
-                'Une erreur est survenue lors de la tentative de modification',
-        });
+        res.status(403).json(errorsList.updateError(entity));
     }
 };
