@@ -60,18 +60,54 @@ exports.updateReview = async (req, res) => {
 };
 
 /**
+ * Returns the deletion date to check if the item has been archived
+ * @param  {object}      req
+ * @param  {object}      res
+ * @return {Obj | null}  deletedDate    The date or Null
+ */
+this.getDeletedDate = async function (req, res) {
+    try 
+    {
+        const review = await Review.findOne({
+            _id: req.params.id,
+        }).exec();
+
+        return (review) ? review.deletedAt : null;
+    }
+    catch (err)
+    {
+        res.status(500).json(err.message);
+    }
+}
+
+/**
  * Archive a specific review
  * @param {Request} req
  * @param {Response} res
+
  */
 exports.deleteReview = async (req, res) => {
     try {
-        const deletedReview = await Review.findByIdAndDelete(req.params.id);
+        // check if the review has been deleted
+        const deletedDate = await this.getDeletedDate(req, res);
+        if (deletedDate) {
+            res.status(403).json(errors.alreadyDeleted(entity))
+            return;
+        }
 
-        if (!deletedReview) res.status(404).json(errors.deleteError);
+        // start the "deletion"
+        const archivedReview = await Review.findByIdAndUpdate(req.params.id, {
+            ...req.body,
+            deletedAt: Date.now(),
+        });
 
-        res.status(200).json(deletedReview);
+        if (archivedReview == null) res.status(404).json(errors.deleteError + errors.itemNotFound);
+
+        if (!archivedReview) res.status(400).json(errors.deleteError);
+
+        res.status(200).json(archivedReview);
+
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };

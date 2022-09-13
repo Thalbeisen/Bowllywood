@@ -5,9 +5,9 @@ const { Schema } = mongoose;
 const reviewSchema = new Schema(
     {
         userID: {
-            // type: Schema.Types.ObjectId,
-            type: Number,
-            // ref: 'User',
+            type: Schema.Types.ObjectId,
+            // type: Number,
+            ref: 'User',
             required: true,
         },
         franchisedID: {
