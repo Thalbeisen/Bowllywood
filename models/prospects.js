@@ -49,10 +49,9 @@ const prospectSchema = new Schema(
             default: 'PENDING',
             required: true,
         },
-        archive: {
-            type: Boolean,
-            required: true,
-            default: false,
+        deletedAt: {
+            type: Date,
+            required: false,
         },
     },
     {

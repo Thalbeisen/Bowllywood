@@ -89,8 +89,12 @@ exports.getAllProspectRequest = async (req, res) => {
  */
 exports.deleteProspectRequest = async (req, res) => {
     try {
-        const suppressSubsriptionRequest = await Prospect.findByIdAndDelete(
-            req.params.id
+        const suppressSubsriptionRequest = await Prospect.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+            }
         );
         if (!suppressSubsriptionRequest) {
             res.status(404).json({

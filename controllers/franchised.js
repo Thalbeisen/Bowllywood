@@ -55,8 +55,12 @@ exports.getFranchisedDetail = async (req, res) => {
  */
 exports.deleteFranchised = async (req, res) => {
     try {
-        const deletingFranchised = await Prospect.findByIdAndDelete(
-            req.params.id
+        const deletingFranchised = await Prospect.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+            }
         );
         if (!deletingFranchised || deletingFranchised.status !== 'ACCEPTED') {
             res.status(404).json(errorsList.emptyList);
