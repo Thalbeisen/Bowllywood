@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
-const prospectSchema = new Schema(
+const franchiseRequestSchema = new Schema(
     {
         lastname: {
             type: String,
@@ -18,6 +18,7 @@ const prospectSchema = new Schema(
         email: {
             type: String,
             required: true,
+            unique: true,
         },
         city: {
             type: String,
@@ -53,10 +54,17 @@ const prospectSchema = new Schema(
             type: Date,
             required: false,
         },
+        user_id: [
+            {
+                // Clé étrangère
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         timestamps: true,
     }
 );
 
-module.exports = mongoose.model('Prospect', prospectSchema);
+module.exports = mongoose.model('FranchiseRequest', franchiseRequestSchema);
