@@ -32,7 +32,13 @@ const mailValidateTemplate = fs.readFileSync(
     'utf8'
 );
 
+const mailValidateRenewTemplate = fs.readFileSync(
+    path.join(__dirname, '../assets/handlebarsTemplates/mailValidateRenew.hbs'),
+    'utf8'
+);
+
 const mailTemplate = handlebars.compile(mailValidateTemplate);
+const mailRenewTemplate = handlebars.compile(mailValidateRenewTemplate);
 
 // J'importe le  package uuidv4 pour générer un uuid aléatoire
 const { v4: uuidv4 } = require('uuid');
@@ -220,20 +226,76 @@ const sendEmailValidation = ({ _id, email }) => {
 exports.userValidate = async (req, res) => {
     try {
         const selectedUser = await User.findOne({ _id: req.params.id });
+        const tokenIsValid = await UserValidation.findOne({
+            userID: req.params.id,
+        });
         if (!selectedUser) {
             res.status(404).json({
                 message: "Aucun utilisateur trouvé pour l'id donné",
             });
+        }
+        if (!tokenIsValid) {
+            console.log('link invalide');
         }
         await User.updateOne({ _id: req.params.id }, { isVerified: true });
         res.status(200).json({
             message: 'Utilisateur activé',
         });
     } catch (err) {
-        res.status(500).json({
-            message:
-                'Une erreur est survenue, veuillez réessayer dans un instant',
+        console.log(err);
+    }
+};
+
+exports.validationTokenRenew = async (req, res) => {
+    const uniqueString = uuidv4() + req.params.id;
+    const userToRenew = await User.findOne({ _id: req.params.id });
+    const mailHtml = mailRenewTemplate({
+        url: `http://localhost:3000/users/${req.params.id}/validate/${uniqueString}`,
+    });
+    const mailContent = {
+        from: 'admin@bollywood.fr',
+        to: userToRenew.email,
+        subject: 'Bowllywood - Vérification de ton email',
+        attachment: [
+            {
+                filename: 'Bowllywood.png',
+                path: path.join(
+                    'https://img2.freepng.fr/20180417/vrq/kisspng-tiki-bar-cuisine-of-hawaii-hawaiian-mask-5ad5ad26034541.3539464215239529340134.jpg'
+                ),
+                cid: 'Bowllywood',
+            },
+        ],
+        html: mailHtml,
+    };
+    console.log(mailContent.attachment);
+    try {
+        const tokenIsValid = await UserValidation.findOne({
+            userID: req.params.id,
         });
+        if (!tokenIsValid) {
+            bcrypt.hash(uniqueString, saltRounds).then((hashedUniqueString) => {
+                const userValidation = new UserValidation({
+                    userID: req.params.id,
+                    uniqueString: hashedUniqueString,
+                });
+                userValidation.save().then(
+                    transporter
+                        .sendMail(mailContent)
+                        .then(() => {
+                            console.log('Mail renew envoyé');
+                        })
+                        .catch(() => {
+                            console.log(
+                                "Une erreur est survenue lors de l'envoi du mail"
+                            );
+                        })
+                );
+            });
+        } else {
+            console.log('Test');
+        }
+    } catch (err) {
+        console.log('Test2');
     }
 };
 
