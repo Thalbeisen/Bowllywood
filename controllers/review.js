@@ -14,6 +14,8 @@ exports.createReview = async (req, res) => {
     try {
         const newReview = await new Review({ ...req.body }).save();
 
+        if (!newReview) res.status(404).json(errors.createError(entity));
+
         res.status(201).json(newReview);
     } catch (err) {
         res.status(400).json(errors.createError(entity));

@@ -1,5 +1,4 @@
 const Reserv = require('../models/reserv');
-const User = require('../models/users');
 const errors = require('../conf/errors');
 
 const entity = 'RESERV';
@@ -10,22 +9,14 @@ const entity = 'RESERV';
  * @param  {Response} res         Use res.status 201 & 500.
  *
  * Une fois créé, redirection vers page confirmation
+ *
  */
 exports.createReserv = async (req, res) => {
     try {
-        // get le user depuis l'auth
-        let userId = '';
-        if (req.body?.id) {
-            userId = await User.findOne({
-                _id: req.body.id,
-            });
-        }
-
         const newReserv = await new Reserv({
             ...req.body,
-            userID: userId,
         }).save();
-        if (newReserv == null) res.status(404).json(errors.createError(entity));
+        if (!newReserv) res.status(404).json(errors.createError(entity));
 
         res.status(201).json(newReserv);
     } catch (err) {
@@ -133,7 +124,7 @@ exports.deleteReserv = async (req, res) => {
         if (archivedReserv == null)
             res.status(404).json(errors.deleteError + errors.itemNotFound);
 
-        if (!archivedReserv) res.status(400).json(errors.deleteError);
+        if (!archivedReserv) res.status(404).json(errors.deleteError);
 
         res.status(200).json(archivedReserv);
     } catch (err) {

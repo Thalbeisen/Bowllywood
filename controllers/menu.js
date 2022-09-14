@@ -1,4 +1,26 @@
 const Menu = require('../models/menu');
+const errors = require('../conf/errors');
+
+const entity = 'MENU';
+
+/**
+ * Create a meal from the menu list (a bowl).
+ * @param  {Request} req          Create the meal with the req.body.
+ * @param  {Response} res          Use res.status 201 & 500.
+ *
+ * Une fois créé, redirection vers sa page de détails ?
+ */
+exports.createMeal = async (req, res) => {
+    try {
+        const newMeal = await new Menu({ ...req.body }).save();
+
+        if (!newMeal) res.status(404).json(errors.createError(entity));
+
+        res.status(201).json(newMeal);
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+};
 
 /**
  * Get all the meals of the menu.
@@ -7,6 +29,9 @@ const Menu = require('../models/menu');
 exports.getAllMenu = async (req, res) => {
     try {
         const meals = await Menu.find({});
+
+        if (!meals) res.status(404).json(errors.emptyList);
+
         res.status(200).json(meals);
     } catch (err) {
         res.status(500).json(err.message);
@@ -20,26 +45,15 @@ exports.getAllMenu = async (req, res) => {
  */
 exports.getOneMeal = async (req, res) => {
     try {
-        const meal = await Menu.findOne({ _id: req.params.id });
-        // (traitement)
-        res.status(200).json(meal);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-};
+        const mealDetails = await Menu.findOne({ _id: req.params.id });
 
-/**
- * Create a meal from the menu list (a bowl).
- * @param  {Request} req          Create the meal with the req.body.
- * @param  {Response} res          Use res.status 201 & 500.
- *
- * Une fois créé, redirection vers sa page de détails ?
- */
-exports.createMeal = async (req, res) => {
-    try {
-        const newMeal = await new Menu({ ...req.body }).save();
-        // 'Créé ! Rendez-vous sur mongodb'
-        res.status(201).json(newMeal);
+        if (!mealDetails) {
+            res.status(404).json({
+                message: errors.emptyData(entity),
+            });
+        }
+
+        res.status(200).json(mealDetails);
     } catch (err) {
         res.status(500).json(err.message);
     }
@@ -57,6 +71,9 @@ exports.updateMeal = async (req, res) => {
         const updatedMeal = await Menu.findOne({ _id: req.params.id }).update({
             ...req.body,
         });
+
+        if (!updatedMeal) res.status(404).json(errors.updateError);
+
         res.status(200).json(updatedMeal);
     } catch (err) {
         res.status(500).json(err.message);
@@ -70,7 +87,12 @@ exports.updateMeal = async (req, res) => {
  */
 exports.deleteMeal = async (req, res) => {
     try {
-        await Menu.findByIdAndDelete({ _id: req.params.id });
+        const deletedMeal = await Menu.findByIdAndDelete({
+            _id: req.params.id,
+        });
+
+        if (!deletedMeal) res.status(404).json(errors.deleteError);
+
         res.status(200).json('Suppression réussie');
     } catch (err) {
         res.status(500).json(err.message);

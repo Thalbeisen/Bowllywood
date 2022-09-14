@@ -1,33 +1,7 @@
 const Stock = require('../models/stock');
+const errors = require('../conf/errors');
 
-/**
- * get all the stock product
- * @param  {Response} res          Use the 200 & 500 status of 'res'.
- */
-exports.getAllstock = async (req, res) => {
-    try {
-        const stocks = await Stock.find({});
-        res.status(200).json(stocks);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-};
-
-/**
- * get one product from the stocks
- * @param  {Request} req Use the req.params.id to get the product we need to return.
- * @param  {Response} res Use the 201 status.
- */
-exports.getOneStock = async (req, res) => {
-    try {
-        const stock = await Stock.findOne({ _id: req.params.id });
-
-        // throw
-        res.status(201).json(stock);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-};
+const entity = 'STOCK';
 
 /**
  * Create a new product to the stock list (an ingredient or transformed product etc.)
@@ -49,6 +23,47 @@ exports.createStock = async (req, res) => {
 
         // create the stock
         const stock = await new Stock({ ...req.body }).save();
+
+        if (!stock) res.status(404).json(errors.createError(entity));
+
+        res.status(201).json(stock);
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+};
+
+/**
+ * get all the stock product
+ * @param  {Response} res          Use the 200 & 500 status of 'res'.
+ */
+exports.getAllstock = async (req, res) => {
+    try {
+        const stocks = await Stock.find({});
+
+        if (!stocks) res.status(404).json(errors.emptyList);
+
+        res.status(200).json(stocks);
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+};
+
+/**
+ * get one product from the stocks
+ * @param  {Request} req Use the req.params.id to get the product we need to return.
+ * @param  {Response} res Use the 201 status.
+ */
+exports.getOneStock = async (req, res) => {
+    try {
+        const stock = await Stock.findOne({ _id: req.params.id });
+
+        if (!stock) {
+            res.status(404).json({
+                message: errors.emptyData(entity),
+            });
+        }
+
+        // throw
         res.status(201).json(stock);
     } catch (err) {
         res.status(500).json(err.message);
@@ -80,6 +95,8 @@ exports.updateStock = async (req, res) => {
             ...req.body,
         });
 
+        if (!update) res.status(404).json(errors.updateError);
+
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
         res.status(201).json(update);
     } catch (err) {
@@ -106,8 +123,12 @@ exports.createNewDelivery = (req, res) => {
  */
 exports.deleteStock = async (req, res) => {
     try {
-        /* 62c6ccc5777b4642186261d7 */
-        await Stock.findByIdAndDelete({ _id: req.params.id });
+        const deletedDate = await Stock.findByIdAndDelete({
+            _id: req.params.id,
+        });
+
+        if (!deletedDate) res.status(400).json(errors.deleteError);
+
         // une fois supprimé, retour sur la liste avec msg toast ?
         res.status(200).json('Suppression réussie');
     } catch (err) {
