@@ -12,8 +12,8 @@ const getEntityDesc = (entity) => {
         case 'USER':
             entityDesc = 'de votre compte ';
             break;
-        case 'PROSPECT':
-            entityDesc = 'du prospect ';
+        case 'FRANCHISE_REQUEST':
+            entityDesc = 'de votre demande de franchise ';
             break;
         case 'RESERV':
             entityDesc = 'de la réservation ';
@@ -61,6 +61,12 @@ const errorsList = {
     emptyList: "Aucune données n'a été trouvé.",
 
     listError: "Impossible d'accéder à la liste demandée.",
+
+    alreadyDeleted(entity) {
+        errorEntity = getEntityDesc(entity);
+
+        return `La suppression ${errorEntity}a déjà été effectué.`;
+    },
 };
 
 module.exports = errorsList;
