@@ -56,11 +56,11 @@ const userSchema = new Schema(
             },
         ],
 
-        franchiseRequests: [
+        franchiseContracts: [
             {
                 // Clé étrangère
                 type: Schema.Types.ObjectId,
-                ref: 'Prospect',
+                ref: 'FranchiseRequest',
             },
         ],
     },
