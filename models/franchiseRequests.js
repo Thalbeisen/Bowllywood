@@ -3,22 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const franchiseRequestSchema = new Schema(
     {
-        lastname: {
-            type: String,
-            required: true,
-        },
-        firstname: {
-            type: String,
-            required: true,
-        },
         phone: {
             type: String,
             required: true,
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
         },
         city: {
             type: String,
@@ -54,13 +41,11 @@ const franchiseRequestSchema = new Schema(
             type: Date,
             required: false,
         },
-        user_id: [
-            {
-                // Clé étrangère
-                type: Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
+        user_id: {
+            // Clé étrangère
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     {
         timestamps: true,
