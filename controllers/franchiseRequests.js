@@ -55,7 +55,6 @@ exports.getAllFranchiseRequests = async (req, res) => {
         if (!allFranchiseResquests) {
             res.status(404).json(errors.emptyList);
         }
-        console.log('PAS LA BONNE METHODE');
         res.status(200).json(allFranchiseResquests);
     } catch (error) {
         res.status(403).json(errors.listError);
@@ -72,7 +71,6 @@ exports.getAllAcceptedFranchiseRequests = async (req, res) => {
         const allAcceptedFranchiseRequests = await FranchiseRequest.find({
             status: 'ACCEPTED',
         }).exec();
-        console.log(allAcceptedFranchiseRequests);
         if (!allAcceptedFranchiseRequests) {
             res.status(404).json(errors.emptyList);
         }
@@ -94,7 +92,8 @@ exports.archiveFranchiseRequest = async (req, res) => {
             {
                 ...req.body,
                 deletedAt: Date.now(),
-            }
+            },
+            { returnDocument: 'after' }
         );
         if (!archiveRequest) {
             res.status(404).json(errors.emptyList);
