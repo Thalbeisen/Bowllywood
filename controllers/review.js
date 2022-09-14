@@ -95,7 +95,6 @@ exports.deleteReview = async (req, res) => {
 
         // start the "deletion"
         const archivedReview = await Review.findByIdAndUpdate(req.params.id, {
-            ...req.body,
             deletedAt: Date.now(),
         });
 

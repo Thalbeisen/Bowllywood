@@ -18,7 +18,7 @@ exports.createMeal = async (req, res) => {
 
         res.status(201).json(newMeal);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -70,6 +70,7 @@ exports.updateMeal = async (req, res) => {
     try {
         const updatedMeal = await Menu.findOne({ _id: req.params.id }).update({
             ...req.body,
+            updatedBy: req.body.userID,
         });
 
         if (!updatedMeal) res.status(404).json(errors.updateError);

@@ -9,7 +9,6 @@ const entity = 'RESERV';
  * @param  {Response} res         Use res.status 201 & 500.
  *
  * Une fois créé, redirection vers page confirmation
- *
  */
 exports.createReserv = async (req, res) => {
     try {
@@ -31,7 +30,7 @@ exports.createReserv = async (req, res) => {
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        const reservations = await Reserv.find({});
+        const reservations = await Reserv.find({ deletedAt: '' });
 
         if (!reservations) res.status(404).json(errors.emptyList);
 
@@ -117,7 +116,6 @@ exports.deleteReserv = async (req, res) => {
 
         // start the "deletion"
         const archivedReserv = await Reserv.findByIdAndUpdate(req.params.id, {
-            ...req.body,
             deletedAt: Date.now(),
         });
 
