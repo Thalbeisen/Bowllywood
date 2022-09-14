@@ -55,7 +55,28 @@ exports.getAllFranchiseRequests = async (req, res) => {
         if (!allFranchiseResquests) {
             res.status(404).json(errors.emptyList);
         }
+        console.log('PAS LA BONNE METHODE');
         res.status(200).json(allFranchiseResquests);
+    } catch (error) {
+        res.status(403).json(errors.listError);
+    }
+};
+
+/**
+ * Retrieve every accepted franchise requests.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.getAllAcceptedFranchiseRequests = async (req, res) => {
+    try {
+        const allAcceptedFranchiseRequests = await FranchiseRequest.find({
+            status: 'ACCEPTED',
+        }).exec();
+        console.log(allAcceptedFranchiseRequests);
+        if (!allAcceptedFranchiseRequests) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(allAcceptedFranchiseRequests);
     } catch (error) {
         res.status(403).json(errors.listError);
     }
