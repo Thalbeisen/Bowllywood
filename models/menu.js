@@ -34,6 +34,15 @@ const menuSchema = new Schema(
             type: String,
             required: true,
         },
+        createdBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+        lastUpdateBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     {
         timestamps: true,

@@ -12,7 +12,14 @@ const entity = 'MENU';
  */
 exports.createMeal = async (req, res) => {
     try {
-        const newMeal = await new Menu({ ...req.body }).save();
+        const menuObj = {
+            ...req.body,
+            createdBy: req.body.userID,
+        };
+        delete menuObj.userID;
+
+        console.log(menuObj);
+        const newMeal = await new Menu(menuObj).save();
 
         if (!newMeal) res.status(404).json(errors.createError(entity));
 
@@ -34,7 +41,7 @@ exports.getAllMenu = async (req, res) => {
 
         res.status(200).json(meals);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -45,7 +52,7 @@ exports.getAllMenu = async (req, res) => {
  */
 exports.getOneMeal = async (req, res) => {
     try {
-        const mealDetails = await Menu.findOne({ _id: req.params.id });
+        const mealDetails = await Menu.findOne({ id: req.params.id });
 
         if (!mealDetails) {
             res.status(404).json({
@@ -55,7 +62,7 @@ exports.getOneMeal = async (req, res) => {
 
         res.status(200).json(mealDetails);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -68,22 +75,28 @@ exports.getOneMeal = async (req, res) => {
  */
 exports.updateMeal = async (req, res) => {
     try {
-        const updatedMeal = await Menu.findOne({ _id: req.params.id }).update({
+        const menuObj = {
             ...req.body,
-            updatedBy: req.body.userID,
-        });
+            lastUpdateBy: req.body.userID,
+        };
+        delete menuObj.userID;
+
+        const updatedMeal = await Menu.findByIdAndUpdate(
+            req.params.id,
+            menuObj
+        );
 
         if (!updatedMeal) res.status(404).json(errors.updateError);
 
         res.status(200).json(updatedMeal);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
 /**
  * Delete a meal from the menu.
- * @param  {Request} req          Get the meal to delete with req.params.id.
+ * @param  {Request}  req          Get the meal to delete with req.params.id.
  * @param  {Response} res          Use res.status 200 & 500.
  */
 exports.deleteMeal = async (req, res) => {
@@ -96,6 +109,6 @@ exports.deleteMeal = async (req, res) => {
 
         res.status(200).json('Suppression réussie');
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };

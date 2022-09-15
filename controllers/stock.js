@@ -21,14 +21,20 @@ exports.createStock = async (req, res) => {
         else if (quantity > quantityLimit) req.body.status = 'EN_STOCK';
         else req.body.status = 'EN_STOCK';
 
+        const stockObj = {
+            ...req.body,
+            createdBy: req.body.userID,
+        };
+        delete req.body.userID;
+
         // create the stock
-        const stock = await new Stock({ ...req.body }).save();
+        const stock = await new Stock(stockObj).save();
 
         if (!stock) res.status(404).json(errors.createError(entity));
 
         res.status(201).json(stock);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -44,7 +50,7 @@ exports.getAllstock = async (req, res) => {
 
         res.status(200).json(stocks);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -55,7 +61,7 @@ exports.getAllstock = async (req, res) => {
  */
 exports.getOneStock = async (req, res) => {
     try {
-        const stock = await Stock.findOne({ _id: req.params.id });
+        const stock = await Stock.findOne({ id: req.params.id });
 
         if (!stock) {
             res.status(404).json({
@@ -66,7 +72,7 @@ exports.getOneStock = async (req, res) => {
         // throw
         res.status(201).json(stock);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -90,18 +96,25 @@ exports.updateStock = async (req, res) => {
         else if (quantity > quantityLimit) req.body.status = 'EN_STOCK';
         else req.body.status = 'EN_STOCK';
 
-        // get the stock & update it
-        const update = await Stock.findOne({ _id: req.params.id }).update({
+        const stockObj = {
             ...req.body,
-        });
+            lastUpdateBy: req.body.userID,
+        };
+        delete req.body.userID;
 
-        if (!update) res.status(404).json(errors.updateError);
+        // get the stock & update it
+        const updatedStock = await Stock.findByIdAndUpdate(
+            req.params.id,
+            stockObj
+        );
+
+        if (!updatedStock) res.status(404).json(errors.updateError);
 
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
-        res.status(201).json(update);
+        res.status(201).json(updatedStock);
     } catch (err) {
         //
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -132,6 +145,6 @@ exports.deleteStock = async (req, res) => {
         // une fois supprimé, retour sur la liste avec msg toast ?
         res.status(200).json('Suppression réussie');
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };

@@ -47,7 +47,7 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        const reservDetails = await Reserv.findOne({ _id: req.params.id });
+        const reservDetails = await Reserv.findOne({ id: req.params.id });
 
         if (!reservDetails) {
             res.status(404).json({
@@ -88,7 +88,7 @@ exports.updateReserv = async (req, res) => {
  * @param  {object}      res
  * @return {Obj | null}  deletedDate    The date or Null
  */
-this.getDeletedDate = async (req, res) => {
+this.getDeletedDate = async function (req, res) {
     try {
         const reservation = await Reserv.findOne({
             _id: req.params.id,
