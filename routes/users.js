@@ -26,4 +26,6 @@ router.post('/refresh', userController.refreshUserToken);
 
 router.delete('/:id', userController.userDelete);
 
+router.get('/my-franchise-requests/:id', userController.userFranchiseRequests);
+
 module.exports = router;
