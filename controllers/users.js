@@ -357,7 +357,7 @@ exports.userFranchiseRequests = async (req, res) => {
     try {
         const selectedUser = await User.findOne({
             _id: req.params.id,
-        }).populate('franchiseContracts', 'status');
+        }).populate('franchiseContracts');
 
         if (!selectedUser) {
             res.status(404).json({
