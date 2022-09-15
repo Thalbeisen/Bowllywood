@@ -17,6 +17,13 @@ exports.addFranchiseRequest = async (req, res) => {
         });
         const subscriptionRequest = await fanchiseRequest.save();
 
+        const user = await User.findOne({
+            _id: req.body.userID,
+        });
+        // eslint-disable-next-line no-underscore-dangle
+        user.franchiseContracts.push(subscriptionRequest._id);
+        user.save();
+
         res.status(201).json(subscriptionRequest);
     } catch (error) {
         res.status(400).json(errors.createError(entity));
@@ -121,15 +128,6 @@ exports.editFranchiseRequest = async (req, res) => {
 
         if (!editRequestStatus) {
             res.status(404).json(errors.updateError(entity));
-        }
-
-        if (editRequestStatus.status === 'ACCEPTED') {
-            const user = await User.findOne({
-                _id: req.body.userID,
-            });
-            // eslint-disable-next-line no-underscore-dangle
-            user.franchiseContracts.push(editRequestStatus._id);
-            user.save();
         }
 
         res.status(200).json(editRequestStatus);
