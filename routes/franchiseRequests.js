@@ -84,7 +84,7 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Accepted'
+ *                 $ref: '#/components/schemas/FranchiseRequest'
  * /franchiseRequests/delete/{id}:
  *   patch:
  *     summary: Archive a franchise request.
