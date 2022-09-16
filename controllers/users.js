@@ -40,8 +40,6 @@ const { v4: uuidv4 } = require('uuid');
 // J'importe mon modèle users
 const User = require('../models/users');
 
-const UserValidation = require('../models/userValidation');
-
 // Je déclare un transporter pour pouvoir envoyer les mails
 const transporter = nodemailer.createTransport({
     service: 'Mailtrap',
@@ -168,7 +166,6 @@ exports.userNew = async (req, res) => {
             process.env.VALIDATE_TOKEN_SECRET,
             '2m'
         );
-        console.log(uniqueString);
         /* eslint-disable no-use-before-define */
         sendEmailValidation(user, validationToken);
         const userObject = JSON.parse(JSON.stringify(createdUser));
@@ -182,7 +179,7 @@ exports.userNew = async (req, res) => {
     }
 };
 
-const sendEmailValidation = async (user, validationToken) => {
+const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
         url: `http://localhost:3000/users/validate/${validationToken}`,
     });
@@ -201,19 +198,12 @@ const sendEmailValidation = async (user, validationToken) => {
         ],
         html: mailHtml,
     };
-    console.log(mailContent.attachment);
-    await transporter
-        .sendMail(mailContent)
-        .catch((err) => {
-            console.log(err);
-        })
-        .catch(() => {
-            console.log(
-                'Une erreur est survenue lors du cryptage, merci de réessayer'
-            );
+    await transporter.sendMail(mailContent).catch((err) => {
+        res.status().json({
+            message: err,
         });
+    });
 };
-
 exports.userValidate = async (req, res) => {
     try {
         const providedToken = req.params.validationToken;
@@ -222,32 +212,21 @@ exports.userValidate = async (req, res) => {
             providedToken,
             process.env.VALIDATE_TOKEN_SECRET
         );
-        console.log(
-            `Je décode ce token d'activation ${JSON.stringify(decodedToken)}`
-        );
-        const storedToken = await UserValidation.findOne(
-            {
-                uniqueString: req.params.validationToken,
-                // _id: '632326dd94e5e8b39dd1f877',
-            },
-            'uniqueString'
-        );
-        console.log(`Provided token ${providedToken}`);
-        console.log(`Stored token ${storedToken.uniqueString}`);
-        if (providedToken === storedToken.uniqueString) {
-            console.log('hello');
+        const userToValidate = await User.findOne({ _id: decodedToken.id });
+        if (decodedToken.token === userToValidate.userValidationToken) {
             await User.updateOne(
-                { userValidation: String(storedToken.uniqueString) },
+                { _id: decodedToken.id },
                 { isVerified: true }
             );
+            res.status(200).json({
+                message: 'Compte validé',
+            });
         }
     } catch (err) {
         if (err.message === 'jwt expired') {
             const providedToken = req.params.validationToken;
             const decodedToken = jwt.decode(providedToken);
-            console.log(decodedToken);
             const user = await User.findOne({ _id: decodedToken.id });
-            console.log(`hello ${user}`);
             const validationToken = generateToken(
                 { id: user._id, token: user.userValidationToken },
                 process.env.VALIDATE_TOKEN_SECRET,
@@ -271,7 +250,6 @@ exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        console.log(req.body);
         if (!user) {
             const error = new Error(
                 'Identifiant/Mot de passe incorrect ou compte inexistant'
@@ -311,9 +289,7 @@ exports.userLogin = async (req, res) => {
             refreshToken,
         });
     } catch (err) {
-        console.log('nlanlanla');
         const code = err.code ?? 500;
-        console.log(err.message);
         res.status(code).json({
             message: err.message,
         });
