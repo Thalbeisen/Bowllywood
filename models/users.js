@@ -52,14 +52,6 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
-
-        franchiseRequests: [
-            {
-                // Clé étrangère
-                type: Schema.Types.ObjectId,
-                ref: 'Prospect',
-            },
-        ],
     },
 
     {
