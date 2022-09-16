@@ -8,7 +8,7 @@ const auth = require('../middlewares/auth');
 
 const { permit } = require('../middlewares/permissions');
 
-router.get('/', auth, userController.usersList);
+router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
 
 router.post('/add', userController.userNew);
 

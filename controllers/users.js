@@ -240,6 +240,10 @@ exports.userValidate = async (req, res) => {
             res.status(200).json({
                 message: 'un nouveau mail a été envoyé',
             });
+        } else {
+            res.status(500).json({
+                message: 'Une erreur inattendue est survenue',
+            });
         }
     }
 };
@@ -272,7 +276,7 @@ exports.userLogin = async (req, res) => {
             const error = new Error(
                 'Compte non validé, veuillez valider votre compte et réessayer'
             );
-            error.code = 418;
+            error.code = 403;
             throw error;
         }
         /* eslint-disable no-underscore-dangle */
