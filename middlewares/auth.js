@@ -13,8 +13,6 @@ const auth = async (req, res, next) => {
     console.log(token);
     try {
         const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        const userRole = user.roleID;
-        console.log(`hello ${userRole}`);
         if (!user) {
             throw new Error();
         }

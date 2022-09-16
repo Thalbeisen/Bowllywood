@@ -6,15 +6,13 @@ const userController = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
-const permsList = require('../conf/perms');
-
-const checkUserPerms = require('../middlewares/checkUserPerms');
+const { ceoAUTH } = require('../middlewares/checkUserPerms');
 
 router.get('/', auth, userController.usersList);
 
 router.post('/add', userController.userNew);
 
-router.get('/:id/validate/:uniqueString', userController.userValidate);
+router.get('/validate/:validationToken', userController.userValidate);
 
 router.get('/:id', auth, userController.userDetails);
 
@@ -24,7 +22,7 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', userController.userDelete);
+router.delete('/:id', auth, ceoAUTH, userController.userDelete);
 
 router.get('/my-franchise-requests/:id', userController.userFranchiseRequests);
 
