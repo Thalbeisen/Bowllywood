@@ -25,7 +25,6 @@ const reviewSchema = new Schema(
             type: String,
             minLength: 2,
             maxLength: 500,
-            required: true,
         },
         deletedAt: {
             type: Date,

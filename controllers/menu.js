@@ -14,7 +14,7 @@ exports.createMeal = async (req, res) => {
     try {
         const menuObj = {
             ...req.body,
-            createdBy: req.body.userID,
+            createdBy: '63233dea610f1f4b73a99a8d', // req.body.userID,
         };
         delete menuObj.userID;
 
@@ -75,7 +75,7 @@ exports.updateMeal = async (req, res) => {
     try {
         const menuObj = {
             ...req.body,
-            lastUpdateBy: req.body.userID,
+            lastUpdateBy: '63233dea610f1f4b73a99a8d', // req.body.userID,
         };
         delete menuObj.userID;
 
@@ -99,9 +99,7 @@ exports.updateMeal = async (req, res) => {
  */
 exports.deleteMeal = async (req, res) => {
     try {
-        const deletedMeal = await Menu.findByIdAndDelete({
-            _id: req.params.id,
-        });
+        const deletedMeal = await Menu.findByIdAndDelete(req.params.id);
 
         if (!deletedMeal) res.status(404).json(errors.deleteError);
 

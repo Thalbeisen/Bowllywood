@@ -18,7 +18,7 @@ exports.createReview = async (req, res) => {
 
         res.status(201).json(newReview);
     } catch (err) {
-        res.status(400).json(errors.createError(entity));
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -69,12 +69,12 @@ exports.updateReview = async (req, res) => {
 this.getDeletedDate = async function (req, res) {
     try {
         const review = await Review.findOne({
-            _id: req.params.id,
+            id: req.params.id,
         }).exec();
 
         return review ? review.deletedAt : null;
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(`gdd ${errors.errorOccured}${err.message}`);
     }
 };
 
@@ -105,6 +105,6 @@ exports.deleteReview = async (req, res) => {
 
         res.status(200).json(archivedReview);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(500).json(`dr ${errors.errorOccured}${err.message}`);
     }
 };
