@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Bowllywood - Validation de ton compte</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Skranji:wght@700');
+            .mailContent {
+                font-family: 'Skranji', cursive;
+                text-align: center;
+                align-items: center;
+            }
+            .validateButton {
+                background-color: #A3F5B8;
+                border-radius: 7px;
+                border: 2px solid #91D5A3;
+                display: inline-block;
+                cursor: pointer;
+                font-family: 'Skranji', cursive;
+                font-size: 17px;
+                color: #000000;
+                padding: 16px 31px;
+                text-shadow: 0px 1px 0px #91D5A3;
+                text-decoration: none;
+            }
+            .validateButton:hover {
+                background-color: #5CBF2A;
+            }
+            .validateButton:active {
+                position: relative;
+                top: 1px;
+            }
+            .warning {
+                color: red;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mailContent">
+            <img src="https://img2.freepng.fr/20180417/vrq/kisspng-tiki-bar-cuisine-of-hawaii-hawaiian-mask-5ad5ad26034541.3539464215239529340134.jpg" style="height: 25%; width: 20%;" alt="logo tiki bowllywood"/>
+            <h1>Nouveau lien pour valider ton compte Bowllywood!</h1>
+            <p class=>Tu viens de nous demander un nouveau lien de validation, tu peux y accéder ici!</p>
+                <p class="warning">Attention, ce lien n'est valide que 30 minutes!</p>
+                <div>
+                    {{link "Activer mon compte" url}}
+                </div>
+        </div>
+    </body>
+</html>
