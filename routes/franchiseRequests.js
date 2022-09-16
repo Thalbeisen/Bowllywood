@@ -10,6 +10,10 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *   post:
  *     summary: Create a franchise request.
  *     tags: [FranchiseRequest]
+ *     requestBody:
+ *      content:
+ *          schema:
+ *              $ref: '#/components/schemas/'
  *     responses:
  *       201:
  *         description: Create a franchise request.
@@ -109,7 +113,28 @@ router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
  *         user_id: d24g6f4r5
  *         updatedAt: 2022-09-13T13:41:27.772Z
  *         createdAt: 2022-09-13T13:41:27.772Z
+ * /franchiseRequests/{id}:
+ *   get:
+ *     summary: Retrieve every franchise requests.
+ *     tags: [FranchiseRequest]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The franchise request id.
+ *     responses:
+ *       200:
+ *         description: The list of all the franchise requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/'
  */
+
 router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
 
 /**
