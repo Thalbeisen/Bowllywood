@@ -48,13 +48,11 @@ const userSchema = new Schema(
             default: false,
         },
 
-        roles: [
-            {
-                // Clé étrangère rôles
-                type: Schema.Types.ObjectId,
-                ref: 'Role',
-            },
-        ],
+        userValidation: {
+            // Clé étrangère
+            type: Schema.Types.ObjectId,
+            ref: 'UserValidation',
+        },
 
         franchiseRequests: [
             {

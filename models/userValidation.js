@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userValidationSchema = new Schema({
-    userID: {
-        type: String,
-        required: true,
-    },
     uniqueString: {
         type: String,
         required: true,
@@ -14,7 +10,8 @@ const userValidationSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 120,
+        // Penser à modifier le temps d'expiration
+        expires: 600,
     },
 });
 

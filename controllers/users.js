@@ -32,13 +32,7 @@ const mailValidateTemplate = fs.readFileSync(
     'utf8'
 );
 
-const mailValidateRenewTemplate = fs.readFileSync(
-    path.join(__dirname, '../assets/handlebarsTemplates/mailValidateRenew.hbs'),
-    'utf8'
-);
-
 const mailTemplate = handlebars.compile(mailValidateTemplate);
-const mailRenewTemplate = handlebars.compile(mailValidateRenewTemplate);
 
 // J'importe le  package uuidv4 pour générer un uuid aléatoire
 const { v4: uuidv4 } = require('uuid');
@@ -161,11 +155,27 @@ exports.userNew = async (req, res) => {
     try {
         const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
         const user = new User({ ...req.body, password: passwordHash });
-        const createdUser = user.save().then((result) => {
-            /* eslint-disable no-use-before-define */
-            sendEmailValidation(result, res);
+        const createdUser = await user.save();
+        const uniqueString = uuidv4();
+        const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
+        /* eslint-disable no-underscore-dangle */
+        const validationToken = generateToken(
+            { id: user._id, token: hashedUniqueString },
+            // { token: hashedUniqueString },
+            process.env.VALIDATE_TOKEN_SECRET,
+            '10m'
+        );
+        console.log(hashedUniqueString);
+        const userValidation = new UserValidation({
+            uniqueString: validationToken,
         });
-        const userObject = JSON.parse(JSON.stringify(createdUser));
+        const userValidationObject = await userValidation.save();
+        // eslint-disable-next-line no-underscore-dangle
+        createdUser.userValidation = userValidationObject.uniqueString;
+        const editUser = await createdUser.save();
+        /* eslint-disable no-use-before-define */
+        sendEmailValidation(user, validationToken);
+        const userObject = JSON.parse(JSON.stringify(editUser));
         delete userObject.password;
         res.status(201).json(userObject);
     } catch (err) {
@@ -175,14 +185,13 @@ exports.userNew = async (req, res) => {
     }
 };
 
-const sendEmailValidation = ({ _id, email }) => {
-    const uniqueString = uuidv4() + _id;
+const sendEmailValidation = async (user, validationToken) => {
     const mailHtml = mailTemplate({
-        url: `http://localhost:3000/users/${_id}/validate/${uniqueString}`,
+        url: `http://localhost:3000/users/validate/${validationToken}`,
     });
     const mailContent = {
         from: 'admin@bollywood.fr',
-        to: email,
+        to: user.email,
         subject: 'Bowllywood - Vérification de ton email',
         attachment: [
             {
@@ -196,25 +205,10 @@ const sendEmailValidation = ({ _id, email }) => {
         html: mailHtml,
     };
     console.log(mailContent.attachment);
-    bcrypt
-        .hash(uniqueString, saltRounds)
-        .then((hashedUniqueString) => {
-            const userValidation = new UserValidation({
-                userID: _id,
-                uniqueString: hashedUniqueString,
-            });
-            userValidation.save().then(
-                transporter
-                    .sendMail(mailContent)
-                    .then(() => {
-                        console.log("En cours d'envoi");
-                    })
-                    .catch(() => {
-                        console.log(
-                            "Une erreur est survenue lors de l'envoi du mail"
-                        );
-                    })
-            );
+    await transporter
+        .sendMail(mailContent)
+        .catch(() => {
+            console.log("Une erreur est survenue lors de l'envoi du mail");
         })
         .catch(() => {
             console.log(
@@ -223,79 +217,82 @@ const sendEmailValidation = ({ _id, email }) => {
         });
 };
 
+// const userValidate = (user) => {
+//     console.log(user);
+//     try {
+//         if (!user) {
+//             res.status(404).json({
+//                 message: "Aucun utilisateur trouvé pour l'id donné",
+//             });
+//         }
+//         if (!tokenIsValid) {
+//             console.log('link invalide');
+//         }
+//         User.updateOne({ _id: req.params.id }, { isVerified: true });
+//         res.status(200).json({
+//             message: 'Utilisateur activé',
+//         });
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
+
 exports.userValidate = async (req, res) => {
     try {
-        const selectedUser = await User.findOne({ _id: req.params.id });
-        const tokenIsValid = await UserValidation.findOne({
-            userID: req.params.id,
-        });
-        if (!selectedUser) {
-            res.status(404).json({
-                message: "Aucun utilisateur trouvé pour l'id donné",
-            });
+        const providedToken = req.params.validationToken;
+        // console.log(`Tu me fournis ce token ${providedToken}`);
+        const decodedToken = await jwt.verify(
+            providedToken,
+            process.env.VALIDATE_TOKEN_SECRET
+        );
+        console.log(
+            `Je décode ce token d'activation ${JSON.stringify(decodedToken)}`
+        );
+        const storedToken = await UserValidation.findOne(
+            {
+                uniqueString: req.params.validationToken,
+                // _id: '632326dd94e5e8b39dd1f877',
+            },
+            'uniqueString'
+        );
+        // const decodedStoredToken = await jwt.verify(
+        //     storedToken.uniqueString,
+        //     process.env.VALIDATE_TOKEN_SECRET
+        // );
+        // console.log(`J'ai ce token dans la base ${decodedStoredToken.token}`);
+        // const userToBeValidated = await User.findOne({
+        //     userValidation: decodedStoredToken.id
+        // })
+        console.log(`Provided token ${providedToken}`);
+        console.log(`Stored token ${storedToken.uniqueString}`);
+        if (providedToken === storedToken.uniqueString) {
+            console.log('hello');
+            User.updateOne(
+                { userValidation: storedToken.uniqueString },
+                { isVerified: true }
+            );
         }
-        if (!tokenIsValid) {
-            console.log('link invalide');
-        }
-        await User.updateOne({ _id: req.params.id }, { isVerified: true });
-        res.status(200).json({
-            message: 'Utilisateur activé',
-        });
+        // console.log(req.params);
+        // if (!decodedToken) {
+        //     res.status(401).json({
+        //         message: 'Accès interdit, token invalide',
+        //     });
+        // }
+        // const userToValidate = await userValidation.findOne({
+        //     userID: decodedToken.id,
+        // });
+        // const decodedUserToken = await jwt.verify(
+        //     userToValidate.uniqueString,
+        //     process.env.VALIDATE_TOKEN_SECRET
+        // );
+        // console.log(`tokenalacon ${decodedUserToken.uniqueString}`);
+        // console.log('Tout semble ok, on peut continuer');
+        // User.updateOne({ _id: decodedToken._id }, { isVerified: true });
+        // res.status(200).json({
+        //     message: 'Utilisateur activé',
+        // });
     } catch (err) {
         console.log(err);
-    }
-};
-
-exports.validationTokenRenew = async (req, res) => {
-    const uniqueString = uuidv4() + req.params.id;
-    const userToRenew = await User.findOne({ _id: req.params.id });
-    const mailHtml = mailRenewTemplate({
-        url: `http://localhost:3000/users/${req.params.id}/validate/${uniqueString}`,
-    });
-    const mailContent = {
-        from: 'admin@bollywood.fr',
-        to: userToRenew.email,
-        subject: 'Bowllywood - Vérification de ton email',
-        attachment: [
-            {
-                filename: 'Bowllywood.png',
-                path: path.join(
-                    'https://img2.freepng.fr/20180417/vrq/kisspng-tiki-bar-cuisine-of-hawaii-hawaiian-mask-5ad5ad26034541.3539464215239529340134.jpg'
-                ),
-                cid: 'Bowllywood',
-            },
-        ],
-        html: mailHtml,
-    };
-    console.log(mailContent.attachment);
-    try {
-        const tokenIsValid = await UserValidation.findOne({
-            userID: req.params.id,
-        });
-        if (!tokenIsValid) {
-            bcrypt.hash(uniqueString, saltRounds).then((hashedUniqueString) => {
-                const userValidation = new UserValidation({
-                    userID: req.params.id,
-                    uniqueString: hashedUniqueString,
-                });
-                userValidation.save().then(
-                    transporter
-                        .sendMail(mailContent)
-                        .then(() => {
-                            console.log('Mail renew envoyé');
-                        })
-                        .catch(() => {
-                            console.log(
-                                "Une erreur est survenue lors de l'envoi du mail"
-                            );
-                        })
-                );
-            });
-        } else {
-            console.log('Test');
-        }
-    } catch (err) {
-        console.log('Test2');
     }
 };
 
@@ -307,20 +304,54 @@ exports.validationTokenRenew = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email }).populate('roles').exec();
-
+        const user = await User.findOne({ email })
+            .populate('userValidation')
+            .exec();
+        console.log(req.body);
         if (!user) {
-            const error = new Error('Identifiant/Mot de passe incorrect');
+            const error = new Error(
+                'Identifiant/Mot de passe incorrect ou compte inexistant'
+            );
             error.code = 422;
             throw error;
         }
         const passMatch = await bcrypt.compare(password, user.password);
         if (!passMatch) {
-            const error = new Error('Identifiant/Mot de passe incorrect');
+            const error = new Error(
+                'Identifiant/Mot de passe incorrect ou compte inexistant'
+            );
             error.code = 422;
             throw error;
         }
         if (!user.isVerified) {
+            // Début
+            if (!user.userValidation) {
+                const uniqueString = uuidv4();
+                const hashedUniqueString = await bcrypt.hash(
+                    uniqueString,
+                    saltRounds
+                );
+                const validationToken = generateToken(
+                    // { id: user._id, token: hashedUniqueString }
+                    { token: hashedUniqueString },
+                    process.env.VALIDATE_TOKEN_SECRET,
+                    '10m'
+                );
+                const userValidation = new UserValidation({
+                    uniqueString: validationToken,
+                });
+                const userValidationObject = await userValidation.save();
+                console.log(userValidationObject);
+                console.log(userValidationObject.uniqueString);
+                // eslint-disable-next-line no-underscore-dangle
+                user.userValidation = userValidationObject.uniqueString;
+                await user.save();
+                // Envoi du mail
+                /* eslint-disable no-use-before-define */
+                sendEmailValidation(user, validationToken);
+                console.log(user);
+            }
+            // fin
             const error = new Error(
                 'Compte non validé, veuillez valider votre compte et réessayer'
             );
@@ -344,7 +375,9 @@ exports.userLogin = async (req, res) => {
             refreshToken,
         });
     } catch (err) {
+        console.log('nlanlanla');
         const code = err.code ?? 500;
+        console.log(err.message);
         res.status(code).json({
             message: err.message,
         });

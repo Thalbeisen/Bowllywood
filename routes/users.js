@@ -12,9 +12,9 @@ router.get('/', auth, userController.usersList);
 
 router.post('/add', userController.userNew);
 
-router.get('/:id/validate/:uniqueString', userController.userValidate);
+router.get('/validate/:validationToken', userController.userValidate);
 
-router.get('/:id/renewlink/:uniqueString', userController.validationTokenRenew);
+// router.get('/:id/renewlink/:uniqueString', userController.validationTokenRenew);
 
 router.get('/:id', auth, userController.userDetails);
 
