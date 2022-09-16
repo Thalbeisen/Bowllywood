@@ -159,12 +159,11 @@ exports.userNew = async (req, res) => {
             userValidationToken: uniqueString,
         });
         const createdUser = await user.save();
-        // const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
         /* eslint-disable no-underscore-dangle */
         const validationToken = generateToken(
             { id: user._id, token: uniqueString },
             process.env.VALIDATE_TOKEN_SECRET,
-            '2m'
+            '1d'
         );
         /* eslint-disable no-use-before-define */
         sendEmailValidation(user, validationToken);
@@ -207,7 +206,6 @@ const sendEmailValidation = async (user, validationToken, res) => {
 exports.userValidate = async (req, res) => {
     try {
         const providedToken = req.params.validationToken;
-        // console.log(`Tu me fournis ce token ${providedToken}`);
         const decodedToken = await jwt.verify(
             providedToken,
             process.env.VALIDATE_TOKEN_SECRET
@@ -230,7 +228,7 @@ exports.userValidate = async (req, res) => {
             const validationToken = generateToken(
                 { id: user._id, token: user.userValidationToken },
                 process.env.VALIDATE_TOKEN_SECRET,
-                '2m'
+                '1d'
             );
             /* eslint-disable no-use-before-define */
             sendEmailValidation(user, validationToken);
@@ -319,12 +317,12 @@ exports.refreshUserToken = async (req, res) => {
         const token = generateToken(
             user,
             process.env.ACCESS_TOKEN_SECRET,
-            '10m'
+            '30m'
         );
         const refreshToken = generateToken(
             user,
             process.env.REFRESH_TOKEN_SECRET,
-            '7h'
+            '60m'
         );
         res.status(200).json({
             token,
