@@ -6,7 +6,7 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
 
 /**
  * @swagger
- * /:
+ * /franchiseRequests/:
  *   post:
  *     summary: Create a franchise request.
  *     tags: [FranchiseRequest]
@@ -24,7 +24,7 @@ router.post('/', franchiseRequestsCtrl.addFranchiseRequest);
 
 /**
  * @swagger
- * /accepted:
+ * /franchiseRequests/accepted:
  *   get:
  *     summary: Retrieve every accepted franchise requests.
  *     tags: [FranchiseRequest]
@@ -42,32 +42,79 @@ router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
 
 /**
  * @swagger
- * /{id}:
- *   get:
- *     summary: Retrieve a specific franchise request informations by id.
- *     tags: [FranchiseRequest]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
+ * components:
+ *   schemas:
+ *     FranchiseRequest:
+ *       type: object
+ *       required:
+ *         - phone
+ *         - city
+ *         - estimatedAmount
+ *         - hopedFinancing
+ *         - shopLocation
+ *         - foodServiceExperience
+ *         - conditionOfUse
+ *         - status
+ *       properties:
+ *         _id:
  *           type: string
- *         required: true
- *         description: The franchise request id.
- *     responses:
- *       200:
- *         description: Retrieve a specific franchise request informations by id
- *         contens:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/'
- *       404:
- *         description: The franchise request was not found
+ *           description: The auto generate id of the franchise request
+ *         phone:
+ *           type: string
+ *           description: The auto generate id of the franchise request
+ *         city:
+ *           type: number
+ *           description: The auto generate id of the franchise request
+ *         estimatedAmount:
+ *           type: number
+ *           description: The auto generate id of the franchise request
+ *         hopedFinancing:
+ *           type: string
+ *           description: The auto generate id of the franchise request
+ *         shopLocation:
+ *           type: string
+ *           description: The auto generate id of the franchise request
+ *         foodServiceExperience:
+ *           type: number
+ *           description: The auto generate id of the franchise request
+ *         conditionOfUse:
+ *           type: boolean
+ *           description: The auto generate id of the franchise request
+ *         status:
+ *           type: string
+ *           description: The auto generate id of the franchise request
+ *         deletedAt:
+ *           type: date
+ *           description: The auto generate id of the franchise request
+ *         user_id:
+ *           type: string
+ *           description: The auto generate id of the franchise request
+ *         updatedAt:
+ *           type: date
+ *           description: The auto generate id of the franchise request
+ *         createdAt:
+ *           type: date
+ *           description: The auto generate id of the franchise request
+ *       example:
+ *         _id: d5fe4asz
+ *         phone: 0666666633
+ *         city: Alexander K. Dewdney
+ *         estimatedAmount: 66666
+ *         hopedFinancing: 3333
+ *         shopLocation: TEST
+ *         foodServiceExperience: 0
+ *         conditionOfUse: true
+ *         status: PENDING
+ *         deleteAt: ''
+ *         user_id: d24g6f4r5
+ *         updatedAt: 2022-09-13T13:41:27.772Z
+ *         createdAt: 2022-09-13T13:41:27.772Z
  */
 router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
 
 /**
  * @swagger
- * /:
+ * /franchiseRequests/:
  *   get:
  *     summary: Retrieve every franchise requests.
  *     tags: [FranchiseRequest]
@@ -85,7 +132,7 @@ router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
 
 /**
  * @swagger
- * /delete/{id}:
+ * /franchiseRequests/delete/{id}:
  *   patch:
  *     summary: Archive a franchise request.
  *     tags: [FranchiseRequest]
@@ -110,7 +157,7 @@ router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
 
 /**
  * @swagger
- * /edit/{id}:
+ * /franchiseRequests/edit/{id}:
  *   patch:
  *     summary: Edit a franchise request status.
  *     tags: [FranchiseRequest]
