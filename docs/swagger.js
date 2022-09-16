@@ -3,11 +3,12 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Doc API CDA Amiens avec Swagger',
-            version: '0.1.0',
-            description: 'Documentation CRUD de Bolliwood',
+            title: 'Bollywood API',
+            version: '1.0.0',
+            description:
+                'Application utilisateur et métier du restaurant Bollywood.',
             license: {
-                name: 'MIT',
+                name: 'Licence MIT',
                 url: 'https://spdx.org/licenses/MIT.html',
             },
         },

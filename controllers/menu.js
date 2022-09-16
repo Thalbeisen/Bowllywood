@@ -18,9 +18,7 @@ exports.createMeal = async (req, res) => {
         };
         delete menuObj.userID;
 
-        console.log(menuObj);
         const newMeal = await new Menu(menuObj).save();
-
         if (!newMeal) res.status(404).json(errors.createError(entity));
 
         res.status(201).json(newMeal);
