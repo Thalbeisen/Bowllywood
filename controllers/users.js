@@ -154,29 +154,26 @@ exports.userEdit = async (req, res) => {
 exports.userNew = async (req, res) => {
     try {
         const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
-        const user = new User({ ...req.body, password: passwordHash });
-        const createdUser = await user.save();
         const uniqueString = uuidv4();
-        const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
+        const user = new User({
+            ...req.body,
+            password: passwordHash,
+            userValidationToken: uniqueString,
+        });
+        const createdUser = await user.save();
+        // const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
         /* eslint-disable no-underscore-dangle */
         const validationToken = generateToken(
-            { id: user._id, token: hashedUniqueString },
-            // { token: hashedUniqueString },
+            { id: user._id, token: uniqueString },
             process.env.VALIDATE_TOKEN_SECRET,
-            '10m'
+            '2m'
         );
-        console.log(hashedUniqueString);
-        const userValidation = new UserValidation({
-            uniqueString: validationToken,
-        });
-        const userValidationObject = await userValidation.save();
-        // eslint-disable-next-line no-underscore-dangle
-        createdUser.userValidation = userValidationObject.uniqueString;
-        const editUser = await createdUser.save();
+        console.log(uniqueString);
         /* eslint-disable no-use-before-define */
         sendEmailValidation(user, validationToken);
-        const userObject = JSON.parse(JSON.stringify(editUser));
+        const userObject = JSON.parse(JSON.stringify(createdUser));
         delete userObject.password;
+        delete userObject.userValidationToken;
         res.status(201).json(userObject);
     } catch (err) {
         res.status(400).json({
@@ -207,8 +204,8 @@ const sendEmailValidation = async (user, validationToken) => {
     console.log(mailContent.attachment);
     await transporter
         .sendMail(mailContent)
-        .catch(() => {
-            console.log("Une erreur est survenue lors de l'envoi du mail");
+        .catch((err) => {
+            console.log(err);
         })
         .catch(() => {
             console.log(
@@ -216,26 +213,6 @@ const sendEmailValidation = async (user, validationToken) => {
             );
         });
 };
-
-// const userValidate = (user) => {
-//     console.log(user);
-//     try {
-//         if (!user) {
-//             res.status(404).json({
-//                 message: "Aucun utilisateur trouvé pour l'id donné",
-//             });
-//         }
-//         if (!tokenIsValid) {
-//             console.log('link invalide');
-//         }
-//         User.updateOne({ _id: req.params.id }, { isVerified: true });
-//         res.status(200).json({
-//             message: 'Utilisateur activé',
-//         });
-//     } catch (err) {
-//         console.log(err);
-//     }
-// };
 
 exports.userValidate = async (req, res) => {
     try {
@@ -255,44 +232,33 @@ exports.userValidate = async (req, res) => {
             },
             'uniqueString'
         );
-        // const decodedStoredToken = await jwt.verify(
-        //     storedToken.uniqueString,
-        //     process.env.VALIDATE_TOKEN_SECRET
-        // );
-        // console.log(`J'ai ce token dans la base ${decodedStoredToken.token}`);
-        // const userToBeValidated = await User.findOne({
-        //     userValidation: decodedStoredToken.id
-        // })
         console.log(`Provided token ${providedToken}`);
         console.log(`Stored token ${storedToken.uniqueString}`);
         if (providedToken === storedToken.uniqueString) {
             console.log('hello');
-            User.updateOne(
-                { userValidation: storedToken.uniqueString },
+            await User.updateOne(
+                { userValidation: String(storedToken.uniqueString) },
                 { isVerified: true }
             );
         }
-        // console.log(req.params);
-        // if (!decodedToken) {
-        //     res.status(401).json({
-        //         message: 'Accès interdit, token invalide',
-        //     });
-        // }
-        // const userToValidate = await userValidation.findOne({
-        //     userID: decodedToken.id,
-        // });
-        // const decodedUserToken = await jwt.verify(
-        //     userToValidate.uniqueString,
-        //     process.env.VALIDATE_TOKEN_SECRET
-        // );
-        // console.log(`tokenalacon ${decodedUserToken.uniqueString}`);
-        // console.log('Tout semble ok, on peut continuer');
-        // User.updateOne({ _id: decodedToken._id }, { isVerified: true });
-        // res.status(200).json({
-        //     message: 'Utilisateur activé',
-        // });
     } catch (err) {
-        console.log(err);
+        if (err.message === 'jwt expired') {
+            const providedToken = req.params.validationToken;
+            const decodedToken = jwt.decode(providedToken);
+            console.log(decodedToken);
+            const user = await User.findOne({ _id: decodedToken.id });
+            console.log(`hello ${user}`);
+            const validationToken = generateToken(
+                { id: user._id, token: user.userValidationToken },
+                process.env.VALIDATE_TOKEN_SECRET,
+                '2m'
+            );
+            /* eslint-disable no-use-before-define */
+            sendEmailValidation(user, validationToken);
+            res.status(200).json({
+                message: 'un nouveau mail a été envoyé',
+            });
+        }
     }
 };
 
@@ -304,9 +270,7 @@ exports.userValidate = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email })
-            .populate('userValidation')
-            .exec();
+        const user = await User.findOne({ email });
         console.log(req.body);
         if (!user) {
             const error = new Error(
@@ -324,34 +288,6 @@ exports.userLogin = async (req, res) => {
             throw error;
         }
         if (!user.isVerified) {
-            // Début
-            if (!user.userValidation) {
-                const uniqueString = uuidv4();
-                const hashedUniqueString = await bcrypt.hash(
-                    uniqueString,
-                    saltRounds
-                );
-                const validationToken = generateToken(
-                    // { id: user._id, token: hashedUniqueString }
-                    { token: hashedUniqueString },
-                    process.env.VALIDATE_TOKEN_SECRET,
-                    '10m'
-                );
-                const userValidation = new UserValidation({
-                    uniqueString: validationToken,
-                });
-                const userValidationObject = await userValidation.save();
-                console.log(userValidationObject);
-                console.log(userValidationObject.uniqueString);
-                // eslint-disable-next-line no-underscore-dangle
-                user.userValidation = userValidationObject.uniqueString;
-                await user.save();
-                // Envoi du mail
-                /* eslint-disable no-use-before-define */
-                sendEmailValidation(user, validationToken);
-                console.log(user);
-            }
-            // fin
             const error = new Error(
                 'Compte non validé, veuillez valider votre compte et réessayer'
             );

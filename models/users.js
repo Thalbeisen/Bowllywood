@@ -48,10 +48,9 @@ const userSchema = new Schema(
             default: false,
         },
 
-        userValidation: {
-            // Clé étrangère
-            type: Schema.Types.ObjectId,
-            ref: 'UserValidation',
+        userValidationToken: {
+            type: String,
+            required: true,
         },
 
         franchiseRequests: [
