@@ -15,7 +15,6 @@ const usersRouter = require('./routes/users');
 const rolesRouter = require('./routes/roles');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
-const prospectsRouter = require('./routes/prospects');
 
 const app = express();
 
@@ -34,6 +33,5 @@ app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
-app.use('/prospects', prospectsRouter);
 
 module.exports = app;

@@ -40,8 +40,6 @@ const { v4: uuidv4 } = require('uuid');
 // J'importe mon modèle users
 const User = require('../models/users');
 
-const UserValidation = require('../models/userValidation');
-
 // Je déclare un transporter pour pouvoir envoyer les mails
 const transporter = nodemailer.createTransport({
     service: 'Mailtrap',
@@ -154,13 +152,24 @@ exports.userEdit = async (req, res) => {
 exports.userNew = async (req, res) => {
     try {
         const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
-        const user = new User({ ...req.body, password: passwordHash });
-        const createdUser = user.save().then((result) => {
-            /* eslint-disable no-use-before-define */
-            sendEmailValidation(result, res);
+        const uniqueString = uuidv4();
+        const user = new User({
+            ...req.body,
+            password: passwordHash,
+            userValidationToken: uniqueString,
         });
+        const createdUser = await user.save();
+        /* eslint-disable no-underscore-dangle */
+        const validationToken = generateToken(
+            { id: user._id, token: uniqueString },
+            process.env.VALIDATE_TOKEN_SECRET,
+            '1d'
+        );
+        /* eslint-disable no-use-before-define */
+        sendEmailValidation(user, validationToken);
         const userObject = JSON.parse(JSON.stringify(createdUser));
         delete userObject.password;
+        delete userObject.userValidationToken;
         res.status(201).json(userObject);
     } catch (err) {
         res.status(400).json({
@@ -169,14 +178,13 @@ exports.userNew = async (req, res) => {
     }
 };
 
-const sendEmailValidation = ({ _id, email }) => {
-    const uniqueString = uuidv4() + _id;
+const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
-        url: `http://localhost:3000/users/${_id}/validate/${uniqueString}`,
+        url: `http://localhost:3000/users/validate/${validationToken}`,
     });
     const mailContent = {
         from: 'admin@bollywood.fr',
-        to: email,
+        to: user.email,
         subject: 'Bowllywood - Vérification de ton email',
         attachment: [
             {
@@ -189,51 +197,45 @@ const sendEmailValidation = ({ _id, email }) => {
         ],
         html: mailHtml,
     };
-    console.log(mailContent.attachment);
-    bcrypt
-        .hash(uniqueString, saltRounds)
-        .then((hashedUniqueString) => {
-            const userValidation = new UserValidation({
-                userID: _id,
-                uniqueString: hashedUniqueString,
-            });
-            userValidation.save().then(
-                transporter
-                    .sendMail(mailContent)
-                    .then(() => {
-                        console.log("En cours d'envoi");
-                    })
-                    .catch(() => {
-                        console.log(
-                            "Une erreur est survenue lors de l'envoi du mail"
-                        );
-                    })
-            );
-        })
-        .catch(() => {
-            console.log(
-                'Une erreur est survenue lors du cryptage, merci de réessayer'
-            );
+    await transporter.sendMail(mailContent).catch((err) => {
+        res.status().json({
+            message: err,
         });
+    });
 };
-
 exports.userValidate = async (req, res) => {
     try {
-        const selectedUser = await User.findOne({ _id: req.params.id });
-        if (!selectedUser) {
-            res.status(404).json({
-                message: "Aucun utilisateur trouvé pour l'id donné",
+        const providedToken = req.params.validationToken;
+        const decodedToken = await jwt.verify(
+            providedToken,
+            process.env.VALIDATE_TOKEN_SECRET
+        );
+        const userToValidate = await User.findOne({ _id: decodedToken.id });
+        if (decodedToken.token === userToValidate.userValidationToken) {
+            await User.updateOne(
+                { _id: decodedToken.id },
+                { isVerified: true }
+            );
+            res.status(200).json({
+                message: 'Compte validé',
             });
         }
-        await User.updateOne({ _id: req.params.id }, { isVerified: true });
-        res.status(200).json({
-            message: 'Utilisateur activé',
-        });
     } catch (err) {
-        res.status(500).json({
-            message:
-                'Une erreur est survenue, veuillez réessayer dans un instant',
-        });
+        if (err.message === 'jwt expired') {
+            const providedToken = req.params.validationToken;
+            const decodedToken = jwt.decode(providedToken);
+            const user = await User.findOne({ _id: decodedToken.id });
+            const validationToken = generateToken(
+                { id: user._id, token: user.userValidationToken },
+                process.env.VALIDATE_TOKEN_SECRET,
+                '1d'
+            );
+            /* eslint-disable no-use-before-define */
+            sendEmailValidation(user, validationToken);
+            res.status(200).json({
+                message: 'un nouveau mail a été envoyé',
+            });
+        }
     }
 };
 
@@ -245,16 +247,19 @@ exports.userValidate = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email }).exec();
-
+        const user = await User.findOne({ email });
         if (!user) {
-            const error = new Error('Identifiant/Mot de passe incorrect');
+            const error = new Error(
+                'Identifiant/Mot de passe incorrect ou compte inexistant'
+            );
             error.code = 422;
             throw error;
         }
         const passMatch = await bcrypt.compare(password, user.password);
         if (!passMatch) {
-            const error = new Error('Identifiant/Mot de passe incorrect');
+            const error = new Error(
+                'Identifiant/Mot de passe incorrect ou compte inexistant'
+            );
             error.code = 422;
             throw error;
         }
@@ -312,12 +317,12 @@ exports.refreshUserToken = async (req, res) => {
         const token = generateToken(
             user,
             process.env.ACCESS_TOKEN_SECRET,
-            '10m'
+            '30m'
         );
         const refreshToken = generateToken(
             user,
             process.env.REFRESH_TOKEN_SECRET,
-            '7h'
+            '60m'
         );
         res.status(200).json({
             token,
