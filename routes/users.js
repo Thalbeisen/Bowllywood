@@ -24,4 +24,6 @@ router.post('/refresh', userController.refreshUserToken);
 
 router.delete('/:id', auth, permit('ROLE_ADMIN'), userController.userDelete);
 
+router.get('/my-franchise-requests/:id', userController.userFranchiseRequests);
+
 module.exports = router;

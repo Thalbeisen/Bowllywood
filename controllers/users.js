@@ -366,3 +366,23 @@ exports.userDelete = async (req, res) => {
         });
     }
 };
+
+exports.userFranchiseRequests = async (req, res) => {
+    try {
+        const selectedUser = await User.findOne({
+            _id: req.params.id,
+        }).populate('franchiseContracts');
+
+        if (!selectedUser) {
+            res.status(404).json({
+                message: "Aucun utilisateur trouvé pour l'id donné",
+            });
+        }
+
+        res.status(200).json(selectedUser);
+    } catch (err) {
+        res.status(500).json({
+            err,
+        });
+    }
+};

@@ -3,7 +3,10 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 const db = require('./database/dbConnect');
+const auth = require('./middlewares/auth');
 
 db.then(() => {
     const connectionStatus = 'connected';
@@ -14,8 +17,13 @@ db.then(() => {
 const usersRouter = require('./routes/users');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
+const franchiseRequestsRouter = require('./routes/franchiseRequests');
 
 const app = express();
+// setup defini dans le dossier docs
+const swaggerConfig = require('./docs/swagger');
+// lie swagger ui et swagger jsdoc
+const openapiSpecification = swaggerJsdoc(swaggerConfig);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,5 +39,8 @@ app.use(
 app.use('/users', usersRouter);
 app.use('/stocks', stockRouter);
 app.use('/menus', menuRouter);
+app.use('/franchiseRequests', auth, franchiseRequestsRouter);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
 module.exports = app;
