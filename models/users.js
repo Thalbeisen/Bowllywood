@@ -55,14 +55,6 @@ const userSchema = new Schema(
                 ref: 'Role',
             },
         ],
-
-        franchiseRequests: [
-            {
-                // Clé étrangère
-                type: Schema.Types.ObjectId,
-                ref: 'Prospect',
-            },
-        ],
     },
 
     {
