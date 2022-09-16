@@ -27,6 +27,9 @@ const getEntityDesc = (entity) => {
         case 'STOCK':
             entityDesc = 'du produit ';
             break;
+        case 'RESTAURANT':
+            entityDesc = 'du restaurant ';
+            break;
         default:
             entityDesc = '';
             break;

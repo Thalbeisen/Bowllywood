@@ -69,10 +69,30 @@ exports.editRestaurant = async (req, res) => {
             req.params.id,
             {
                 ...req.body,
-            }
+            },
+            { returnDocument: 'after' }
         );
         res.status(200).json(editingRestaurant);
     } catch (error) {
         res.status(403).json(errors.updateError(entity));
+    }
+};
+
+/**
+ * Retrieve all restaurant from the selected city.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.filterRestaurantFromCity = async (req, res) => {
+    try {
+        const restaurantFromCity = await Restaurant.find({
+            city: req.params.city,
+        }).exec();
+        if (!restaurantFromCity) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(restaurantFromCity);
+    } catch (error) {
+        res.status(403).json(errors.listError);
     }
 };

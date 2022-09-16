@@ -99,6 +99,10 @@ const restaurantSchema = new Schema(
             type: Boolean,
             required: true,
         },
+        city: {
+            type: String,
+            required: true,
+        },
     },
     {
         timestamps: true,

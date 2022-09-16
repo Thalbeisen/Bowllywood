@@ -19,6 +19,7 @@ const rolesRouter = require('./routes/roles');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
 const franchiseRequestsRouter = require('./routes/franchiseRequests');
+const restaurantsRouter = require('./routes/restaurants');
 
 const app = express();
 // setup defini dans le dossier docs
@@ -42,6 +43,7 @@ app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
+app.use('/restaurants', restaurantsRouter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
