@@ -50,7 +50,7 @@ const userSchema = new Schema(
                 ref: 'FranchiseRequest',
             },
         ],
-        
+
         userValidationToken: {
             type: String,
             required: true,
@@ -70,14 +70,6 @@ const userSchema = new Schema(
             ],
             default: 'ROLE_USER',
         },
-
-        franchiseContracts: [
-            {
-                // Clé étrangère
-                type: Schema.Types.ObjectId,
-                ref: 'FranchiseRequest',
-            },
-        ],
     },
 
     {
