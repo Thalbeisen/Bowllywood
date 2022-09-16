@@ -211,11 +211,15 @@ exports.userValidate = async (req, res) => {
             process.env.VALIDATE_TOKEN_SECRET
         );
         const userToValidate = await User.findOne({ _id: decodedToken.id });
+        if (userToValidate.isVerified) {
+            res.status(200).json({
+                message: 'Compte déjà validé',
+            });
+        }
         if (decodedToken.token === userToValidate.userValidationToken) {
-            await User.updateOne(
-                { _id: decodedToken.id },
-                { isVerified: true }
-            );
+            userToValidate.isVerified = true;
+            userToValidate.userValidationToken = null;
+            userToValidate.save();
             res.status(200).json({
                 message: 'Compte validé',
             });
