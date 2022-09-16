@@ -6,46 +6,6 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
 
 /**
  * @swagger
- * /franchiseRequests/:
- *   post:
- *     summary: Create a franchise request.
- *     tags: [FranchiseRequest]
- *     requestBody:
- *      content:
- *          schema:
- *              $ref: '#/components/schemas/'
- *     responses:
- *       201:
- *         description: Create a franchise request.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/'
- */
-router.post('/', franchiseRequestsCtrl.addFranchiseRequest);
-
-/**
- * @swagger
- * /franchiseRequests/accepted:
- *   get:
- *     summary: Retrieve every accepted franchise requests.
- *     tags: [FranchiseRequest]
- *     responses:
- *       200:
- *         description: The list of the accepted franchise requests
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Accepted'
- */
-router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
-
-/**
- * @swagger
  * components:
  *   schemas:
  *     FranchiseRequest:
@@ -91,7 +51,7 @@ router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
  *           type: date
  *           description: The auto generate id of the franchise request
  *         user_id:
- *           type: string
+ *           type: objectid
  *           description: The auto generate id of the franchise request
  *         updatedAt:
  *           type: date
@@ -100,63 +60,31 @@ router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
  *           type: date
  *           description: The auto generate id of the franchise request
  *       example:
- *         _id: d5fe4asz
  *         phone: 0666666633
- *         city: Alexander K. Dewdney
+ *         city: NANTES
  *         estimatedAmount: 66666
  *         hopedFinancing: 3333
- *         shopLocation: TEST
+ *         shopLocation: ABBEVILLE
  *         foodServiceExperience: 0
  *         conditionOfUse: true
  *         status: PENDING
  *         deleteAt: ''
- *         user_id: d24g6f4r5
+ *         user_id: 63247760ae83ec3b10b9248f
  *         updatedAt: 2022-09-13T13:41:27.772Z
  *         createdAt: 2022-09-13T13:41:27.772Z
- * /franchiseRequests/{id}:
+ * /franchiseRequests/accepted:
  *   get:
- *     summary: Retrieve every franchise requests.
+ *     summary: Retrieve every accepted franchise requests.
  *     tags: [FranchiseRequest]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The franchise request id.
  *     responses:
  *       200:
- *         description: The list of all the franchise requests
+ *         description: The list of the accepted franchise requests
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/'
- */
-
-router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
-
-/**
- * @swagger
- * /franchiseRequests/:
- *   get:
- *     summary: Retrieve every franchise requests.
- *     tags: [FranchiseRequest]
- *     responses:
- *       200:
- *         description: The list of all the franchise requests
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/'
- */
-router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
-
-/**
- * @swagger
+ *                 $ref: '#/components/schemas/Accepted'
  * /franchiseRequests/delete/{id}:
  *   patch:
  *     summary: Archive a franchise request.
@@ -177,11 +105,26 @@ router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
  *               $ref: '#/components/schemas/'
  *       404:
  *         description: The franchise request was not found
- */
-router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
-
-/**
- * @swagger
+ * /franchiseRequests/{id}:
+ *   get:
+ *     summary: Retrieve every franchise requests.
+ *     tags: [FranchiseRequest]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The franchise request id.
+ *     responses:
+ *       200:
+ *         description: The list of all the franchise requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/'
  * /franchiseRequests/edit/{id}:
  *   patch:
  *     summary: Edit a franchise request status.
@@ -193,6 +136,11 @@ router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
  *           type: string
  *         required: true
  *         description: The franchise request id.
+ *     requestBody:
+ *      content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/FranchiseRequest'
  *     responses:
  *       200:
  *         description: Edit a franchise request status.
@@ -202,7 +150,36 @@ router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
  *               $ref: '#/components/schemas/'
  *       404:
  *         description: The franchise request was not found
+ * /franchiseRequests/:
+ *   post:
+ *     summary: Create a franchise request.
+ *     tags: [FranchiseRequest]
+ *     requestBody:
+ *      content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/FranchiseRequest'
+ *     responses:
+ *       201:
+ *         description: Create a franchise request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/FranchiseRequest'
  */
+
+router.post('/', franchiseRequestsCtrl.addFranchiseRequest);
+
+router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
+
+router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
+
+router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
+
+router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
+
 router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
 
 module.exports = router;
