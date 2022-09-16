@@ -172,6 +172,7 @@ exports.userNew = async (req, res) => {
         delete userObject.userValidationToken;
         res.status(201).json(userObject);
     } catch (err) {
+        console.log(err);
         res.status(400).json({
             message: err,
         });
@@ -218,7 +219,7 @@ exports.userValidate = async (req, res) => {
         }
         if (decodedToken.token === userToValidate.userValidationToken) {
             userToValidate.isVerified = true;
-            userToValidate.userValidationToken = null;
+            userToValidate.userValidationToken = ' ';
             userToValidate.save();
             res.status(200).json({
                 message: 'Compte validé',

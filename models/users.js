@@ -25,11 +25,6 @@ const userSchema = new Schema(
             required: true,
         },
 
-        dbId: {
-            type: String,
-            required: false,
-        },
-
         isActive: {
             type: Boolean,
             required: false,
@@ -52,6 +47,29 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
+
+        userRole: {
+            type: String,
+            required: true,
+            enum: [
+                'ROLE_USER',
+                'ROLE_WAITER',
+                'ROLE_MANAGER',
+                'ROLE_COOK',
+                'ROLE_CEO',
+                'ROLE_ADMIN',
+                'ROLE_SUPERADMIN',
+            ],
+            default: 'ROLE_USER',
+        },
+
+        franchiseContracts: [
+            {
+                // Clé étrangère
+                type: Schema.Types.ObjectId,
+                ref: 'FranchiseRequest',
+            },
+        ],
     },
 
     {
