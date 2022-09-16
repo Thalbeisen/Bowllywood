@@ -6,9 +6,9 @@ const userController = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
-const { ceoAUTH } = require('../middlewares/checkUserPerms');
+const { permit } = require('../middlewares/permissions');
 
-router.get('/', auth, userController.usersList);
+router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
 
 router.post('/add', userController.userNew);
 
@@ -22,7 +22,7 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', auth, ceoAUTH, userController.userDelete);
+router.delete('/:id', auth, permit('ROLE_ADMIN'), userController.userDelete);
 
 router.get('/my-franchise-requests/:id', userController.userFranchiseRequests);
 

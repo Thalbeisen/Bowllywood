@@ -172,6 +172,7 @@ exports.userNew = async (req, res) => {
         delete userObject.userValidationToken;
         res.status(201).json(userObject);
     } catch (err) {
+        console.log(err);
         res.status(400).json({
             message: err,
         });
@@ -218,7 +219,7 @@ exports.userValidate = async (req, res) => {
         }
         if (decodedToken.token === userToValidate.userValidationToken) {
             userToValidate.isVerified = true;
-            userToValidate.userValidationToken = null;
+            userToValidate.userValidationToken = ' ';
             userToValidate.save();
             res.status(200).json({
                 message: 'Compte validé',
@@ -238,6 +239,10 @@ exports.userValidate = async (req, res) => {
             sendEmailValidation(user, validationToken);
             res.status(200).json({
                 message: 'un nouveau mail a été envoyé',
+            });
+        } else {
+            res.status(500).json({
+                message: 'Une erreur inattendue est survenue',
             });
         }
     }
@@ -271,7 +276,7 @@ exports.userLogin = async (req, res) => {
             const error = new Error(
                 'Compte non validé, veuillez valider votre compte et réessayer'
             );
-            error.code = 418;
+            error.code = 403;
             throw error;
         }
         /* eslint-disable no-underscore-dangle */
