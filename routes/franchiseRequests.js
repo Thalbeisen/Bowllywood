@@ -22,43 +22,43 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *       properties:
  *         _id:
  *           type: string
- *           description: The auto generate id of the franchise request
+ *           description: The auto generate id of the franchise request.
  *         phone:
  *           type: string
- *           description: The auto generate id of the franchise request
+ *           description: The given phone number related to the franchise request.
  *         city:
  *           type: number
- *           description: The auto generate id of the franchise request
+ *           description: The city of the franchise request owner.
  *         estimatedAmount:
  *           type: number
- *           description: The auto generate id of the franchise request
+ *           description: The estimated amount of money the owner of the franchise request can pay.
  *         hopedFinancing:
  *           type: string
- *           description: The auto generate id of the franchise request
+ *           description: The hoped financing asked by the owner of the franchise request
  *         shopLocation:
  *           type: string
- *           description: The auto generate id of the franchise request
+ *           description: The wanted location to create the new shop.
  *         foodServiceExperience:
  *           type: number
- *           description: The auto generate id of the franchise request
+ *           description: The food service experience of the owner of the franchise request
  *         conditionOfUse:
  *           type: boolean
- *           description: The auto generate id of the franchise request
+ *           description: The agreement of the condition of use.
  *         status:
  *           type: string
- *           description: The auto generate id of the franchise request
+ *           description: The franchise request status.
  *         deletedAt:
  *           type: date
- *           description: The auto generate id of the franchise request
+ *           description: The archiving date of the franchise request.
  *         user_id:
  *           type: objectid
- *           description: The auto generate id of the franchise request
+ *           description: The id of the user who created the franchise request.
  *         updatedAt:
  *           type: date
- *           description: The auto generate id of the franchise request
+ *           description: The updating date of the franchise request.
  *         createdAt:
  *           type: date
- *           description: The auto generate id of the franchise request
+ *           description: The creation date of the franchise request.
  *       example:
  *         phone: 0666666633
  *         city: NANTES
@@ -85,6 +85,10 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/FranchiseRequest'
+ *       404:
+ *          description: Aucune données n'a été trouvé.
+ *       403:
+ *          description: Impossible d'accéder à la liste demandée.
  * /franchiseRequests/delete/{id}:
  *   patch:
  *     summary: Archive a franchise request.
@@ -102,12 +106,14 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *         contens:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/'
+ *               $ref: '#/components/schemas/FranchiseRequest'
  *       404:
- *         description: The franchise request was not found
+ *          description: Aucune données n'a été trouvé.
+ *       403:
+ *          description: Impossible d'accéder à la liste demandée.
  * /franchiseRequests/{id}:
  *   get:
- *     summary: Retrieve every franchise requests.
+ *     summary: Retrieve a specific franchise requests.
  *     tags: [FranchiseRequest]
  *     parameters:
  *       - in: path
@@ -124,7 +130,11 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/'
+ *                 $ref: '#/components/schemas/FranchiseRequest'
+ *       404:
+ *          description: Aucune données n'a été trouvé.
+ *       403:
+ *          description: Impossible d'accéder à la liste demandée.
  * /franchiseRequests/edit/{id}:
  *   patch:
  *     summary: Edit a franchise request status.
@@ -147,10 +157,12 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *         contens:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/'
+ *               $ref: '#/components/schemas/FranchiseRequest'
  *       404:
- *         description: The franchise request was not found
- * /franchiseRequests/:
+ *          description: Aucune données n'a été trouvé.
+ *       403:
+ *          description: Impossible d'accéder à la liste demandée.
+ * /franchiseRequests/add:
  *   post:
  *     summary: Create a franchise request.
  *     tags: [FranchiseRequest]
@@ -168,9 +180,28 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/FranchiseRequest'
+ *       400:
+ *          description: La création de votre demande de franchise a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.
+ * /franchiseRequests/:
+ *   get:
+ *     summary: Retrieve every franchise requests.
+ *     tags: [FranchiseRequest]
+ *     responses:
+ *       200:
+ *         description: The list of all the franchise requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/FranchiseRequest'
+ *       404:
+ *          description: Aucune données n'a été trouvé.
+ *       403:
+ *          description: Impossible d'accéder à la liste demandée.
  */
 
-router.post('/', franchiseRequestsCtrl.addFranchiseRequest);
+router.post('/add', franchiseRequestsCtrl.addFranchiseRequest);
 
 router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
 
