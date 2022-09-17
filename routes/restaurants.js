@@ -10,8 +10,10 @@ router.get('/city/:city', restaurantCtrl.filterRestaurantFromCity);
 
 router.get('/:id', restaurantCtrl.getRestaurantDetail);
 
-router.get('/', restaurantCtrl.getAllRestaurant);
+router.get('/', restaurantCtrl.getAllRestaurants);
 
 router.patch('/edit/:id', restaurantCtrl.editRestaurant);
+
+router.patch('/delete/:id', restaurantCtrl.archiveRestaurant);
 
 module.exports = router;

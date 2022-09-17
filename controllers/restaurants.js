@@ -5,7 +5,7 @@ const errors = require('../conf/errors');
 const entity = 'RESTAURANT';
 
 /**
- * Create a restaurant (should be only possible for some roles)
+ * Create a restaurant.
  * @param {Request} req
  * @param {Response} res
  */
@@ -23,17 +23,17 @@ exports.addRestaurant = async (req, res) => {
 };
 
 /**
- * Retrieve a list of every restaurant
+ * Retrieve a list of every restaurant.
  * @param {Request} req
  * @param {Response} res
  */
-exports.getAllRestaurant = async (req, res) => {
+exports.getAllRestaurants = async (req, res) => {
     try {
-        const allRestaurant = await Restaurant.find({});
-        if (!allRestaurant) {
+        const allRestaurants = await Restaurant.find({});
+        if (!allRestaurants) {
             res.status(404).json(errors.emptyList);
         }
-        res.status(200).json(allRestaurant);
+        res.status(200).json(allRestaurants);
     } catch (error) {
         res.status(403).json(errors.listError);
     }
@@ -94,5 +94,29 @@ exports.filterRestaurantFromCity = async (req, res) => {
         res.status(200).json(restaurantFromCity);
     } catch (error) {
         res.status(403).json(errors.listError);
+    }
+};
+
+/**
+ * Archive a restaurant.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.archiveRestaurant = async (req, res) => {
+    try {
+        const archivingRestaurant = await Restaurant.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+            },
+            { returnDocument: 'after' }
+        );
+        if (!archivingRestaurant) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(archivingRestaurant);
+    } catch (error) {
+        res.status(403).json(errors.deleteError);
     }
 };
