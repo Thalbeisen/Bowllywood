@@ -46,9 +46,13 @@ exports.getAllReview = async (req, res) => {
  */
 exports.updateReview = async (req, res) => {
     try {
-        const updatedReview = await Review.findByIdAndUpdate(req.params.id, {
-            ...req.body,
-        });
+        const updatedReview = await Review.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+            },
+            { returnDocument: 'after' }
+        );
 
         if (!updatedReview) res.status(404).json(errors.updateError);
 
@@ -94,9 +98,13 @@ exports.deleteReview = async (req, res) => {
         }
 
         // start the "deletion"
-        const archivedReview = await Review.findByIdAndUpdate(req.params.id, {
-            deletedAt: Date.now(),
-        });
+        const archivedReview = await Review.findByIdAndUpdate(
+            req.params.id,
+            {
+                deletedAt: Date.now(),
+            },
+            { returnDocument: 'after' }
+        );
 
         if (archivedReview == null)
             res.status(404).json(errors.deleteError + errors.itemNotFound);

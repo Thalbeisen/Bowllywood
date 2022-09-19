@@ -82,7 +82,7 @@
  *     tags: [Menu]
  *     parameters:
  *       - in: path
- *         name: Enter the meal id
+ *         name: id
  *         schema:
  *           type: string
  *         required: true
@@ -114,7 +114,7 @@
  *     tags: [Menu]
  *     parameters:
  *       - in: path
- *         name: Enter the meal id
+ *         name: id
  *         schema:
  *           type: string
  *         required: true
@@ -133,7 +133,7 @@
  *     tags: [Menu]
  *     parameters:
  *       - in: path
- *         name: Enter the meal id
+ *         name: id
  *         schema:
  *           type: string
  *         required: true

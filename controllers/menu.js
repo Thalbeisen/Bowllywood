@@ -75,16 +75,20 @@ exports.updateMeal = async (req, res) => {
     try {
         const menuObj = {
             ...req.body,
-            lastUpdateBy: '63233dea610f1f4b73a99a8d', // req.body.userID,
+            lastUpdateBy: '632471120361eb66b468a627', // req.body.userID,
         };
         delete menuObj.userID;
 
         const updatedMeal = await Menu.findByIdAndUpdate(
             req.params.id,
-            menuObj
+            menuObj,
+            { returnDocument: 'after' }
         );
 
-        if (!updatedMeal) res.status(404).json(errors.updateError);
+        if (!updatedMeal) {
+            res.status(404).json(errors.updateError);
+            return;
+        }
 
         res.status(200).json(updatedMeal);
     } catch (err) {

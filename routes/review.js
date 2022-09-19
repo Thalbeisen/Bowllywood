@@ -1,5 +1,4 @@
 /** API Documentation
- *
  * @swagger
  * components:
  *   schemas:
@@ -59,13 +58,13 @@
  *       400:
  *         description: Some server error.
  *
- * /review/update/{id}:
+ * /review/update/{review}:
  *   post:
  *     summary: Update a review
  *     tags: [Review]
  *     parameters:
  *       - in: path
- *         name: Enter the review id
+ *         name: review
  *         schema:
  *           type: string
  *           ref: User
@@ -92,13 +91,13 @@
  *       500:
  *         description: Some server error.
  *
- * /review/delete/{id}:
+ * /review/delete/{review}:
  *   patch:
  *     summary: Delete/archive a review by feeding deletedAt column.
  *     tags: [Review]
  *     parameters:
  *       - in: path
- *         name: Enter the review id
+ *         name: review
  *         schema:
  *           type: string
  *         required: true
