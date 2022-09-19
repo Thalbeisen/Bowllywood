@@ -58,7 +58,9 @@ exports.getFranchiseRequestDetail = async (req, res) => {
  */
 exports.getAllFranchiseRequests = async (req, res) => {
     try {
-        const allFranchiseResquests = await FranchiseRequest.find({});
+        const allFranchiseResquests = await FranchiseRequest.find({
+            deletedAt: '',
+        });
         if (!allFranchiseResquests) {
             res.status(404).json(errors.emptyList);
         }
