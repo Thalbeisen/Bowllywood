@@ -9,10 +9,9 @@ const reviewSchema = new Schema(
             ref: 'User',
             required: true,
         },
-        franchisedID: {
-            // type: Schema.Types.ObjectId,
-            type: Number,
-            // ref: 'Franchised',
+        restaurantID: {
+            type: Schema.Types.ObjectId,
+            ref: 'restaurant',
             required: true,
         },
         mark: {
