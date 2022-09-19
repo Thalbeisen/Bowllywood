@@ -60,7 +60,7 @@ const restaurantSchema = new Schema(
         fridayOpeningTime: {
             type: String,
             default: 'Fermé',
-            required: true,
+            required: false,
         },
         fridayClosingTime: {
             type: String,
