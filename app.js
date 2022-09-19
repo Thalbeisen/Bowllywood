@@ -7,6 +7,7 @@ const swaggerUI = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const db = require('./database/dbConnect');
 const auth = require('./middlewares/auth');
+require('dotenv').config();
 
 db.then(() => {
     const connectionStatus = 'connected';
