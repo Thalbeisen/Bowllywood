@@ -3,25 +3,23 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Bollywood API',
-            version: '1.0.0',
-            description:
-                'Application utilisateur et métier du restaurant Bollywood.',
+            title: 'Doc API CDA Amiens avec Swagger',
+            version: '0.1.0',
+            description: 'Documentation CRUD de Bollywood',
             license: {
-                name: 'Licence MIT',
-
+                name: 'MIT',
                 url: 'https://spdx.org/licenses/MIT.html',
             },
         },
         servers: [
             {
                 url: 'http://localhost:3000',
-                description: 'Serveur local',
+                description: 'Serveur localhost'
             },
             {
-                url: 'https://dashboard.heroku.com/apps/bowllywood-api',
-                description: 'Serveur heroku',
-            },
+                url: 'https://bowllywood.herokuapp.com',
+                description: 'Serveur Heroku'
+            }
         ],
     },
     apis: ['./routes/*.js'],
