@@ -72,6 +72,9 @@ exports.editRestaurant = async (req, res) => {
             },
             { returnDocument: 'after' }
         );
+        if (!editingRestaurant) {
+            res.status(404).json(errors.emptyList);
+        }
         res.status(200).json(editingRestaurant);
     } catch (error) {
         res.status(403).json(errors.updateError(entity));
