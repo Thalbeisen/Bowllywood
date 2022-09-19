@@ -9,6 +9,7 @@ const options = {
                 'Application utilisateur et métier du restaurant Bollywood.',
             license: {
                 name: 'Licence MIT',
+
                 url: 'https://spdx.org/licenses/MIT.html',
             },
         },

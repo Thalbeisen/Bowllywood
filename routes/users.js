@@ -6,15 +6,13 @@ const userController = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
-const permsList = require('../conf/perms');
+const { permit } = require('../middlewares/permissions');
 
-const checkUserPerms = require('../middlewares/checkUserPerms');
-
-router.get('/', auth, userController.usersList);
+router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
 
 router.post('/add', userController.userNew);
 
-router.get('/:id/validate/:uniqueString', userController.userValidate);
+router.get('/validate/:validationToken', userController.userValidate);
 
 router.get('/:id', auth, userController.userDetails);
 
@@ -24,6 +22,8 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
-router.delete('/:id', userController.userDelete);
+router.delete('/:id', auth, permit('ROLE_ADMIN'), userController.userDelete);
+
+router.get('/my-franchise-requests/:id', userController.userFranchiseRequests);
 
 module.exports = router;

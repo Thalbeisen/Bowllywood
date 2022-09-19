@@ -6,6 +6,7 @@ const logger = require('morgan');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const db = require('./database/dbConnect');
+const auth = require('./middlewares/auth');
 
 db.then(() => {
     const connectionStatus = 'connected';
@@ -14,11 +15,13 @@ db.then(() => {
 
 // get routers
 const usersRouter = require('./routes/users');
-const rolesRouter = require('./routes/roles');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
 const reservRouter = require('./routes/reserv');
 const reviewRouter = require('./routes/review');
+const franchiseRequestsRouter = require('./routes/franchiseRequests');
+const restaurantsRouter = require('./routes/restaurants');
+
 
 const app = express();
 // setup defini dans le dossier docs
@@ -39,12 +42,15 @@ app.use(
 // use routers
 app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
-app.use('/stock', stockRouter);
-app.use('/menu', menuRouter);
-app.use('/reservation', reservRouter);
-app.use('/review', reviewRouter);
+app.use('/reservations', reservRouter);
+app.use('/reviews', reviewRouter);
+app.use('/stocks', stockRouter);
+app.use('/menus', menuRouter);
+app.use('/franchiseRequests', auth, franchiseRequestsRouter);
+app.use('/restaurants', auth, restaurantsRouter);
 
 // server
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
 
 module.exports = app;

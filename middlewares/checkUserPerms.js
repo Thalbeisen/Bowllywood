@@ -12,19 +12,16 @@ exports.ceoAUTH = (req, res, next) => {
             (err, decodedToken) => {
                 console.log(decodedToken);
                 if (err) {
-                    return res.status(401).json({ message: 'Non autorisé' });
+
+                    res.status(401).json({ message: 'Non autorisé' });
                 }
                 if (decodedToken.roleID.roleName !== 'PDG') {
-                    return res
-                        .status(403)
-                        .json({ message: 'Accès PDG Requis' });
+                    res.status(403).json({ message: 'Accès PDG Requis' });
                 }
                 next();
             }
         );
     } else {
-        return res
-            .status(401)
-            .json({ message: 'Non autorisé, token invalide' });
+        res.status(401).json({ message: 'Non autorisé, token invalide' });
     }
 };
