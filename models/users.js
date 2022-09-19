@@ -42,7 +42,7 @@ const userSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        
+
         franchiseContracts: [
             {
                 // Clé étrangère
