@@ -177,7 +177,7 @@ const restaurantCtrl = require('../controllers/restaurants');
  *         description: The restaurant id.
  *     responses:
  *       200:
- *         description: The list of all restaurants.
+ *         description: The list of all active restaurants.
  *         content:
  *           application/json:
  *             schema:
