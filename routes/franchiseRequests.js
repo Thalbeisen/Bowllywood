@@ -124,7 +124,7 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *         description: The franchise request id.
  *     responses:
  *       200:
- *         description: The list of all the franchise requests
+ *         description: The list of all the active franchise requests
  *         content:
  *           application/json:
  *             schema:
