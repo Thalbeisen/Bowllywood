@@ -48,6 +48,15 @@ const stockSchema = new Schema(
             type: String,
             required: false,
         },
+        createdBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+        lastUpdateBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     {
         timestamps: true,
