@@ -29,7 +29,7 @@ exports.addRestaurant = async (req, res) => {
  */
 exports.getAllRestaurants = async (req, res) => {
     try {
-        const allRestaurants = await Restaurant.find({});
+        const allRestaurants = await Restaurant.find({ deletedAt: '' });
         if (!allRestaurants) {
             res.status(404).json(errors.emptyList);
         }
