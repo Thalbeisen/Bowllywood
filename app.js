@@ -43,7 +43,7 @@ app.use('/roles', rolesRouter);
 app.use('/stock', stockRouter);
 app.use('/menu', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
-app.use('/restaurants', restaurantsRouter);
+app.use('/restaurants', auth, restaurantsRouter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
