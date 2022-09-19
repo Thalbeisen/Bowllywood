@@ -47,6 +47,7 @@ app.use('/menus', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
 app.use('/restaurants', auth, restaurantsRouter);
 
+
 // server
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
