@@ -1,32 +1,7 @@
 const Menu = require('../models/menu');
+const errors = require('../conf/errors');
 
-/**
- * Get all the meals of the menu.
- * @param  {Response} res          Use the res.status 200 & 500.
- */
-exports.getAllMenu = async (req, res) => {
-    try {
-        const meals = await Menu.find({});
-        res.status(200).json(meals);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-};
-
-/**
- * Get one meal from the menu.
- * @param  {Request} req          Use req.params.id to get the meal we need.
- * @param  {Response} res          Use the res.status 200 & 500.
- */
-exports.getOneMeal = async (req, res) => {
-    try {
-        const meal = await Menu.findOne({ _id: req.params.id });
-        // (traitement)
-        res.status(200).json(meal);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-};
+const entity = 'MENU';
 
 /**
  * Create a meal from the menu list (a bowl).
@@ -37,11 +12,55 @@ exports.getOneMeal = async (req, res) => {
  */
 exports.createMeal = async (req, res) => {
     try {
-        const newMeal = await new Menu({ ...req.body }).save();
-        // 'Créé ! Rendez-vous sur mongodb'
+        const menuObj = {
+            ...req.body,
+            createdBy: req.body.userID,
+        };
+        delete menuObj.userID;
+
+        const newMeal = await new Menu(menuObj).save();
+        if (!newMeal) res.status(404).json(errors.createError(entity));
+
         res.status(201).json(newMeal);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(400).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
+ * Get all the meals of the menu.
+ * @param  {Response} res          Use the res.status 200 & 500.
+ */
+exports.getAllMenu = async (req, res) => {
+    try {
+        const meals = await Menu.find({});
+
+        if (!meals) res.status(404).json(errors.emptyList);
+
+        res.status(200).json(meals);
+    } catch (err) {
+        res.status(500).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
+ * Get one meal from the menu.
+ * @param  {Request} req          Use req.params.id to get the meal we need.
+ * @param  {Response} res          Use the res.status 200 & 500.
+ */
+exports.getOneMeal = async (req, res) => {
+    try {
+        const mealDetails = await Menu.findOne({ id: req.params.id });
+
+        if (!mealDetails) {
+            res.status(404).json({
+                message: errors.emptyData(entity),
+            });
+        }
+
+        res.status(200).json(mealDetails);
+    } catch (err) {
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -54,25 +73,42 @@ exports.createMeal = async (req, res) => {
  */
 exports.updateMeal = async (req, res) => {
     try {
-        const updatedMeal = await Menu.findOne({ _id: req.params.id }).update({
+        const menuObj = {
             ...req.body,
-        });
+            lastUpdateBy: req.body.userID,
+        };
+        delete menuObj.userID;
+
+        const updatedMeal = await Menu.findByIdAndUpdate(
+            req.params.id,
+            menuObj,
+            { returnDocument: 'after' }
+        );
+
+        if (!updatedMeal) {
+            res.status(404).json(errors.updateError);
+            return;
+        }
+
         res.status(200).json(updatedMeal);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
 /**
  * Delete a meal from the menu.
- * @param  {Request} req          Get the meal to delete with req.params.id.
+ * @param  {Request}  req          Get the meal to delete with req.params.id.
  * @param  {Response} res          Use res.status 200 & 500.
  */
 exports.deleteMeal = async (req, res) => {
     try {
-        await Menu.findByIdAndDelete({ _id: req.params.id });
+        const deletedMeal = await Menu.findByIdAndDelete(req.params.id);
+
+        if (!deletedMeal) res.status(404).json(errors.deleteError);
+
         res.status(200).json('Suppression réussie');
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };

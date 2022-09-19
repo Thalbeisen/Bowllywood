@@ -8,6 +8,7 @@ let entityDesc;
 let errorEntity;
 
 const getEntityDesc = (entity) => {
+
     switch (entity) {
         case 'USER':
             entityDesc = 'de votre compte ';
@@ -27,6 +28,8 @@ const getEntityDesc = (entity) => {
         case 'STOCK':
             entityDesc = 'du produit ';
             break;
+        case 'REVIEW':
+            entityDesc = "de l'avis ";
         case 'RESTAURANT':
             entityDesc = 'du restaurant ';
             break;
@@ -42,6 +45,19 @@ const getEntityDesc = (entity) => {
 const errorsList = {
     createError(entity) {
         errorEntity = getEntityDesc(entity);
+
+
+        return `La création ${errorEntity}a échoué. ${this.contactIfPersist}`;
+    },
+    
+    emptyData(entity) {
+        errorEntity = getEntityDesc(entity);
+
+        return `Aucune donnée ${errorEntity} n'a été trouvé.`;
+    },
+
+    errorOccured:
+        'Une erreur est apparue durant le traitenemnt de votre requête : ',
 
         return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
     },
@@ -67,6 +83,12 @@ const errorsList = {
 
         return `La suppression ${errorEntity}a déjà été effectué.`;
     },
+
+    itemNotFound: " L'élément n'existe pas ou été supprimé.",
+
+    contactIfPersist:
+        "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
+
 };
 
 module.exports = errorsList;

@@ -17,8 +17,11 @@ db.then(() => {
 const usersRouter = require('./routes/users');
 const stockRouter = require('./routes/stock');
 const menuRouter = require('./routes/menu');
+const reservRouter = require('./routes/reserv');
+const reviewRouter = require('./routes/review');
 const franchiseRequestsRouter = require('./routes/franchiseRequests');
 const restaurantsRouter = require('./routes/restaurants');
+
 
 const app = express();
 // setup defini dans le dossier docs
@@ -38,11 +41,17 @@ app.use(
 
 // use routers
 app.use('/users', usersRouter);
+app.use('/roles', rolesRouter);
+app.use('/reservations', reservRouter);
+app.use('/reviews', reviewRouter);
 app.use('/stocks', stockRouter);
 app.use('/menus', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
 app.use('/restaurants', auth, restaurantsRouter);
 
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
+
+
 
 module.exports = app;
