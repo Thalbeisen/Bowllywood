@@ -57,7 +57,7 @@ exports.getOneReserv = async (req, res) => {
 
         res.status(200).json(reservDetails);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -72,13 +72,11 @@ exports.updateReserv = async (req, res) => {
             ...req.body,
         });
 
-        if (!updatedReserv) res.status(404).json(errors.updateError);
+        if (!updatedReserv) res.status(404).json(errors.updateError(entity));
 
         res.status(200).json(updatedReserv);
     } catch (err) {
-        res.status(500).json(err.message);
-
-        res.status(403).json(errors.updateError);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -96,7 +94,7 @@ this.getDeletedDate = async function (req, res) {
 
         return reservation ? reservation.deletedAt : null;
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -119,10 +117,8 @@ exports.deleteReserv = async (req, res) => {
             deletedAt: Date.now(),
         });
 
-        if (archivedReserv == null)
+        if (!archivedReserv)
             res.status(404).json(errors.deleteError + errors.itemNotFound);
-
-        if (!archivedReserv) res.status(404).json(errors.deleteError);
 
         res.status(200).json(archivedReserv);
     } catch (err) {

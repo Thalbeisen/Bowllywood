@@ -108,12 +108,11 @@ exports.updateStock = async (req, res) => {
             stockObj
         );
 
-        if (!updatedStock) res.status(404).json(errors.updateError);
+        if (!updatedStock) res.status(404).json(errors.updateError(entity));
 
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
         res.status(201).json(updatedStock);
     } catch (err) {
-        //
         res.status(500).json(errors.errorOccured + err.message);
     }
 };

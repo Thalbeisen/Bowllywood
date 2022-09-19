@@ -54,13 +54,14 @@ exports.updateReview = async (req, res) => {
             { returnDocument: 'after' }
         );
 
-        if (!updatedReview) res.status(404).json(errors.updateError);
+        if (!updatedReview) {
+            res.status(404).json(errors.updateError(entity));
+            return;
+        }
 
         res.status(200).json(updatedReview);
     } catch (err) {
-        res.status(500).json(errors.err.message);
-
-        res.status(403).json(errors.updateError);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -78,7 +79,7 @@ this.getDeletedDate = async function (req, res) {
 
         return review ? review.deletedAt : null;
     } catch (err) {
-        res.status(500).json(`gdd ${errors.errorOccured}${err.message}`);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -113,6 +114,6 @@ exports.deleteReview = async (req, res) => {
 
         res.status(200).json(archivedReview);
     } catch (err) {
-        res.status(500).json(`dr ${errors.errorOccured}${err.message}`);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };

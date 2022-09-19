@@ -13,6 +13,6 @@ router.post('/new_delivery', auth, stockCtrl.createNewDelivery);
 router.post('/update/:id', auth, stockCtrl.updateStock);
 router.delete('/delete/:id', auth, stockCtrl.deleteStock);
 router.get('/:id', auth, stockCtrl.getOneStock);
-router.get('/', auth, stockCtrl.getAllstock);
+router.get('/', stockCtrl.getAllstock);
 
 module.exports = router;

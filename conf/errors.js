@@ -8,7 +8,6 @@ let entityDesc;
 let errorEntity;
 
 const getEntityDesc = (entity) => {
-
     switch (entity) {
         case 'USER':
             entityDesc = 'de votre compte ';
@@ -30,6 +29,7 @@ const getEntityDesc = (entity) => {
             break;
         case 'REVIEW':
             entityDesc = "de l'avis ";
+            break;
         case 'RESTAURANT':
             entityDesc = 'du restaurant ';
             break;
@@ -46,10 +46,9 @@ const errorsList = {
     createError(entity) {
         errorEntity = getEntityDesc(entity);
 
-
         return `La création ${errorEntity}a échoué. ${this.contactIfPersist}`;
     },
-    
+
     emptyData(entity) {
         errorEntity = getEntityDesc(entity);
 
@@ -58,9 +57,6 @@ const errorsList = {
 
     errorOccured:
         'Une erreur est apparue durant le traitenemnt de votre requête : ',
-
-        return `La création ${errorEntity}a échoué. Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.`;
-    },
 
     updateError(entity) {
         errorEntity = getEntityDesc(entity);
@@ -88,7 +84,6 @@ const errorsList = {
 
     contactIfPersist:
         "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
-
 };
 
 module.exports = errorsList;

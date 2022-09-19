@@ -86,7 +86,7 @@ exports.updateMeal = async (req, res) => {
         );
 
         if (!updatedMeal) {
-            res.status(404).json(errors.updateError);
+            res.status(404).json(errors.updateError(entity));
             return;
         }
 

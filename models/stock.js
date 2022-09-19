@@ -48,6 +48,11 @@ const stockSchema = new Schema(
             type: String,
             required: false,
         },
+        restaurantID: {
+            type: Schema.Types.ObjectId,
+            ref: 'restaurant',
+            required: true,
+        },
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
