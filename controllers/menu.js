@@ -14,7 +14,7 @@ exports.createMeal = async (req, res) => {
     try {
         const menuObj = {
             ...req.body,
-            createdBy: '63233dea610f1f4b73a99a8d', // req.body.userID,
+            createdBy: req.body.userID,
         };
         delete menuObj.userID;
 
@@ -75,7 +75,7 @@ exports.updateMeal = async (req, res) => {
     try {
         const menuObj = {
             ...req.body,
-            lastUpdateBy: '632471120361eb66b468a627', // req.body.userID,
+            lastUpdateBy: req.body.userID,
         };
         delete menuObj.userID;
 

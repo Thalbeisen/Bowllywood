@@ -179,9 +179,9 @@ const menuCtrl = require('../controllers/menu');
 const auth = require('../middlewares/auth');
 
 // set the routers for each methods
-router.post('/create', menuCtrl.createMeal); // auth,
-router.post('/update/:id', menuCtrl.updateMeal); // auth,
-router.delete('/delete/:id', menuCtrl.deleteMeal); // auth,
+router.post('/create', auth, menuCtrl.createMeal);
+router.post('/update/:id', auth, menuCtrl.updateMeal);
+router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
 router.get('/:id', menuCtrl.getOneMeal);
 router.get('/', menuCtrl.getAllMenu);
 

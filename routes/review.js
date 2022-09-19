@@ -140,9 +140,9 @@ const reviewCtrl = require('../controllers/review');
 const auth = require('../middlewares/auth');
 
 // set the routers for each action/methods
-router.post('/create', reviewCtrl.createReview); // auth,
-router.post('/update/:id', reviewCtrl.updateReview); // auth,
-router.patch('/delete/:id', reviewCtrl.deleteReview); // auth,
+router.post('/create', auth, reviewCtrl.createReview);
+router.post('/update/:id', auth, reviewCtrl.updateReview);
+router.patch('/delete/:id', auth, reviewCtrl.deleteReview);
 router.get('/', reviewCtrl.getAllReview);
 
 module.exports = router;
