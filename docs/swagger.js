@@ -14,6 +14,11 @@ const options = {
         servers: [
             {
                 url: 'http://localhost:3000',
+                description: 'Serveur local',
+            },
+            {
+                url: 'https://dashboard.heroku.com/apps/bowllywood-api',
+                description: 'Serveur heroku',
             },
         ],
     },

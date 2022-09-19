@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const swaggerUi = require('swagger-ui-express');
+const swaggerUI = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const db = require('./database/dbConnect');
 const auth = require('./middlewares/auth');
@@ -43,6 +43,6 @@ app.use('/menus', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
 app.use('/restaurants', auth, restaurantsRouter);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
 module.exports = app;
