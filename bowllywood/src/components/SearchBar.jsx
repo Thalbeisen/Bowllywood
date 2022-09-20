@@ -1,10 +1,10 @@
-import './SearchBar.css'
+import './SearchBar.scss'
 
 const SearchBar = () => {
     return (
-        <div>
+        <>
             <input type="search" name="search" placeholder='Barre de recherche' className='searchBar'/>
-        </div>
+        </>
     );
 }
 
