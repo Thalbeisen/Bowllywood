@@ -1,3 +1,33 @@
-.inputCtnr {
-    
+@import "~bootstrap/scss/bootstrap";
+@import "./variables.scss";
+
+/////////////////
+// debug class //
+/////////////////
+.bb {border: red 2px solid;}
+
+////////////////
+// base style //
+////////////////
+.no-border {border: none;}
+
+//////////
+// form //
+//////////
+.inputCtnr{
+    label {
+        font-variant: all-small-caps;
+        font-family: $ibm-font;
+        font-size: .95rem;
+        text-align: start;
+    }
+
+    input {
+        border-bottom: solid 2px $pale-grey;
+        transition: border .2s ease-out;
+        outline-width: 0;
+
+        &:hover {border-color: $dark-grey;}
+        &:focus {border-color: $dark-grey;}
+    }
 }

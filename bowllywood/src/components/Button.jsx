@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Button.scss';
+import '../sass/style.scss';
 
 const Button =  () => {
     const [counter, setCounter] = useState(0);
@@ -7,8 +8,8 @@ const Button =  () => {
         setCounter(c => c + 1);
     }
     return ( 
-    <div className='btn-container'>
-        <button onClick={handleClick}>Cliqué { counter }</button>
+    <div className=''>
+        <button className='btn bg-primary' onClick={handleClick}>Clique { counter }</button>
     </div> 
     );
 }
