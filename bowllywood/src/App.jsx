@@ -3,10 +3,6 @@ import './App.scss';
 import './sass/style.scss';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
-<<<<<<< HEAD:bowllywood/src/App.jsx
-// import Button from './components/Button';
-=======
->>>>>>> 5d9420c4aee0828f309c2055e7deaa31552bedf5:bowllywood/src/App.js
 // Normalement on le fait dans le dossier des services
 // import axios from 'axios';
 // import { useEffect, useState } from 'react';
@@ -33,11 +29,7 @@ function App() {
         type="0"
         value="test"
         />
-<<<<<<< HEAD:bowllywood/src/App.jsx
-       <SearchBar /> 
-=======
       <SearchBar />
->>>>>>> 5d9420c4aee0828f309c2055e7deaa31552bedf5:bowllywood/src/App.js
       <Header logo={logo} />
       {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
       <ProductCard />
