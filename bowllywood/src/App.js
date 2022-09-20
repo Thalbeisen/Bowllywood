@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 // Normalement on le fait dans le dossier des services
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import ButtonSecondary from './components/ButtonSecondary';
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -17,10 +18,11 @@ function App() {
   }, [])
   return (
     <div className="App">
-      <SearchBar />
-      <Header logo={logo} />
-      <Button />
-      {posts.map(post => <h2 key={post.id}>{post.title}</h2>)}
+      <ButtonSecondary />
+      {/* <SearchBar /> */}
+      {/* <Header logo={logo} /> */}
+      {/* <Button /> */}
+      {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
     </div>
   );
 }
