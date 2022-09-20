@@ -1,12 +1,11 @@
 import logo from './logo.svg';
 import './App.scss';
 import Header from './components/Header';
-import Button from './components/Button';
 import SearchBar from './components/SearchBar';
 // Normalement on le fait dans le dossier des services
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import ButtonSecondary from './components/ButtonSecondary';
+import Button from './components/Button';
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -18,10 +17,9 @@ function App() {
   }, [])
   return (
     <div className="App">
-      <ButtonSecondary />
+      <Button type='primary'  />
       {/* <SearchBar /> */}
       {/* <Header logo={logo} /> */}
-      {/* <Button /> */}
       {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
     </div>
   );
