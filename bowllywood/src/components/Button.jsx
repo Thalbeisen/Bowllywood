@@ -1,15 +1,11 @@
-import { useState } from 'react';
-import './Button.scss';
+import './../sass/styles.scss'
 
-const Button =  () => {
-    const [counter, setCounter] = useState(0);
-    const handleClick = () => {
-        setCounter(c => c + 1);
-    }
-    return ( 
-    <div className='btn-container'>
-        <button onClick={handleClick}>Cliqué { counter }</button>
-    </div> 
+const Button = ({type='primary'}) => {
+
+    return (
+        <>
+            <button class={`btn btn-${type} text-black`}>Bouton classique</button>            
+        </>
     );
 }
 
