@@ -1,0 +1,9 @@
+.btn-container {
+    padding: 20px;
+}
+
+.btn-container button {
+    padding: 2em 4em;
+    background-color: skyblue;
+    color: white;
+}
