@@ -1,3 +1,4 @@
+import "./Form.scss";
 import { useState } from "react";
 
 const CustomForm = (props) => {

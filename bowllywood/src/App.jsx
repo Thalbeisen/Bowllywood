@@ -2,8 +2,8 @@ import logo from './logo.svg';
 import './App.scss';
 import './sass/style.scss';
 import Header from './components/Header';
+import SearchBar from './components/SearchBar';
 // import Button from './components/Button';
-// import SearchBar from './components/SearchBar';
 // Normalement on le fait dans le dossier des services
 // import axios from 'axios';
 // import { useEffect, useState } from 'react';
@@ -23,9 +23,9 @@ function App() {
         name="Test"
         desc="Test input description"
         type="0"
-        // value="email@email.fr"
+        value="test"
         />
-      {/* <SearchBar /> */}
+       <SearchBar /> 
       <Header logo={logo} />
       {/* <Button /> */}
       {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
