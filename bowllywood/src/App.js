@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header';
 import Button from './components/Button';
+import SearchBar from './components/SearchBar';
 // Normalement on le fait dans le dossier des services
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ function App() {
   }, [])
   return (
     <div className="App">
+      <SearchBar />
       <Header logo={logo} />
       <Button />
       {posts.map(post => <h2 key={post.id}>{post.title}</h2>)}
