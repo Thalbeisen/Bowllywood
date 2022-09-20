@@ -1,6 +1,6 @@
-    const Header = (props) => {
-        return (
-            <header className="App-header">
+const Header = (props) => {
+    return (
+      <header className="App-header">
         <img src={props.logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -10,11 +10,9 @@
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-        );
-    }
+        > Learn React </a>
+    </header>
+    );
+}
 
-    export default Header;
+export default Header;
