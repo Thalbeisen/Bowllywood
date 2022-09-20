@@ -8,6 +8,9 @@ import Header from './components/Header';
 // import axios from 'axios';
 // import { useEffect, useState } from 'react';
 import Input from './components/Input';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import ProductCard from './components/Card';
 
 function App() {
   // const [posts, setPosts] = useState([]);
@@ -29,6 +32,7 @@ function App() {
       <Header logo={logo} />
       {/* <Button /> */}
       {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
+      <ProductCard />
     </div>
   );
 }
