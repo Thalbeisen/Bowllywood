@@ -1,3 +1,13 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import './variables.scss';
 @import './../components/Button.scss';
+
+/////////////////
+// debug class //
+/////////////////
+.bb {border: red 2px solid;}
+
+////////////////
+// base style //
+////////////////
+.no-border {border: none;}
