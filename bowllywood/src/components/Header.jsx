@@ -1,7 +1,8 @@
 const Header = (props) => {
     return (
       <header className="App-header">
-        <img src={props.logo} className="App-logo" alt="logo" />
+        <h2>Salés</h2>
+        {/*<img src={props.logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -10,7 +11,7 @@ const Header = (props) => {
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
-        > Learn React </a>
+        > Learn React </a>*/}
     </header>
     );
 }
