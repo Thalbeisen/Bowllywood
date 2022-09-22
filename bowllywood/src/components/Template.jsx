@@ -20,13 +20,13 @@ const Template = () => {
                             </Link>
                         </div>
                         <div className="nav-bloc">
-                            <Link to="/reservation" className='text-decoration-none text-black'>
+                            <Link to="/reservations" className='text-decoration-none text-black'>
                                 <i className="fa-solid fa-money-bill text-black"></i>
                                 <p className='text-black'>Réservation</p>
                             </Link>
                         </div>
                         <div className="nav-bloc">
-                            <Link to="/menu" className='text-decoration-none text-black'>
+                            <Link to="/menus" className='text-decoration-none text-black'>
                                 <i className="fa-solid fa-utensils text-black"></i>
                                 <p>Menu</p>
                             </Link>
