@@ -1,10 +1,10 @@
-import './../sass/styles.scss'
+import './../sass/styles.scss';
 
-const Button = ({type='primary'}) => {
+const Button = ({type='button', bsType='primary', children}) => {
 
     return (
         <>
-            <button class={`btn btn-${type} text-black`}>Bouton</button>            
+            <button type={type} class={`btn btn-${bsType} text-black`}>{children}</button>            
         </>
     );
 }
