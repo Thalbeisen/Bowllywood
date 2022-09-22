@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -24,6 +23,5 @@ function App() {
             </Router>
         </div>
     );
-}
 
 export default App;
