@@ -1,0 +1,23 @@
+@import './sass/variables.scss';
+
+body {
+  margin: 0;
+  font-family: $ibm-font;
+  background-color: $off-white !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+h2, h1 {
+  font-family: $mauikea-font;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0 !important;
+}
