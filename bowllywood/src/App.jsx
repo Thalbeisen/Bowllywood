@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
 
+
 import Template from './components/Template';
 
 function App() {
@@ -24,6 +25,5 @@ function App() {
             </Router>
         </div>
     );
-}
 
 export default App;
