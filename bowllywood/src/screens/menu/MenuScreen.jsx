@@ -1,13 +1,23 @@
 import './MenuScreen.scss';
+import { useEffect, useState } from 'react';
+import { getAllMeal } from '../../service/meal';
 import HeaderTitle from '../../components/HeaderTitle';
 
 // donnée en dure
 import tereakiImg from '../../assets/img/menu/sale/tereakiWeb.jpg';
 import tahitiImg  from '../../assets/img/menu/sale/tahitiWeb.jpg';
-import pouletImg  from '../../assets/img/menu/sale/pouletWeb.jpg';
 import veggieImg  from '../../assets/img/menu/sale/veggieWeb.jpg';
 
-function MenuScreen() {
+function MenuScreen() {	
+	const [menu, setMenu] = useState([]);
+	useEffect( () => {
+		getAllMeal().then((res) => {
+			setMenu(res.data);
+		}).catch((err) => {
+			console.log(err);
+		});
+	}, [] );
+	console.log(menu);
 
 return (
 	<>
