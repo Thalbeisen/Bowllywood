@@ -3,17 +3,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
 import './sass/style.scss';
-import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 // Normalement on le fait dans le dossier des services
 import axios from 'axios';
 // import
 import { useEffect, useState } from 'react';
-import MenuScreen from './screens/MenuScreen';
+import MenuScreen from './screens/menu/MenuScreen';
 import Button from './components/Button';
 import ProductCard from './components/Card';
 //import Navbar from './components/Navbar';
-import RegisterScreen from './screens/RegisterScreen';
+import LoginScreen from './screens/login/LoginScreen';
+import RegisterScreen from './screens/register/RegisterScreen';
 import 'bootstrap/dist/js/bootstrap.bundle.min';  
 import Template from './components/Template';
 
@@ -28,8 +28,8 @@ function App() {
                         <Route path="/reservation" />
                         <Route path="/menu" />
                         <Route path="/mark" />
-                        <Route path="/register" />
-                        <Route path="/login" />
+                        <Route path="/register" element={<RegisterScreen />} />
+                        <Route path="/login" element={<LoginScreen />}/>
                         </Route>
                     </Routes>
             </Router>

@@ -2,7 +2,7 @@ import './Form.scss';
 
 const InputText = (props) => {
     return (
-        <div className="inputCtnr col-6 px-0 my-5">
+        <div className="inputCtnr col-6 px-0 my-4">
             <label htmlFor={props.name} className="w-100">
                 {props.desc}
             </label>

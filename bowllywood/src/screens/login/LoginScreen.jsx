@@ -1,7 +1,8 @@
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import InputText from '../components/Input';
-import '../sass/styles.scss';
+import InputText from '../../components/Input';
+import { Col, Row, Container } from 'react-bootstrap';
+import '../../sass/styles.scss';
 
 const loginSchema = yup.object().shape({
     email: yup
@@ -31,22 +32,25 @@ function LoginScreen() {
                 handleBlur,
                 handleSubmit,
             }) => (
-                <div className="container-fluid">
-                    <div className="loginLogoContainer">
+                <Container>
+                    <Row>
+                    <Col>
                         <img
                             src="Bowllywood.png"
                             alt="Logo du restaurant de bowls nommé Bowllywood"
-                            className='loginLogo'
                         />
+                        </Col>
+                        <Col>
                         <p className='loginText'>
                             Te connecter sur notre site te permettra de gérer
                             ton espace fidélité et d’avoir une traçabilité de
                             tes réservations
                         </p>
-                    </div>
-                    <div className="loginForm">
+                        </Col>
+                        </Row>
                         <form noValidate onSubmit={handleSubmit}>
-                            <div className="inputContainer">
+                            <Row className="loginContainer">
+                                <Col className="d-flex justify-content-center">
                                 <InputText
                                     error={
                                         errors.email &&
@@ -58,10 +62,12 @@ function LoginScreen() {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.email}
-                                    desc="Veuillez entrer votre adresse mail"
-                                    className="form-control"
+                                    placeholder="jbon@herta.fr"
+                                    desc="Email"
                                     id="email"
                                 />
+                                </Col>
+                                <Col className="d-flex justify-content-center">
                                 <InputText
                                     error={
                                         errors.password &&
@@ -73,16 +79,15 @@ function LoginScreen() {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.password}
-                                    desc="Entrez votre mot de passe"
-                                    className="form-control"
+                                    desc="Mot de passe"
                                 />
-                            </div>
+                                </Col>
+                            </Row>
                             <button type="submit" className="loginButton">
                                 Connexion
                             </button>
                         </form>
-                    </div>
-                </div>
+                    </Container>
             )}
         </Formik>
     );

@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import InputText from '../components/Input';
+import InputText from '../../components/Input';
 import { Col, Row, Container } from 'react-bootstrap';
-import '../sass/styles.scss';
+import '../../sass/styles.scss';
 
 function RegisterScreen() {
     return (
@@ -26,7 +26,8 @@ function RegisterScreen() {
                     handleBlur,
                     handleSubmit,
                 }) => (
-                    <Row>
+                    <Container>
+                        <Row>
                         <Col>
                             <img
                                 src="Bowllywood.png"
@@ -40,6 +41,7 @@ function RegisterScreen() {
                                 de tes réservations
                             </p>
                         </Col>
+                        </Row>
                         <form noValidate onSubmit={handleSubmit}>
                             <Row className="registerContainer">
                                 <Col className="d-flex justify-content-center">
@@ -51,12 +53,10 @@ function RegisterScreen() {
                                         value={values.firstName}
                                         desc="Tapes ton prénom"
                                         placeholder="Jean"
+                                        error={
+                                            errors.firstName && touched.firstName && errors.firstName
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.firstName &&
-                                            touched.firstName &&
-                                            errors.firstName}
-                                    </p>
                                 </Col>
                                 <Col className="d-flex justify-content-center">
                                     <InputText
@@ -67,12 +67,10 @@ function RegisterScreen() {
                                         value={values.lastName}
                                         desc="Et ton nom de famille"
                                         placeholder="Bon"
+                                        error={
+                                            errors.lastName && touched.lastName && errors.lastName
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.lastName &&
-                                            touched.lastName &&
-                                            errors.lastName}
-                                    </p>
                                 </Col>
                             </Row>
                             <Row>
@@ -83,12 +81,10 @@ function RegisterScreen() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         desc="Quand es-tu né?"
+                                        error={
+                                            errors.birthDate && touched.birthDate && errors.birthDate
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.birthday &&
-                                            touched.birthday &&
-                                            errors.birthday}
-                                    </p>
                                 </Col>
                                 <Col className="d-flex justify-content-center">
                                     <InputText
@@ -98,12 +94,10 @@ function RegisterScreen() {
                                         onBlur={handleBlur}
                                         desc="Donnes-nous ton adresse mail?"
                                         placeholder="jbon@herta.fr"
+                                        error={
+                                            errors.email && touched.email && errors.email
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.email &&
-                                            touched.email &&
-                                            errors.email}
-                                    </p>
                                 </Col>
                             </Row>
                             <Row>
@@ -115,12 +109,10 @@ function RegisterScreen() {
                                         onBlur={handleBlur}
                                         value={values.password}
                                         desc="Choisis un mot de passe"
+                                        error={
+                                            errors.password && touched.password && errors.password
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.password &&
-                                            touched.password &&
-                                            errors.password}
-                                    </p>
                                 </Col>
                                 <Col className="d-flex justify-content-center">
                                     <InputText
@@ -129,19 +121,17 @@ function RegisterScreen() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         desc="Confirme ton mot de passe"
+                                        error={
+                                            errors.passwordConfirm && touched.passwordConfirm && errors.passwordConfirm
+                                        }
                                     />
-                                    <p className="error">
-                                        {errors.passwordConfirm &&
-                                            touched.passwordConfirm &&
-                                            errors.passwordConfirm}
-                                    </p>
                                 </Col>
                             </Row>
                             <button type="submit" className="registerButton">
                                 Enregistrer
                             </button>
                         </form>
-                    </Row>
+                    </Container>
                 )}
             </Formik>
         </Container>
