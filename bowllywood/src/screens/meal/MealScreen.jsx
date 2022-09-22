@@ -14,6 +14,7 @@ const MealScreen = () => {
 			console.log(err);
 		}) 
 	}, [] )
+	console.log(meal);
 	
 	return (
 		<>

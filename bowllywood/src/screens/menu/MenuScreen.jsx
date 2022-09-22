@@ -1,4 +1,5 @@
 import './MenuScreen.scss';
+import HeaderTitle from '../../components/HeaderTitle';
 
 // donnée en dure
 import tereakiImg from '../../assets/img/menu/sale/tereakiWeb.jpg';
@@ -10,6 +11,7 @@ function MenuScreen() {
 
 return (
 	<>
+		<HeaderTitle />
 		<section className="menuCtnr container">
 			<div className="row align-items-center justify-content-center gap-3">
 			<div className="col-2">
