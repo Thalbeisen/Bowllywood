@@ -1,9 +1,0 @@
-
-
-const FranchiseRequestScreen = () => {
-    return (
-        <>
-        
-        </>
-    )
-}
