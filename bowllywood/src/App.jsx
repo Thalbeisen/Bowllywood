@@ -1,5 +1,6 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
 import './sass/style.scss';
 import Header from './components/Header';
@@ -14,26 +15,26 @@ import ProductCard from './components/Card';
 //import Navbar from './components/Navbar';
 import RegisterScreen from './screens/RegisterScreen';
 import 'bootstrap/dist/js/bootstrap.bundle.min';  
+import Template from './components/Template';
+
 function App() {
-  return (
-    <div className="App">
-      {/* <Header logo={logo}/> */}
-      <RegisterScreen />
-      {/* <Button type='primary'  /> */}
-      {/* <Button type='secondary' /> */}
-        {/* <Input
-        name="Test"
-        desc="Test input description"
-        type="0"
-        value="test"
-        /> */}
-      {/* <SearchBar /> */}
-      {/* <Header logo={logo} /> */}
-      {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
-      {/* <ProductCard /> */}
-      {/* <Navbar /> */}
-    </div>
-  );
+    return (
+        <div className="App">
+            <Router>
+                    <Routes>
+                      <Route path="/" element={<Template/>}>
+                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                        {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/reservation" />
+                        <Route path="/menu" />
+                        <Route path="/mark" />
+                        <Route path="/register" />
+                        <Route path="/login" />
+                        </Route>
+                    </Routes>
+            </Router>
+        </div>
+    );
 }
 
 export default App;

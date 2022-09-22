@@ -1,17 +1,14 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import './variables.scss';
 @import './../components/Button.scss';
+@import './../components/template.scss';
+@import './../components/Navbar.scss';
 
-/////////////////
 // debug class //
-/////////////////
 .bb {border: red 2px solid;}
 
-////////////////
 // base style //
-////////////////
 .no-border {border: none;}
-@import './../components/Navbar.scss';
 
 ////////////////
 //login style //
@@ -84,4 +81,19 @@
         background-color: $green;
         border-color: $green;
     }
+}
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.mauikea_font {
+	font-family: $mauikea-font;
+}
+
+.infoStyle {
+	font-style: italic;
+	font-size: .8em;
 }
