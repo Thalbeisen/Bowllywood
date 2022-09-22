@@ -1,49 +1,67 @@
-import logoHome from './../logos/home.svg';
-import logoReservation from './../logos/reserv.svg';
-import logoMenu from './../logos/menu.svg';
-import logoStar from './../logos/stars.svg';
+import './../sass/styles.scss';
 
-const Navbar = (props, {type='primary'}) => {
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
+import imgAccueil from './../assets/img/accueil.png';
+
+const Navbar = () => {
     return (
         <>
-        <nav class="navbar navbar-success bg-success fixed-top">
-        {/* <nav class={`navbar navbar-${type} bg-dark fixed-top`}> */}
-        {/* <nav class={`navbar navbar-dark bg-${type} fixed-top}`> */}
-
-  <div class="container-fluid">
-    {/* <a class="navbar-brand" href="#">Test navbar</a> */}
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-start text-bg-success" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-      <div class="offcanvas-header">
-        {/* <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5> */}
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#"><img src={logoHome} alt="" /></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><img src={logoReservation} alt="" /></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><img src={logoMenu} alt="" /></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><img src={logoStar} alt="" /></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</nav>
+            <Router>
+                <nav className="side-nav navbar-expand-lg">
+                    <button class="navbar-toggler grow" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span><i class="fa-solid fa-bars p-3 text-white"></i></span>
+                    </button>
+                    <div className="wrapper" id="navbarTogglerDemo02">
+                        <div className="nav-bloc">
+                            <Link to="/home" className='text-decoration-none text-black'>
+                                <i className="fa-solid fa-house text-black"></i>
+                                <p className='text-black'>Accueil</p>
+                            </Link>
+                        </div>
+                        <div className="nav-bloc">
+                            <Link to="/reservation" className='text-decoration-none text-black'>
+                                <i className="fa-solid fa-money-bill text-black"></i>
+                                <p className='text-black'>Réservation</p>
+                            </Link>
+                        </div>
+                        <div className="nav-bloc">
+                            <Link to="/menu" className='text-decoration-none text-black'>
+                                <i className="fa-solid fa-utensils text-black"></i>
+                                <p>Menu</p>
+                            </Link>
+                        </div>
+                        <div className="nav-bloc">
+                            <Link to="/mark" className='text-decoration-none text-black'>
+                                <i className="fa-solid fa-star text-black"></i>
+                                <p>Évaluation</p>
+                            </Link>
+                        </div>
+                        <div className="nav-bloc ">
+                            <Link to="/register" className="text-black text-decoration-none">Inscription</Link>
+                        </div>
+                        <div className="nav-bloc">
+                            <Link to="/login" className="text-black text-decoration-none">Connexion</Link>
+                        </div>
+                    </div>
+                </nav>
+                
+                <Routes>
+                    <Route path="/">{/* <HomeScreen /> */}</Route>
+                    <Route path="/reservation">{/* < /> */}</Route>
+                    <Route path="/menu">{/* <MenuScreen /> */}</Route>
+                    <Route path="/mark">{/* <MarkScreen /> */}</Route>
+                    <Route path="/register">{/* <RegisterScreen /> */}</Route>
+                    <Route path="/login">{/* < LoginScreen/> */}</Route>
+                </Routes>
+            </Router>
+                
+            <div className="vh-100">
+                <img src={imgAccueil} alt="Accueil" className="imgHome" />
+            </div>
         </>
     );
-}
+};
 
 export default Navbar;
-
-
