@@ -1,17 +1,16 @@
 import './../sass/styles.scss';
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+// IMPORTER LES ELEMENTS A METTRE DANS LA NAVIGATION COMME CI DESSOUS
+// import Test from './Test';
 
-import imgAccueil from './../assets/img/accueil.png';
-
-const Navbar = () => {
+const Template = () => {
     return (
         <>
-            <Router>
                 <nav className="side-nav navbar-expand-lg">
                     <button class="navbar-toggler grow" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                    <span><i class="fa-solid fa-bars p-3 text-white"></i></span>
+                    <span><i class="fa-solid fa-bars p-3"></i></span>
                     </button>
                     <div className="wrapper" id="navbarTogglerDemo02">
                         <div className="nav-bloc">
@@ -46,22 +45,15 @@ const Navbar = () => {
                         </div>
                     </div>
                 </nav>
-                
-                <Routes>
-                    <Route path="/">{/* <HomeScreen /> */}</Route>
-                    <Route path="/reservation">{/* < /> */}</Route>
-                    <Route path="/menu">{/* <MenuScreen /> */}</Route>
-                    <Route path="/mark">{/* <MarkScreen /> */}</Route>
-                    <Route path="/register">{/* <RegisterScreen /> */}</Route>
-                    <Route path="/login">{/* < LoginScreen/> */}</Route>
-                </Routes>
-            </Router>
-                
+                     
             <div className="vh-100">
-                <img src={imgAccueil} alt="Accueil" className="imgHome" />
+                {/* INSÉRER LES ÉLÉMENTS CENTRAUX ICI */}
+                <Outlet />
             </div>
+
+            <div className='col-12 footer'></div>
         </>
     );
 };
 
-export default Navbar;
+export default Template;

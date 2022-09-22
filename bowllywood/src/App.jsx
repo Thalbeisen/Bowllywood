@@ -1,44 +1,29 @@
-import logo from './logo.svg';
 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
-import './sass/style.scss';
-import Header from './components/Header';
-import SearchBar from './components/SearchBar';
-// Normalement on le fait dans le dossier des services
-// import axios from 'axios';
-// import { useEffect, useState } from 'react';
-import Input from './components/Input';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Button from './components/Button';
-import ProductCard from './components/Card';
-import Navbar from './components/Navbar';
-import 'bootstrap/dist/js/bootstrap.bundle.min';  
+
+import Template from './components/Template';
+
 function App() {
-  // const [posts, setPosts] = useState([]);
-  // useEffect(() => {
-  //   axios.get('https://jsonplaceholder.typicode.com/posts').then(res => {
-  //     setPosts(res.data);
-  //     console.log(res.data);
-  //   })
-  // }, [])
-  return (
-    <div className="App">
-      {/* <Button type='primary'  /> */}
-      {/* <Button type='secondary' /> */}
-        {/* <Input
-        name="Test"
-        desc="Test input description"
-        type="0"
-        value="test"
-        /> */}
-      {/* <SearchBar /> */}
-      {/* <Header logo={logo} /> */}
-      {/* {posts.map(post => <h2 key={post.id}>{post.title}</h2>)} */}
-      {/* <ProductCard /> */}
-      <Navbar />
-    </div>
-  );
+    return (
+        <div className="App">
+            <Router>
+                    <Routes>
+                      <Route path="/" element={<Template/>}>
+                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                        {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/reservation" />
+                        <Route path="/menu" />
+                        <Route path="/mark" />
+                        <Route path="/register" />
+                        <Route path="/login" />
+                        </Route>
+                    </Routes>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
