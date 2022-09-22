@@ -16,3 +16,8 @@ code {
 h2, h1 {
   font-family: $mauikea-font;
 }
+
+ul {
+  list-style: none;
+  padding-left: 0 !important;
+}
