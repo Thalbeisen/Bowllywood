@@ -4,6 +4,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
 
 import Template from './components/Template';
+import FranchiseRequest from './screens/franchiseRequestScreen';
 
 function App() {
     return (
@@ -18,6 +19,8 @@ function App() {
                           <Route path="/mark" />
                           <Route path="/register" />
                           <Route path="/login" />
+                          <Route path="/franchise-request" element={<FranchiseRequest/>}/>
+
                       </Route>
                     </Routes>
             </Router>
