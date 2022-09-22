@@ -1,24 +1,27 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
-import './sass/styles.scss';
-// Normalement on le fait dans le dossier des services
-import axios from 'axios';
 
-// import
-import { useEffect, useState } from 'react';
-import Navbar from './components/Navbar';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-
-import MenuScreen from './screens/menu';
-import MealScreen from './screens/meal';
+import Template from './components/Template';
 
 function App() {
-  return (
-    <div className="App">
-      <MealScreen />
-    </div>
-  );
-}
+    return (
+        <div className="App">
+            <Router>
+                    <Routes>
+                      <Route path="/" element={<Template/>}>
+                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                        {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/reservation" />
+                        <Route path="/menu" />
+                        <Route path="/mark" />
+                        <Route path="/register" />
+                        <Route path="/login" />
+                        </Route>
+                    </Routes>
+            </Router>
+        </div>
+    );
 
 export default App;
