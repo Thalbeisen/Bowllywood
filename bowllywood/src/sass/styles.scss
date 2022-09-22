@@ -2,3 +2,24 @@
 @import './variables.scss';
 @import './../components/Button.scss';
 @import './../components/Navbar.scss';
+
+// debug class //
+.bb {border: red 2px solid;}
+
+// base style //
+.no-border {border: none;}
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.mauikea_font {
+	font-family: $mauikea-font;
+}
+
+.infoStyle {
+	font-style: italic;
+	font-size: .8em;
+}

@@ -1,0 +1,31 @@
+@import '../../sass/styles.scss';
+
+.menuCtnr{
+	margin-top: 6em;
+
+	.imgCtnr {
+		width: 10rem;
+		height: 10rem;
+		border-radius: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 100%;
+			vertical-align:middle;
+		}
+	}
+}
+
+.menuNav {
+	a {
+		color: $dark-grey;
+		&:hover{
+			color: $dark-grey;
+		}
+	}
+}
