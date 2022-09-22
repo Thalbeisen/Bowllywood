@@ -38,10 +38,16 @@ const Template = () => {
                             </Link>
                         </div>
                         <div className="nav-bloc ">
-                            <Link to="/register" className="text-black text-decoration-none">Inscription</Link>
+                            <Link to="/register" className="text-black text-decoration-none">
+                            <i className="fa-solid fa-user-plus"></i>
+                            <p>Inscription</p>
+                            </Link>
                         </div>
                         <div className="nav-bloc">
-                            <Link to="/login" className="text-black text-decoration-none">Connexion</Link>
+                            <Link to="/login" className="text-black text-decoration-none">
+                                <i className="fa-solid fa-door-open"></i>
+                                <p>Connexion</p>
+                            </Link>
                         </div>
                     </div>
                 </nav>
