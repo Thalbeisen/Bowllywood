@@ -12,14 +12,14 @@ function App() {
             <Router>
                     <Routes>
                       <Route path="/" element={<Template/>}>
-                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
-                        {/* <Route path="/test" element={<Test/>}/> */}
-                        <Route path="/reservation" />
-                        <Route path="/menu" />
-                        <Route path="/mark" />
-                        <Route path="/register" />
-                        <Route path="/login" />
-                        </Route>
+                          {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                          {/* <Route path="/test" element={<Test/>}/> */}
+                          <Route path="/reservation" />
+                          <Route path="/menu" />
+                          <Route path="/mark" />
+                          <Route path="/register" />
+                          <Route path="/login" />
+                      </Route>
                     </Routes>
             </Router>
         </div>
