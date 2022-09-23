@@ -6,8 +6,10 @@ import RouteProtector from './components/RouteProtector';
 import LoginScreen from './screens/login/';
 import RegisterScreen from './screens/register/';
 import MenuScreen from './screens/menu/';
+import MealScreen from './screens/meal/';
 import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
+import FranchiseRequest from './screens/franchiseRequestScreen';
 
 function App() {
     return (
@@ -15,11 +17,12 @@ function App() {
             <div className="App">
                 <Router>
                     <Routes>
-                        <Route path="/" element={<Template />}>
-                            {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
-                            {/* <Route path="/test" element={<Test/>}/> */}
-                            <Route path="/reservations" />
-                            <Route
+                      <Route path="/" element={<Template/>}>
+                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                        {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/" />
+                        <Route path="/reservations" />
+                        <Route
                                 path="/menus"
                                 element={
                                     <RouteProtector>
@@ -27,13 +30,14 @@ function App() {
                                     </RouteProtector>
                                 }
                             />
-                            <Route path="/mark" />
-                            <Route
-                                path="/register"
-                                element={<RegisterScreen />}
-                            />
-                            <Route path="/login" element={<LoginScreen />} />
-                        </Route>
+                        <Route path="/menus" element={<MenuScreen />} />
+                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                        <Route path="/menus/:id" element={<MealScreen />} />
+                        <Route path="/mark" />
+                        <Route path="/register" element={<RegisterScreen />} />
+                        <Route path="/login" element={<LoginScreen />}/>
+                        <Route path="/franchise-request" element={<FranchiseRequest/>}/>
+                      </Route>
                     </Routes>
                 </Router>
             </div>
