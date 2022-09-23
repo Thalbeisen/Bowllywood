@@ -16,6 +16,7 @@ function App() {
                       <Route path="/" element={<Template/>}>
                         {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
                         {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/" />
                         <Route path="/reservations" />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/mark" />

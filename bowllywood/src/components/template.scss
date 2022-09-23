@@ -1,4 +1,3 @@
-// NAVBAR
 .side-nav {
     position: fixed;
     height: 100vh;
@@ -41,11 +40,14 @@
       }
   }
 
-// FOOTER
+
+.main-content{
+    min-height: 100vh;
+}
+
 .footer{
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 10%;
+    height: 10vh;
+    position: sticky;
+    top: 100%;
     background: $dark-green;
 }
