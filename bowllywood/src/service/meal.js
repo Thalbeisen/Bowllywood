@@ -1,10 +1,11 @@
 import { AxiosInstance } from "../providers/axiosInstance";
-	export const createMeal = (id) => {
-		return AxiosInstance.post('/menus/create');
+
+	export const createMeal = (id, values) => {
+		return AxiosInstance.post('/menus/create', values);
 	}
 
-	export const updateMeal = (id) => {
-		return AxiosInstance.post(`/menus/update${id}`);
+	export const updateMeal = (id, values) => {
+		return AxiosInstance.post(`/menus/update${id}`, values);
 	}
 
 	export const deleteMeal = (id) => {
@@ -14,14 +15,14 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	export const getOneMeal = (id) => {
 		return AxiosInstance.get(`/menus/${id}`);
 	}
-	
-	export const getSatlyMeals = () => {
-		return AxiosInstance.get('/menus/');
+
+	export const getSweetBowls = () => {
+		return AxiosInstance.get('/menus/desserts');
 	}
 
-
-
-
+	export const getSaltedBowls = () => {
+		return AxiosInstance.get('/menus/');
+	}
 
 
 

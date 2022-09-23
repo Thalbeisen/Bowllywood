@@ -17,6 +17,7 @@ function App() {
                         {/* <Route path="/test" element={<Test/>}/> */}
                         <Route path="/reservations" />
                         <Route path="/menus" element={<MenuScreen />} />
+                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>

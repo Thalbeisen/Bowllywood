@@ -8,6 +8,7 @@ const MealScreen = () => {
 
 	const [meal, setMeal] = useState(null);
 	useEffect( () => {
+		//  verifier si est bien de type objID
 		getOneMeal('62c6dd067a81f4008c1a667c').then((res) => {
 			setMeal(res.data);
 		}).catch((err) => {
