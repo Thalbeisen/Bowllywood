@@ -7,19 +7,17 @@ import HeaderTitle from '../../components/HeaderTitle';
 const MealScreen = () => {
 
 	const [bowl, setBowl] = useState(null);
-	// let bowlId = (new URL(window.location.href)).searchParams.get('id');
-	// console.log(bowlId)
 
 	useEffect( () => {
 		//  verifier si est bien de type objID ?
-		getOneMeal('62c6dd067a81f4008c1a667c').then((res) => {
+		getOneMeal().then((res) => {
 			setBowl(res.data);
 		}).catch((err) => {
 			console.log(err);
 		});
-	}, [] )
+	}, [] );
 	console.log(bowl);
-	
+
 	return (
 		<>
 			<HeaderTitle>{`Le ${bowl.name}`}</HeaderTitle>
@@ -30,7 +28,6 @@ const MealScreen = () => {
 					</div>
 					<div className="col-7">
 						<p>{bowl.description}</p>
-						{/* <p>Inspiré par la 2ème plus grande île de l’archipel d’hawaï, le maui t’y fera voyager entre paysages verdoyants, saveurs à la fois fraîches et volcaniques.</p> */}
 						<div className="row mt-5">
 							<div className="col-6">
 								<h4>Ingrédients</h4>
@@ -53,5 +50,6 @@ const MealScreen = () => {
 			</section>
 		</>
 	);
+
 }
 export default MealScreen;

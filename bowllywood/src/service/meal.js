@@ -12,8 +12,8 @@ import { AxiosInstance } from "../providers/axiosInstance";
 		return AxiosInstance.delete(`/menus/delete/${id}`);
 	}
 
-	export const getOneMeal = (id) => {
-		return AxiosInstance.get(`/menus/${id}`);
+	export const getOneMeal = () => {
+		return AxiosInstance.get(`/menus/:id`);
 	}
 
 	export const getSweetBowls = () => {
