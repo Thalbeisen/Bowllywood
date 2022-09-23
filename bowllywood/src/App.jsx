@@ -5,6 +5,7 @@ import './App.scss';
 import LoginScreen from './screens/login/';
 import RegisterScreen from './screens/register/';
 import MenuScreen from './screens/menu/';
+import MealScreen from './screens/meal/';
 import Template from './components/Template';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/reservations" />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                        <Route path="/menus/:id" element={<MealScreen />} />
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>

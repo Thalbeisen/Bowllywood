@@ -171,9 +171,9 @@
 
 // requires
 const express = require('express');
+const menuCtrl = require('../controllers/menu');
 
 const router = express.Router();
-const menuCtrl = require('../controllers/menu');
 
 // middlewares
 const auth = require('../middlewares/auth');

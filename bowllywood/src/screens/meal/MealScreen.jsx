@@ -6,27 +6,31 @@ import HeaderTitle from '../../components/HeaderTitle';
 
 const MealScreen = () => {
 
-	const [meal, setMeal] = useState(null);
+	const [bowl, setBowl] = useState(null);
+	// let bowlId = (new URL(window.location.href)).searchParams.get('id');
+	// console.log(bowlId)
+
 	useEffect( () => {
-		//  verifier si est bien de type objID
+		//  verifier si est bien de type objID ?
 		getOneMeal('62c6dd067a81f4008c1a667c').then((res) => {
-			setMeal(res.data);
+			setBowl(res.data);
 		}).catch((err) => {
 			console.log(err);
 		});
 	}, [] )
-	console.log(meal);
+	console.log(bowl);
 	
 	return (
 		<>
-			<HeaderTitle />
+			<HeaderTitle>{`Le ${bowl.name}`}</HeaderTitle>
 			<section className="mealCtnr container-lg my-5">
 				<div className="row text-start justify-content-center gap-5">
 					<div className="imgCtnr col-4">
-						<img src="/menu/sale/tahitiWeb.jpg" alt="Image bowl tahiti" className="img-fluid"/>
+						<img src={`/menu/${bowl.image}`} alt={bowl.name} className="img-fluid"/>
 					</div>
 					<div className="col-7">
-						<p className="">Inspiré par la 2ème plus grande île de l’archipel d’hawaï, le maui t’y fera voyager entre paysages verdoyants, saveurs à la fois fraîches et volcaniques.</p>
+						<p>{bowl.description}</p>
+						{/* <p>Inspiré par la 2ème plus grande île de l’archipel d’hawaï, le maui t’y fera voyager entre paysages verdoyants, saveurs à la fois fraîches et volcaniques.</p> */}
 						<div className="row mt-5">
 							<div className="col-6">
 								<h4>Ingrédients</h4>
