@@ -1,16 +1,10 @@
-import logo from '../../src/assets/img/logos/bowllywood.png';
-import {useState} from 'react';
-
-const Header = () => {
-
-  // dynamic title
-  const [title, setTitle] = useState('Titre h2');
+const Header = ({children}) => {
 
   return (
-    <header className="d-flex flex-column align-items-center justify-content-center">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h2 className="m-0">{title}</h2>
-  </header>
+    <header className="d-flex flex-column align-items-center justify-content-center mb-5">
+      <img src='/bowllywood.png' className="App-logo" alt="logo" />
+      <h2 className="m-0">{children}</h2>
+    </header>
   );
 }
 

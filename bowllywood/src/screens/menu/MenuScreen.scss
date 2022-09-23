@@ -3,6 +3,11 @@
 .menuCtnr{
 	margin-top: 6em;
 
+	ul {
+		row-gap: 5em;
+		column-gap: 1em;
+	}
+
 	.imgCtnr {
 		width: 10rem;
 		height: 10rem;
@@ -22,6 +27,8 @@
 }
 
 .menuNav {
+	position: fixed !important;
+	top: 60%;
 	a {
 		color: $dark-grey;
 		&:hover{
@@ -29,3 +36,6 @@
 		}
 	}
 }
+
+.menuNav.rightNav {right: 0;}
+.menuNav.leftNav {left: 7em;}
