@@ -7,6 +7,7 @@ import RegisterScreen from './screens/register/';
 import MenuScreen from './screens/menu/';
 import MealScreen from './screens/meal/';
 import Template from './components/Template';
+import FranchiseRequest from './screens/franchiseRequestScreen';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                       <Route path="/" element={<Template/>}>
                         {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
                         {/* <Route path="/test" element={<Test/>}/> */}
+                        <Route path="/" />
                         <Route path="/reservations" />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
@@ -23,7 +25,8 @@ function App() {
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>
-                        </Route>
+                        <Route path="/franchise-request" element={<FranchiseRequest/>}/>
+                      </Route>
                     </Routes>
             </Router>
         </div>

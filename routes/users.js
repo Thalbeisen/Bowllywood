@@ -159,7 +159,11 @@ const auth = require('../middlewares/auth');
 
 const { permit } = require('../middlewares/permissions');
 
-router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
+// UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
+// router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
+
+// DELETE LINE BELOW ONCE LOGIN FEATURE READY
+router.get('/', userController.usersList);
 
 router.post('/add', userController.userNew);
 
