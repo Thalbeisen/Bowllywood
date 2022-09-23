@@ -13,13 +13,13 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000',
-                description: 'Serveur localhost'
+                url: 'http://localhost:5000',
+                description: 'Serveur localhost',
             },
             {
                 url: 'https://bowllywood.herokuapp.com',
-                description: 'Serveur Heroku'
-            }
+                description: 'Serveur Heroku',
+            },
         ],
     },
     apis: ['./routes/*.js'],

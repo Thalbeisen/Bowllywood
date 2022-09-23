@@ -1,6 +1,6 @@
 import './MenuScreen.scss';
 import { useEffect, useState } from 'react';
-import { getAllMeal } from '../../service/meal';
+import { getSatlyMeals } from '../../service/meal';
 import HeaderTitle from '../../components/HeaderTitle';
 
 // donnée en dure
@@ -9,66 +9,45 @@ import tahitiImg  from '../../assets/img/menu/sale/tahitiWeb.jpg';
 import veggieImg  from '../../assets/img/menu/sale/veggieWeb.jpg';
 
 function MenuScreen() {	
-	const [menu, setMenu] = useState([]);
+	const [meals, setMeals] = useState([]);
 	useEffect( () => {
-		getAllMeal().then((res) => {
-			setMenu(res.data);
+		getSatlyMeals().then((res) => {
+			setMeals(res.data);
 		}).catch((err) => {
 			console.log(err);
 		});
 	}, [] );
-	console.log(menu);
+
+const MealTemp = ({ meal }) => {	
+	const imgPath = `/menu/${meal.image}`;
+	const mealPath = `menus/${meal._id}`;
+
+	return (
+		<li className="col-2">
+			<div className="d-flex flex-column flex-center">
+				<a href='' className="imgCtnr">
+					<img
+					src={imgPath}
+					alt={meal.name}
+					/>
+				</a>  	
+				<h3>{meal.name}</h3>
+			</div>
+		</li>
+	)
+}
 
 return (
 	<>
 		<HeaderTitle />
 		<section className="menuCtnr container">
-			<div className="row align-items-center justify-content-center gap-3">
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={tereakiImg}
-				          alt="tereaki bowl"
-			    	    />
-					</div>
-	          		<h3>Tereaki</h3>
-	          	</div>
-			</div>
-	      	<div className="col-2">
-	      		<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={tahitiImg}
-				          alt="tahiti bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Tahiti</h3>
-		        </div>
-			</div>
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src='/menu/sale/pouletWeb.jpg'
-				          alt="poulet bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Poulet</h3>
-		        </div>
-			</div>
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={veggieImg}
-				          alt="veggie bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Veggie</h3>
-		        </div>
-			</div>
-			</div>
+			<ul className="row align-items-center justify-content-center gap-3">
+				{
+					meals.map((meal, index) => (
+						<MealTemp key={index} meal={meal}/>
+					))
+				}
+			</ul>
 		</section>
 		<section className="menuNav d-flex flex-column align-items-end px-3">
 			<a href="#"  className="mauikea_font">
