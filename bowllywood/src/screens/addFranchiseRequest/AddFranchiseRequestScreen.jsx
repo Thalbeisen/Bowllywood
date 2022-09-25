@@ -18,7 +18,7 @@ const validationSchema = yup.object({
     user_id: yup.string(),
 });
 
-const FranchiseRequestScreen = () => {
+const AddFranchiseRequestScreen = () => {
     const onSubmit = (values) => {
         console.log(values);
         addFranchiseRequest(values)
@@ -227,4 +227,4 @@ const FranchiseRequestScreen = () => {
     );
 };
 
-export default FranchiseRequestScreen;
+export default AddFranchiseRequestScreen;
