@@ -1,7 +1,7 @@
 // 62c6dd067a81f4008c1a667c
 import './MealScreen.scss';
 import { useEffect, useState } from 'react';
-import { getOneMeal } from '../../service/meal';
+import { getOneMeal } from '../../services/meal';
 import HeaderTitle from '../../components/HeaderTitle';
 
 const MealScreen = () => {

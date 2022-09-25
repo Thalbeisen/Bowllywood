@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { addFranchiseRequest } from '../../service/franchiseRequest';
+import { addFranchiseRequest } from '../../services/franchiseRequest';
 import HeaderTitle from './../../components/HeaderTitle';
 import InputText from './../../components/Input';
 import Button from '../../components/Button';
