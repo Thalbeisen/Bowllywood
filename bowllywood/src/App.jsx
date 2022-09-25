@@ -9,7 +9,7 @@ import MenuScreen from './screens/menu/';
 import MealScreen from './screens/meal/';
 import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
-import FranchiseRequest from './screens/franchiseRequestScreen';
+import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
 
 function App() {
     return (
@@ -36,7 +36,7 @@ function App() {
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>
-                        <Route path="/franchise-request" element={<FranchiseRequest/>}/>
+                        <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>
                       </Route>
                     </Routes>
                 </Router>
