@@ -10,6 +10,7 @@ import MealScreen from './screens/meal/';
 import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
 import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
+import GetUserFranchiseRequestsScreen from './screens/getUserFranchiseRequests';
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>
                         <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>
+                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
                       </Route>
                     </Routes>
                 </Router>

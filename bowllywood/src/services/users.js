@@ -23,3 +23,7 @@ export const getAllUsers = () => {
 export const getUserDetails = (id) => {
     return AxiosInstance.get('/users/' + id);
 }
+
+export const getuserFranchiseRequests = (id) => {
+    return AxiosInstance.get(`/users/my-franchise-requests/${id}`);
+}

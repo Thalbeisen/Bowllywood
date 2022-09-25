@@ -43,6 +43,12 @@ const Template = () => {
                             <p>Devenir franchisé</p>
                         </Link>
                     </div>
+                    <div className="nav-bloc">
+                        <Link to="/my-franchise-requests" className='text-decoration-none text-black'>
+                            <i className="fa-solid fa-people-roof text-black"></i>
+                            <p>Mes demandes de franchise</p>
+                        </Link>
+                    </div>
                     <div className="nav-bloc ">
                         <Link to="/register" className="text-black text-decoration-none">Inscription</Link>
                     </div>
