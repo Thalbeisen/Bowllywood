@@ -1,8 +1,8 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { addFranchiseRequest } from '../../services/franchiseRequest';
-import HeaderTitle from './../../components/HeaderTitle';
-import InputText from './../../components/Input';
+import HeaderTitle from '../../components/HeaderTitle';
+import InputText from '../../components/Input';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
 import './../../sass/styles.scss';
