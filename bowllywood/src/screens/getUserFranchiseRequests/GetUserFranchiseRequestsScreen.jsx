@@ -4,6 +4,25 @@ import { Col, Row, Container } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 
 const GetUserFranchiseRequestsScreen = () => {
+
+  const [userFranchiseRequests, setUserFranchiseRequests] = useState([])
+  
+  useEffect(() => {
+    getUserFranchiseRequests('6324d81ea70c53011eaf4733').then((res) => {
+      setUserFranchiseRequests(res.data);
+      // console.log(res);
+      // console.log(res.data);
+      console.log(userFranchiseRequests);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }, [])
+
+
+
+
+
+  
     return (
         <>
             <Container>
