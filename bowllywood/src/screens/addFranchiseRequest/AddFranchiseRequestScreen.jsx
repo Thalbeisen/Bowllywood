@@ -51,8 +51,8 @@ const AddFranchiseRequestScreen = () => {
     return (
         <>
             <Container>
-                <Row className="flex-center">
-                    <Col>
+                <Row>
+                    <Col className='col-12 flex-center'>
                         <img
                             src="Bowllywood.png"
                             alt="Logo du restaurant de bowls nommé Bowllywood"
@@ -64,7 +64,7 @@ const AddFranchiseRequestScreen = () => {
                     <Col>
                         <form onSubmit={handleSubmit}>
                         <Row className='justify-content-center gap-4'>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="phone"
                                     desc="Numéro de téléphone *"
@@ -80,7 +80,7 @@ const AddFranchiseRequestScreen = () => {
                                     }
                                 />
                             </Col>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="city"
                                     desc="Ville *"
@@ -97,7 +97,7 @@ const AddFranchiseRequestScreen = () => {
                         </Row>
 
                         <Row className='justify-content-center gap-4'>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="estimatedAmount"
                                     desc="Montant estimé de l'investissement *"
@@ -113,7 +113,7 @@ const AddFranchiseRequestScreen = () => {
                                     }
                                 />
                             </Col>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="hopedFinancing"
                                     desc="Financement envisagé *"
@@ -131,7 +131,7 @@ const AddFranchiseRequestScreen = () => {
                             </Col>
                         </Row>
                         <Row className='justify-content-center gap-4'>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="shopLocation"
                                     desc="Ville d'implantation *"
@@ -147,7 +147,7 @@ const AddFranchiseRequestScreen = () => {
                                     }
                                 />
                             </Col>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center">
+                            <Col className="col-12 col-md-4 flex-center">
                                 <InputText
                                     name="foodServiceExperience"
                                     desc="Expérience dans la restauration *"
@@ -165,7 +165,7 @@ const AddFranchiseRequestScreen = () => {
                             </Col>
                         </Row>
                         <Row className='justify-content-center gap-4'>
-                            <Col className="col-6 col-md-4 d-flex justify-content-center">
+                            <Col className="col-6 col-md-4 flex-center">
                                 <InputText
                                     name="conditionOfUse"
                                     desc="J'ai lu et j'accepte les conditions générales d'utilisation *"
@@ -180,10 +180,10 @@ const AddFranchiseRequestScreen = () => {
                                     }
                                 />
                             </Col>
-                            <Col className='col-6 col-md-4 d-flex justify-content-center'>
+                            <Col className='col-6 col-md-4 flex-center'>
                                 <Button type="submit">Envoyer ma demande</Button>
                             </Col>
-                            <Col className="col-6 col-md-4 d-flex justify-content-center d-none">
+                            <Col className="col-6 col-md-4 flex-center d-none">
                                 <InputText
                                     name="status"
                                     desc=""
@@ -198,7 +198,7 @@ const AddFranchiseRequestScreen = () => {
                                     }
                                 />
                             </Col>
-                            <Col className="col-12 col-md-4 d-flex justify-content-center mb-5 d-none">
+                            <Col className="col-12 col-md-4 flex-center mb-5 d-none">
                                 <InputText
                                     name="user_id"
                                     desc=""
