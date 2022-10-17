@@ -12,7 +12,6 @@ const MealScreen = () => {
 		//  verifier si est bien de type objID ?
 		getOneMeal().then((res) => {
 			setBowl(res.data);
-
 			console.log(bowl)
 			debugger;
 		}).catch((err) => {
