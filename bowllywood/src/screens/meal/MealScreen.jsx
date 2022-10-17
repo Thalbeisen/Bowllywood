@@ -12,22 +12,31 @@ const MealScreen = () => {
 		//  verifier si est bien de type objID ?
 		getOneMeal().then((res) => {
 			setBowl(res.data);
+
+			console.log(bowl)
+			debugger;
 		}).catch((err) => {
 			console.log(err);
+			debugger;
 		});
 	}, [] );
-	console.log(bowl);
+	// console.log(bowl);
+	const bowl2 = {
+		name: 'test',
+		image: 'test.png',
+		description: 'lorem test'
+	}
 
 	return (
 		<>
-			<HeaderTitle>{`Le ${bowl.name}`}</HeaderTitle>
+			<HeaderTitle>{`Le ${bowl2.name}`}</HeaderTitle>
 			<section className="mealCtnr container-lg my-5">
 				<div className="row text-start justify-content-center gap-5">
 					<div className="imgCtnr col-4">
-						<img src={`/menu/${bowl.image}`} alt={bowl.name} className="img-fluid"/>
+						<img src={`/menu/${bowl2.image}`} alt={bowl2.name} className="img-fluid"/>
 					</div>
 					<div className="col-7">
-						<p>{bowl.description}</p>
+						<p>{bowl2.description}</p>
 						<div className="row mt-5">
 							<div className="col-6">
 								<h4>Ingrédients</h4>
@@ -50,6 +59,5 @@ const MealScreen = () => {
 			</section>
 		</>
 	);
-
 }
 export default MealScreen;
