@@ -38,7 +38,7 @@ function LoginScreen() {
                         JSON.stringify(response.data)
                     );
                     navigate(redirectSource, { replace: true });
-                    console.log(response.data);
+                    console.log(`test ${response.data}`);
                 } catch (err) {
                     if (!err.response) {
                         setErrorMessage('Pas de réponse du serveur');
