@@ -14,6 +14,7 @@ import { AxiosInstance } from "../providers/axiosInstance";
 
 	export const getOneMeal = () => {
 		return AxiosInstance.get(`/menus/:id`);
+		debugger;
 	}
 
 	export const getSweetBowls = () => {
@@ -23,7 +24,3 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	export const getSaltedBowls = () => {
 		return AxiosInstance.get('/menus/');
 	}
-
-
-
-

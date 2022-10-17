@@ -12,51 +12,75 @@ const MealScreen = () => {
 		//  verifier si est bien de type objID ?
 		getOneMeal().then((res) => {
 			setBowl(res.data);
-			console.log(bowl)
+			console.log(res);
 			debugger;
 		}).catch((err) => {
 			console.log(err);
 			debugger;
 		});
 	}, [] );
-	// console.log(bowl);
+
+	console.log(bowl);
+
 	const bowl2 = {
 		name: 'test',
 		image: 'test.png',
 		description: 'lorem test'
 	}
 
+	const Rendering = () => {
+		if (typeof bowl != 'object')
+		{
+			return (
+				<>
+				<div className="imgCtnr col-4">
+					<img src={`/menu/${bowl2.image}`} alt={bowl2.name} className="img-fluid"/>
+				</div>
+				<div className="col-7">
+					<p>{bowl2.description}</p>
+					<div className="row mt-5">
+						<div className="col-6">
+							<h4>Ingrédients</h4>
+							<ul>
+								<li> Base semoule</li>
+								<li> Poiverons jaunes</li>
+								<li> Radis</li>
+								<li> Graine de courges</li>
+								<li> Salade</li>
+								<li> Sauce spéciale semoule</li>
+							</ul>
+						</div>
+						<div className="col-6">
+							<h4>Allergènes</h4>
+							<p className="infoStyle">Aucun allergène renseignée pour cette recette ! Vous pourrez profiter tranquillement.</p>
+						</div>
+					</div>
+				</div>
+				</>
+			)
+		}
+		else
+		{
+			return (
+				<div className="col-7">
+					<p classNmae="p-0">Une erreur est survenue. Le plat a été supprimé ou s'est enfuit du restaurant...</p>
+					<a href="/menu" className="greenlink">En attendant, consultez nos autres plats !</a>
+				</div>
+			)
+		}
+	}
+
+
 	return (
 		<>
 			<HeaderTitle>{`Le ${bowl2.name}`}</HeaderTitle>
 			<section className="mealCtnr container-lg my-5">
 				<div className="row text-start justify-content-center gap-5">
-					<div className="imgCtnr col-4">
-						<img src={`/menu/${bowl2.image}`} alt={bowl2.name} className="img-fluid"/>
-					</div>
-					<div className="col-7">
-						<p>{bowl2.description}</p>
-						<div className="row mt-5">
-							<div className="col-6">
-								<h4>Ingrédients</h4>
-								<ul>
-									<li> Base semoule</li>
-									<li> Poiverons jaunes</li>
-									<li> Radis</li>
-									<li> Graine de courges</li>
-									<li> Salade</li>
-									<li> Sauce spéciale semoule</li>
-								</ul>
-							</div>
-							<div className="col-6">
-								<h4>Allergènes</h4>
-								<p className="infoStyle">Aucun allergène renseignée pour cette recette ! Vous pourrez profiter tranquillement.</p>
-							</div>
-						</div>
-					</div>
+					<Rendering/>
 				</div>	
 			</section>
 		</>
 	);
+
 }
 export default MealScreen;
