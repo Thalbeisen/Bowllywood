@@ -11,6 +11,7 @@ import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
 import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
 import GetUserFranchiseRequestsScreen from './screens/getUserFranchiseRequests';
+import ProfileScreen from './screens/profiles/ProfileScreen';
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
                         <Route path="/login" element={<LoginScreen />}/>
                         <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>
                         <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
+                        <Route path="/profile" element={<ProfileScreen/>}/>
                       </Route>
                     </Routes>
                 </Router>

@@ -14,6 +14,12 @@ const items = [
             <p className='text-black'>Accueil</p>
         </Link>
     </SidebarItem>,
+     <SidebarItem>
+        <Link to="/profile" className='text-decoration-none text-black text-center'>
+            <i className="fa-solid fa-user text-black flex-center"></i>
+            <p className='text-black'>Profile</p>
+        </Link>
+ </SidebarItem>,
     <SidebarItem>
         <Link to="/reservations" className='text-decoration-none text-black text-center'>
             <i className="fa-solid fa-money-bill text-black flex-center"></i>
