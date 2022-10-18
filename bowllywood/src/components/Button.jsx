@@ -4,7 +4,7 @@ const Button = ({type='button', bsType='primary', children}) => {
 
     return (
         <>
-            <button type={type} class={`btn btn-${bsType} text-black`}>{children}</button>            
+            <button type={type} className={`btn btn-${bsType} text-black`}>{children}</button>            
         </>
     );
 }
