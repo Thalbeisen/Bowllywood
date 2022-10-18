@@ -9,8 +9,8 @@ const Template = () => {
     return (
         <>
                 <nav className="side-nav navbar-expand-lg">
-                    <button class="navbar-toggler grow" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                    <span><i class="fa-solid fa-bars p-3"></i></span>
+                    <button className="navbar-toggler grow" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span><i className="fa-solid fa-bars p-3"></i></span>
                     </button>
                     <div className="wrapper" id="navbarTogglerDemo02">
                         <div className="nav-bloc">

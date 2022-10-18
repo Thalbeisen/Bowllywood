@@ -12,19 +12,19 @@ function App() {
     return (
         <div className="App">
             <Router>
-                    <Routes>
-                      <Route path="/" element={<Template/>}>
-                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
-                        {/* <Route path="/test" element={<Test/>}/> */}
-                        <Route path="/reservations" />
-                        <Route path="/menus" element={<MenuScreen />} />
-                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
-                        <Route path="/menus/:id" element={<MealScreen />} />
-                        <Route path="/mark" />
-                        <Route path="/register" element={<RegisterScreen />} />
-                        <Route path="/login" element={<LoginScreen />}/>
-                        </Route>
-                    </Routes>
+                <Routes>
+                  <Route path="/" element={<Template/>}>
+                    {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
+                    {/* <Route path="/test" element={<Test/>}/> */}
+                    <Route path="/reservations" />
+                    <Route path="/menus" element={<MenuScreen />} />
+                    <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                    <Route path="/menus/:id" element={<MealScreen />} />
+                    <Route path="/mark" />
+                    <Route path="/register" element={<RegisterScreen />} />
+                    <Route path="/login" element={<LoginScreen />}/>
+                    </Route>
+                </Routes>
             </Router>
         </div>
     );
