@@ -12,6 +12,7 @@ import { AuthProvider } from './providers/AuthProvider';
 import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
 import GetUserFranchiseRequestsScreen from './screens/getUserFranchiseRequests';
 import ProfileScreen from './screens/profiles/ProfileScreen';
+import HomeScreen from './screens/home/HomeScreen';
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" />
+                        <Route path="/home" element={<HomeScreen />} />
                         <Route path="/reservations" />
                         <Route
                                 path="/menus"
