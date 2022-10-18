@@ -1,7 +1,6 @@
 import { Col, Row, Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import './../../sass/styles.scss';
@@ -10,8 +9,8 @@ function ProfileScreen() {
   return (
     <>
         <Container>
-            <Row className="flex-center">
-                <Col>
+            <Row>
+                <Col className="flex-center">
                     <img
                         src="Bowllywood.png"
                         alt="Logo du restaurant de bowls nommé Bowllywood"
@@ -21,7 +20,7 @@ function ProfileScreen() {
             <Row>
                 <Col>
                     <Card>
-                        <Card.Header className='fw-bold'>MES INFORMATIONS PERSONELLES</Card.Header>
+                        <Card.Header className='fw-bold text-center'>MES INFORMATIONS PERSONELLES</Card.Header>
                         <Card.Body>
                             <Form>
                                 <Row className='justify-content-center gap-4'>
@@ -52,26 +51,27 @@ function ProfileScreen() {
                                         </Form.Group>
                                     </Col>
                                 </Row>
-                                {/* <Card.Title>Special title treatment</Card.Title> */}
-                                <Button variant="primary text-black fw-bold mb-3" type="submit">Modifier</Button>
+                                <Col className='flex-center'>
+                                    <Button variant="primary text-black fw-bold mb-3" type="submit">Modifier</Button>
+                                </Col>
                                 <Card.Text className='text-muted'>
-                                Les informations enregistrées sont réservées à l’usage des services administratif et informatique 
-                                et ne peuvent être communiquées qu’aux destinataires suivants : [Siège et filiale de la société Bowllywood].
-                                Depuis la loi n° 78-17 du 6 janvier 1978 modifiée, relative à l’informatique, aux fichiers et aux libertés,
-                                toute personne peut obtenir communication et, le cas échéant, rectification ou suppression des informations
-                                la concernant, en s’adressant au service informatique par email à l'adresse support.info@bowllywood.fr 
-                                avec copie au DPO de l’établissement M. Garry DELMAS via l'addresse suivante: gdelmas.dpo@bowllywood.fr
+                                    Les informations enregistrées sont réservées à l’usage des services administratif et informatique 
+                                    et ne peuvent être communiquées qu’aux destinataires suivants : [Siège et filiale de la société Bowllywood].
+                                    Depuis la loi n° 78-17 du 6 janvier 1978 modifiée, relative à l’informatique, aux fichiers et aux libertés,
+                                    toute personne peut obtenir communication et, le cas échéant, rectification ou suppression des informations
+                                    la concernant, en s’adressant au service informatique par email à l'adresse support.info@bowllywood.fr 
+                                    avec copie au DPO de l’établissement M. Garry DELMAS via l'addresse suivante: gdelmas.dpo@bowllywood.fr
                                 </Card.Text>
                             </Form>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-            <Row className='my-5 py-5'>
+            <Row className='my-3 py-3'>
                 <Col className='col-12 col-md-6'>
                     <Card>
-                    <Card.Header className='fw-bold'>MON RESTAURANT FAVORI</Card.Header>
-                        <Card.Body>
+                    <Card.Header className='fw-bold text-center'>MON RESTAURANT FAVORI</Card.Header>
+                        <Card.Body className='text-center'>
                             <Card.Text>
                                 22 Avenue du giratoire
                             </Card.Text>
@@ -104,41 +104,46 @@ function ProfileScreen() {
                 </Col>
                 <Col className='col-12 col-md-6'>
                     <Card>
-                        <Card.Header className='fw-bold'>INSÉRER LA VILLE DU RESTAURANT</Card.Header>
+                        <Card.Header className='fw-bold text-center'>INSÉRER LA VILLE DU RESTAURANT</Card.Header>
                         <Card.Body>
-                            <Card.Img variant="top" src="accueil.png?text=Image cap" />
+                            <Card.Img variant="top" src="accueil.png" />
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-            <Row>
+            <Row className='mb-3'>
                 <Col>
                     <Card>
-                        <Card.Header className='fw-bold'>MES EXIGENCES</Card.Header>
-                        <Card.Body>
+                        <Card.Header className='fw-bold text-center'>MES EXIGENCES</Card.Header>
                             <Row>
                                 <Col>
-                                    <InputGroup className="mb-3">
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" />
-                                        <InputGroup.Text>Je souhaite recevoir par email les actualités de la société</InputGroup.Text>
+                                    <h3 className='text-center h5 mt-3'>Je souhaite recetevoir par email:</h3>
+                                </Col>
+                            </Row>
+                        <Card.Body >
+                            <Row>
+                                <Col className='col-12 col-md-6 '>
+                                    <InputGroup className="mb-3 flex-center">
+                                        <InputGroup.Checkbox />
+                                        <InputGroup.Text>Les actualités de la société.</InputGroup.Text>
                                     </InputGroup>
                                 </Col>
-                                <Col>
-                                    <InputGroup className="mb-3">
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" />
-                                        <InputGroup.Text>Je souhaite recevoir par email les dernières promotions</InputGroup.Text>
+                                <Col className='col-12 col-md-6'>
+                                    <InputGroup className="mb-3 flex-center">
+                                        <InputGroup.Checkbox />
+                                        <InputGroup.Text>Les dernières promotions.</InputGroup.Text>
                                     </InputGroup>
                                 </Col>
-                                <Col>
-                                    <InputGroup className="mb-3">
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" />
-                                        <InputGroup.Text>Je souhaite recevoir par email les Lorem ipsum dolor sit amet, consectetur.</InputGroup.Text>
+                                <Col className='col-12 col-md-6'>
+                                    <InputGroup className="mb-3 flex-center">
+                                        <InputGroup.Checkbox />
+                                        <InputGroup.Text>Lorem ipsum dolor sit amet.</InputGroup.Text>
                                     </InputGroup>
                                 </Col>
-                                <Col>
-                                    <InputGroup className="mb-3">
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" />
-                                        <InputGroup.Text>Je souhaite recevoir par email les Lorem ipsum dolor sit amet, consectetur.</InputGroup.Text>
+                                <Col className='col-12 col-md-6'>
+                                    <InputGroup className="mb-3 flex-center">
+                                        <InputGroup.Checkbox />
+                                        <InputGroup.Text>Lorem ipsum dolor sit amet.</InputGroup.Text>
                                     </InputGroup>
                                 </Col>
                             </Row>
