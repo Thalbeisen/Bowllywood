@@ -21,8 +21,7 @@ function App() {
                 <Router>
                     <Routes>
                       <Route path="/" element={<Template/>}>
-                        <Route path="/" />
-                        <Route path="/home" element={<HomeScreen />} />
+                        <Route path="/" element={<HomeScreen />}/>
                         <Route path="/reservations" />
                         <Route
                                 path="/menus"
