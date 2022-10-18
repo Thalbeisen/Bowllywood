@@ -106,7 +106,7 @@ function ProfileScreen() {
                     <Card>
                         <Card.Header className='fw-bold text-center'>INSÉRER LA VILLE DU RESTAURANT</Card.Header>
                         <Card.Body>
-                            <Card.Img variant="top" src="accueil.png" />
+                            <Card.Img variant="top" src="assets/accueil.png" />
                         </Card.Body>
                     </Card>
                 </Col>
