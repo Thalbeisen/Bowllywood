@@ -1,11 +1,7 @@
 import './MealScreen.scss';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { getOneMeal } from '../../service/meal';
-import { useParams } from 'react-router-dom';
-=======
 import { getOneMeal } from '../../services/meal';
->>>>>>> 09f20311e4b1f037f73427eda17af234fdbe9446
+import { useParams } from 'react-router-dom';
 import HeaderTitle from '../../components/HeaderTitle';
 
 const MealScreen = () => {

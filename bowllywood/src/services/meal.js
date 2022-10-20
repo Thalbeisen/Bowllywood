@@ -5,7 +5,7 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	}
 
 	export const updateMeal = (id, values) => {
-		return AxiosInstance.post(`/menus/update${id}`, values);
+		return AxiosInstance.post(`/menus/update/${id}`, values);
 	}
 
 	export const deleteMeal = (id) => {

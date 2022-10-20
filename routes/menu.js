@@ -176,13 +176,13 @@ const menuCtrl = require('../controllers/menu');
 const router = express.Router();
 
 // middlewares
-const auth = require('../middlewares/auth');
+// const auth = require('../middlewares/auth');
 
 // set the routers for each methods
 router.get('/:id', menuCtrl.getOneMeal);
-router.post('/create', auth, menuCtrl.createMeal);
-router.post('/update/:id', auth, menuCtrl.updateMeal);
-router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
+router.post('/update/:id', menuCtrl.updateMeal);
+// router.post('/create', auth, menuCtrl.createMeal);
+// router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
 router.get('/desserts', menuCtrl.getSweetBowls);
 router.get('/', menuCtrl.getSaltedBowls);
 

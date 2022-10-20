@@ -1,7 +1,7 @@
 import './AddEditMeal.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { createMeal, updateMeal, getOneMeal } from '../../service/meal';
+import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
 
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -13,7 +13,7 @@ import Button from '../../components/Button';
 
 import { useChecklist } from 'react-checklist';
 
-// Get ingredient & allergenes data from ddb
+// Get ingredient & allergens data from ddb
 // const ingData = getAllIngredients();
 // const alrData = getAllAllergenes();
 
@@ -38,7 +38,9 @@ const alrData = [
     { _id: 'ID7777777777777', label : 'autre ?'}
 ]
 
-// constantes
+////////////////
+// constantes //
+////////////////
 const catData = [
     {_id: 'SALE', label: 'Salé'},
     {_id: 'SUCRE', label: 'Sucré'}
@@ -48,33 +50,30 @@ const emptyArray = 'Veuillez sélectionner au moins un élément.';
 const descToShort = "Une description trop petite n'est pas très attrayant...";
 const desToLong = "Oups ! La description est trop longue... Raccoucissez un peu."
 
-
 const AddEditMeal = () => {
     const { id } = useParams();
     const isCreateMode = !id;
 
-    const [meal, setMeal] = useState({});
     const [errMsg, setErrMsg] = useState({
         title: 'Erreur !',
         message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
     });
-
+        
     /////////////////////
     // submit function //
     /////////////////////
     const onSubmit = (values) => {
-        
         if (isCreateMode) 
         {
             // add the currency caractere
             values.price = values.price.trim();
             let priceCurr = values.price.charAt(values.price.length -1);
             values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
-    
-            createMeal(values).then((oData)=>{
+
+            createMeal(values).then((res)=>{
                 // rediriger ?
                 console.log('Le bowl a bien été créé. Se rendre sur sa page');
-    
+
             }).catch((err) => {
 
                 // appeler fragment erreur et lui passer err ?
@@ -107,7 +106,14 @@ const AddEditMeal = () => {
         }
         else
         {
-            
+            updateMeal(id, values).then((res)=>{
+                if (res.status === 200) {
+                    console.log('Message comme quoi c\'est ok, et btn rediriger ?');
+                }
+            }).catch((err) => {
+                debugger;
+                console.log(err);
+            })
         }
     }
 
@@ -139,7 +145,7 @@ const AddEditMeal = () => {
             .nullable(true)
             .required(emptyArray),
     
-        allergenes: yup
+        allergens: yup
             .array()
             .nullable(true),
     
@@ -157,7 +163,7 @@ const AddEditMeal = () => {
             price: '',
             description: '',
             ingredients: [],
-            allergenes: [],
+            allergens: [],
             image: ''
         },
         validationSchema,
@@ -178,25 +184,29 @@ const AddEditMeal = () => {
         keyType: 'string'
     });
 
+    /////////////////////
+    // values handlers //
+    /////////////////////
+
+    // If it is the update mode, get the current bowl 
     useEffect(()=>{
-
-        setFieldValue('ingredients', ingChecklist.checkedItems);
-        setFieldValue('allergenes', alrChecklist.checkedItems);
-
         if (!isCreateMode) {
 
             getOneMeal(id).then((res) =>
             {
-                debugger;
-                // récupérer et stocker les éléments des arrays ing & alr pour les pousser dans les chekedItems correspondante.
-                // Une fois toutes les données récupérés, prcéder à l'update dans le onSubmit. Puis attaquer le delete.
-                const values = ['name', 'category', 'price', 'description', 'ingredients', 'allergenes', 'image'];
+                const values = ['name', 'category', 'price', 'description', 'image'];
                 
+                res.data.ingredients.forEach((item, index)=>{
+                    ingChecklist.checkedItems.add(item);
+                });
+
+                res.data.allergens.forEach((item, index)=>{
+                    alrChecklist.checkedItems.add(item);
+                });
+
                 values.forEach((value) => {
                     setFieldValue(value, res.data[value], false);
                 });
-
-                setMeal(res.data);
                 
             }).catch((err)=>{
                 // appeler fragment erreur et lui passer err ?
@@ -213,13 +223,20 @@ const AddEditMeal = () => {
                 }
             });
         }
-    }, [ingChecklist.checkedItems,
-        alrChecklist.checkedItems,
-        isCreateMode,
+    }, [isCreateMode,
         id,
-        setFieldValue])
+        errMsg])
 
-    console.log(values);
+    // When a checkbow is clicked, change the values of the both arrays ingredients[] & allergens[]
+    useEffect(()=>{
+
+        setFieldValue('ingredients', Array.from(ingChecklist.checkedItems));
+        setFieldValue('allergens', Array.from(alrChecklist.checkedItems));
+
+    }, [
+        ingChecklist.checkedItems,
+        alrChecklist.checkedItems,
+        setFieldValue])
 
     /////////////////////
     // return the view //
@@ -228,7 +245,7 @@ const AddEditMeal = () => {
     <Container className="pb-5">
         <Row className="flex-center">
             <Col lg="12">
-                <HeaderTitle>Creation d'un nouveau bowl</HeaderTitle>
+                <HeaderTitle>{(isCreateMode) ? 'Creation d\'un nouveau bowl' : `Modifier le bowl ${values.name}` }</HeaderTitle>
             </Col>
         </Row>
         <Row>
@@ -238,7 +255,8 @@ const AddEditMeal = () => {
                     onSubmit={handleSubmit}
                     className="container">
                     <Row className="justify-content-evenly">
-                        <Col
+                        <Col 
+                            md="8"
                             lg="4"
                             className="d-flex justify-content-center px-4">
                             <Input
@@ -255,7 +273,8 @@ const AddEditMeal = () => {
                                 }
                             />
                         </Col>
-                        <Col
+                        <Col 
+                            md="8"
                             lg="4"
                             className="d-flex justify-content-center px-4">
 
@@ -286,7 +305,8 @@ const AddEditMeal = () => {
                         </Col>
                     </Row>
                     <Row className="justify-content-evenly">
-                        <Col
+                        <Col 
+                            md="8"
                             lg="4"
                             className="d-flex justify-content-center px-4">
                             <Input
@@ -303,7 +323,8 @@ const AddEditMeal = () => {
                                 }
                             />
                         </Col>
-                         <Col
+                         <Col 
+                            md="8"
                             lg="4"
                             className="d-flex justify-content-center px-4">
                             <Input
@@ -321,7 +342,8 @@ const AddEditMeal = () => {
                         </Col>
                     </Row>
                     <Row className="justify-content-evenly">
-                        <Col
+                        <Col 
+                            md="8"
                             lg="4">
 
                             <p>Sélectionnez les ingrédients</p>
@@ -336,6 +358,7 @@ const AddEditMeal = () => {
                                             <input
                                                 type="checkbox"
                                                 data-key={item._id}
+                                                name="ingredients[]"
                                                 onChange={ingChecklist.handleCheck}
                                                 checked={ingChecklist.checkedItems.has(item._id)}
                                                 className="pointer me-2"/>
@@ -345,11 +368,12 @@ const AddEditMeal = () => {
                                 }
                             </ul>
                         </Col>
-                        <Col
+                        <Col 
+                            md="8"
                             lg="4">
 
                             <p>Sélectionnez les allergènes présents</p>
-                            <p className="error">{errors.allergenes && touched.allergenes && errors.allergenes}</p>
+                            <p className="error">{errors.allergens && touched.allergens && errors.allergens}</p>
                             {
                                 <ul>
                                     {
@@ -358,6 +382,7 @@ const AddEditMeal = () => {
                                                 <input
                                                     type="checkbox"
                                                     data-key={item._id}
+                                                    name="allergens[]"
                                                     onChange={alrChecklist.handleCheck}
                                                     checked={alrChecklist.checkedItems.has(item._id)}
                                                     className="pointer me-2"
