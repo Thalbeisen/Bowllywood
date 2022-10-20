@@ -1,3 +1,4 @@
+import jwt_decode from "jwt-decode";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { addFranchiseRequest } from '../../services/franchiseRequest';
@@ -6,6 +7,11 @@ import InputText from '../../components/Input';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
 import './../../sass/styles.scss';
+
+const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+const token =   authHeaders['token'];
+const decoded = jwt_decode(token);
+const userID = decoded.id
 
 const validationSchema = yup.object({
     phone: yup.string().required('Ce champ est obligatoire'),
@@ -41,8 +47,7 @@ const AddFranchiseRequestScreen = () => {
                 foodServiceExperience: '',
                 conditionOfUse: false,
                 status: 'PENDING',
-                // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-                user_id: '6324d81ea70c53011eaf4733',
+                user_id: userID,
             },
             validationSchema,
             onSubmit,

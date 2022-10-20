@@ -13,16 +13,12 @@ exports.addFranchiseRequest = async (req, res) => {
     try {
         const fanchiseRequest = new FranchiseRequest({
             ...req.body,
-            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
-            // user_id: req.body.userID,
+            user_id: req.body.userID,
         });
         const subscriptionRequest = await fanchiseRequest.save();
 
         const user = await User.findOne({
-            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
-            // _id: req.body.userID,
-            // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-            _id: req.body.user_id,
+            _id: req.body.userID,
         });
         // eslint-disable-next-line no-underscore-dangle
         user.franchiseContracts.push(subscriptionRequest._id);
