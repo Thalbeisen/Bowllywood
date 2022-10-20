@@ -137,3 +137,26 @@ exports.editFranchiseRequest = async (req, res) => {
         res.status(400).json(errors.message);
     }
 };
+
+/**
+ * Cancel a franchise request
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.cancelFranchiseRequest = async (req, res) => {
+    try {
+        const cancelRequest = await FranchiseRequest.findByIdAndDelete(
+            req.params.id,
+            {
+                ...req.body,
+            }
+        );
+        if (!cancelRequest) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(cancelRequest);
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).json(errors.deleteError);
+    }
+};
