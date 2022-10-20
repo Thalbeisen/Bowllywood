@@ -1,3 +1,6 @@
+import { getAllRestaurants } from '../../services/restaurant';
+import { useEffect, useState } from 'react';
+
 import { Col, Row, Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
@@ -5,8 +8,18 @@ import './../../sass/styles.scss';
 
 
 
-const home = () => {
-   
+const Home = () => {
+    const [AllRestaurants, setAllRestaurants] = useState([]);
+
+    useEffect(() => {
+        getAllRestaurants()
+            .then((res) => {
+                setAllRestaurants(res.data.restaurants);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
     return (
         <>
             <Container>
@@ -314,4 +327,4 @@ const home = () => {
         </>
     );
 };
-export default home;
+export default Home;
