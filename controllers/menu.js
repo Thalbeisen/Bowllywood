@@ -62,7 +62,7 @@ exports.getSweetBowls = async (req, res) => {
  */
 exports.getOneMeal = async (req, res) => {
     try {
-        const mealDetails = await Menu.findOne({ id: req.params.id });
+        const mealDetails = await Menu.findById({ _id: req.params.id });
 
         if (!mealDetails) {
             res.status(404).json({
