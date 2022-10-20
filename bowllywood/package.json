@@ -16,6 +16,7 @@
     "react-bootstrap": "^2.5.0",
     "react-checklist": "^1.0.12",
     "react-dom": "^18.2.0",
+    "react-responsive-sidebar": "^0.1.16",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
     "react-star-ratings": "^2.3.0",
@@ -24,7 +25,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "PORT=5005 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

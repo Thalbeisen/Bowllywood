@@ -4,7 +4,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
 import './RegisterScreen.scss';
-import { register } from '../../service/users';
+import { register } from '../../services/users';
 
 const validationSchema = yup.object({
     firstName: yup.string().required('Ce champ est obligatoire'),

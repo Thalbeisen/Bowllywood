@@ -3,6 +3,10 @@
 @import './../components/Button.scss';
 @import './../components/template.scss';
 
+.container{
+	max-width: 100%;
+}
+
 // debug class //
 .bb {border: red 2px solid;}
 
