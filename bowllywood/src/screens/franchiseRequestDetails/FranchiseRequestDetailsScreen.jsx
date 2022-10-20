@@ -54,7 +54,7 @@ const FranchiseRequestDetailsScreen = () => {
                         <div className='flex-center'>
                             <Button>
                                 <Link
-                                    to={""}
+                                    to={`/my-franchise-requests/edit/${id}`}
                                     className="text-decoration-none text-black text-center"
                                 >
                                     <p>Mofidier</p>
