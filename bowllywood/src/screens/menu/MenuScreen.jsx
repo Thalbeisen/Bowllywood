@@ -1,6 +1,6 @@
 import './MenuScreen.scss';
 import { useEffect, useState } from 'react';
-import { getSaltedBowls, getSweetBowls } from '../../service/meal';
+import { getSaltedBowls, getSweetBowls } from '../../services/meal';
 import HeaderTitle from '../../components/HeaderTitle';
 
 function MenuScreen({ bowlsType="SALE" }) {

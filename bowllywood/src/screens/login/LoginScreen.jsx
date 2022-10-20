@@ -5,7 +5,7 @@ import InputText from '../../components/Input';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
 import './LoginScreen.scss';
-import { loginUser } from '../../service/users';
+import { loginUser } from '../../services/users';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const loginSchema = yup.object().shape({
