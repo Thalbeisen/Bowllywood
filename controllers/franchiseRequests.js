@@ -138,6 +138,6 @@ exports.editFranchiseRequest = async (req, res) => {
 
         res.status(200).json(editRequestStatus);
     } catch (error) {
-        res.status(403).json(errors.updateError);
+        res.status(400).json(errors.message);
     }
 };

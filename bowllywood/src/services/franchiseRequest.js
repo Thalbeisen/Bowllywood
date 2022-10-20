@@ -8,6 +8,6 @@ export const getFranchiseRequestDetail = (id) => {
     return AxiosInstance.get(`/franchiseRequests/${id}`);
 }
 
-export const editFranchiseRequest = (values) => {
-	return AxiosInstance.patch('/franchiseRequests/edit/:id', values);
+export const editFranchiseRequest = (values, id) => {
+	return AxiosInstance.patch(`/franchiseRequests/edit/${id}`, values);
 }

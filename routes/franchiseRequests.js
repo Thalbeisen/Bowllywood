@@ -209,8 +209,8 @@ router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
 
 router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
 
-router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
-
 router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
+
+router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
 
 module.exports = router;

@@ -47,7 +47,7 @@ const EditFranchiseRequestScreen = () => {
     
     const onSubmit = (values) => {
         console.log(values);
-        editFranchiseRequest(values)
+        editFranchiseRequest(values, id)
             .then(() => {
                 alert('Modification de franchise effectuée');
             })
@@ -78,14 +78,6 @@ const EditFranchiseRequestScreen = () => {
         <>
        { console.log(errors)}
             <Container>
-                {/* <Row>
-                    <Col className='col-12 flex-center'>
-                        <img
-                            src="Bowllywood.png"
-                            alt="Logo du restaurant de bowls nommé Bowllywood"
-                        />
-                    </Col>
-                </Row> */}
                 <HeaderTitle />    
                 <Row>
                     <Col>
