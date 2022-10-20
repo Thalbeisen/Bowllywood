@@ -5,6 +5,13 @@ export const AxiosInstance = axios.create({
 });
 
 AxiosInstance.interceptors.request.use(function(config) {
+    const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+
+    if (authHeaders)
+    {
+        config.headers['Authorization'] = 'bearer ' + authHeaders['token'];
+    }
+    
     return config;
 }, function (error) {
     return Promise.reject(error)

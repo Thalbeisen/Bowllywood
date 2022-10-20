@@ -6,6 +6,7 @@ import RouteProtector from './components/RouteProtector';
 import LoginScreen from './screens/login/';
 import RegisterScreen from './screens/register/';
 import MenuScreen from './screens/menu/';
+import AddEditMeal from './screens/addEditMeal/';
 import MealScreen from './screens/meal/';
 import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
@@ -23,11 +24,19 @@ function App() {
                         <Route path="/" />
                         <Route path="/reservations" />
                         <Route
-                                path="/menus"
+                                path="/menus/create"
                                 element={
-                                    <RouteProtector>
-                                        <MenuScreen />
-                                    </RouteProtector>
+                                    // <RouteProtector>
+                                        <AddEditMeal />
+                                    // </RouteProtector>
+                                }
+                            />
+                         <Route
+                                path="/menus/update/:id"
+                                element={
+                                    // <RouteProtector>
+                                        <AddEditMeal />
+                                    // </RouteProtector>
                                 }
                             />
                         <Route path="/menus" element={<MenuScreen />} />

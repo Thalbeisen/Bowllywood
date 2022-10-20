@@ -1,6 +1,6 @@
 import { AxiosInstance } from "../providers/axiosInstance";
 
-	export const createMeal = (id, values) => {
+	export const createMeal = (values) => {
 		return AxiosInstance.post('/menus/create', values);
 	}
 
@@ -14,7 +14,6 @@ import { AxiosInstance } from "../providers/axiosInstance";
 
 	export const getOneMeal = (id) => {
 		return AxiosInstance.get(`/menus/${id}`);
-		debugger;
 	}
 
 	export const getSweetBowls = () => {

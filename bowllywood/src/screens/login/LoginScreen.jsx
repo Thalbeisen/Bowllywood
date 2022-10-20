@@ -128,7 +128,9 @@ function LoginScreen() {
                                         />
                                     </Col>
                                 </Row>
-                                <Button type="submit">Connexion</Button>
+                                <div className="d-flex justify-content-center">
+                                    <Button type="submit" className="">Connexion</Button>
+                                </div>
                             </form>
                         </Col>
                     </Row>
