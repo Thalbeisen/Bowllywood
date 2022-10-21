@@ -51,7 +51,7 @@ const FranchiseRequestDetailsScreen = () => {
                               </tr>
                             </tbody>
                         </Table>
-                        <div className='flex-center'>
+                        <div className='d-flex justify-content-evenly'>
                             <Button>
                                 <Link
                                     to={`/my-franchise-requests/edit/${id}`}
