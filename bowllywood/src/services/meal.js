@@ -23,3 +23,7 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	export const getSaltedBowls = () => {
 		return AxiosInstance.get('/menus/');
 	}
+
+	export const getAllBowls = () => {
+		return AxiosInstance.get('/menus/adminlist');
+	}

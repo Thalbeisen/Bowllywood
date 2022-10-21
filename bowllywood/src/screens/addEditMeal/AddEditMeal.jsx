@@ -233,8 +233,7 @@ const AddEditMeal = () => {
         setFieldValue('ingredients', Array.from(ingChecklist.checkedItems));
         setFieldValue('allergens', Array.from(alrChecklist.checkedItems));
 
-    }, [
-        ingChecklist.checkedItems,
+    }, [ingChecklist.checkedItems,
         alrChecklist.checkedItems,
         setFieldValue])
 

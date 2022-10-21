@@ -59,9 +59,9 @@ const Template = () => {
     return (
         <>
          <Sidebar content={items} background="#91D5A3" width={200} >
-         <div className='main-content'>
+            <div className='main-content'>
                 <Outlet />
-            <div className='col-12 footer'></div>
+                <div className='col-12 footer'></div>
             </div>
           </Sidebar>
         </>
