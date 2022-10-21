@@ -1,15 +1,22 @@
+import jwt_decode from "jwt-decode";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { editFranchiseRequest } from '../../services/franchiseRequest';
+
+import { editFranchiseRequest, getFranchiseRequestDetail } from '../../services/franchiseRequest';
 import HeaderTitle from '../../components/HeaderTitle';
 import InputText from '../../components/Input';
 import Button from '../../components/Button';
+
 import { Col, Row, Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getFranchiseRequestDetail } from '../../services/franchiseRequest';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import './../../sass/styles.scss';
+
+const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+const token =   authHeaders['token'];
+const decoded = jwt_decode(token);
+const userID = decoded.id
 
 const validationSchema = yup.object({
     phone: yup.string().required('Ce champ est obligatoire'),
@@ -22,12 +29,10 @@ const validationSchema = yup.object({
         .bool()
         .oneOf([true], 'Veuillez accepter les CGU')
         .required(),
-    user_id: yup.string(),
 });
 
 const EditFranchiseRequestScreen = () => {
-    // const [franchiseRequestDetail, setFranchiseRequestDetail] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     const [initialValues, setInitialValues] = useState(
         {
             phone: '',
@@ -38,8 +43,6 @@ const EditFranchiseRequestScreen = () => {
             foodServiceExperience: '',
             conditionOfUse: true,
             status: 'PENDING',
-            // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-            user_id: '6324d81ea70c53011eaf4733',
         }
     );
 
@@ -48,17 +51,15 @@ const EditFranchiseRequestScreen = () => {
     useEffect(() => {
         getFranchiseRequestDetail(id)
             .then((res) => {
-                // setFranchiseRequestDetail(res.data);
                 setInitialValues(res.data);
+                if(res.data.user_id != userID){
+                    navigate("/");
+                }
             })
             .catch((err) => {
                 console.log(err);
-            })
-            .finally(() => {
-                setLoading(false);
             });
     }, [id]);
-    // EDITION
 
     const onSubmit = (values) => {
         console.log(values);
@@ -223,21 +224,6 @@ const EditFranchiseRequestScreen = () => {
                                         errors.status &&
                                         touched.status &&
                                         errors.status
-                                    }
-                                />
-                            </Col>
-                            <Col className="col-12 col-md-4 flex-center mb-5 d-none">
-                                <InputText
-                                    name="user_id"
-                                    desc=""
-                                    type="hidden"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.user_id}
-                                    error={
-                                        errors.user_id &&
-                                        touched.user_id &&
-                                        errors.user_id
                                     }
                                 />
                             </Col>
