@@ -1,4 +1,3 @@
-import jwt_decode from "jwt-decode";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -11,12 +10,15 @@ import { Col, Row, Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
+
 import './../../sass/styles.scss';
 
-const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
-const token =   authHeaders['token'];
-const decoded = jwt_decode(token);
-const userID = decoded.id
+// const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+// const token =   authHeaders['token'];
+// const decoded = jwt_decode(token);
+// const userID = decoded.id
 
 const validationSchema = yup.object({
     phone: yup.string().required('Ce champ est obligatoire'),
@@ -32,6 +34,8 @@ const validationSchema = yup.object({
 });
 
 const EditFranchiseRequestScreen = () => {
+    // const authContext = useContext(AuthContext);
+    // const userID = authContext.auth.userID;
     const navigate = useNavigate();
     const [initialValues, setInitialValues] = useState(
         {
@@ -52,9 +56,9 @@ const EditFranchiseRequestScreen = () => {
         getFranchiseRequestDetail(id)
             .then((res) => {
                 setInitialValues(res.data);
-                if(res.data.user_id != userID){
-                    navigate("/");
-                }
+                // if(res.data.user_id !== userID){
+                //     navigate("/");
+                // }
             })
             .catch((err) => {
                 console.log(err);

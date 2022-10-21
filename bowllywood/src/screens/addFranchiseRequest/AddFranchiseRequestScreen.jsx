@@ -1,4 +1,4 @@
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { addFranchiseRequest } from '../../services/franchiseRequest';
@@ -6,12 +6,14 @@ import HeaderTitle from '../../components/HeaderTitle';
 import InputText from '../../components/Input';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 import './../../sass/styles.scss';
 
-const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
-const token =   authHeaders['token'];
-const decoded = jwt_decode(token);
-const userID = decoded.id
+// const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+// const token =   authHeaders['token'];
+// const decoded = jwt_decode(token);
+// const userID = decoded.id
 
 const validationSchema = yup.object({
     phone: yup.string().required('Ce champ est obligatoire'),
@@ -25,6 +27,8 @@ const validationSchema = yup.object({
 });
 
 const AddFranchiseRequestScreen = () => {
+    // const authContext = useContext(AuthContext);
+    // const userID = authContext.auth.userID;
     const onSubmit = (values) => {
         console.log(values);
         addFranchiseRequest(values)
@@ -47,7 +51,7 @@ const AddFranchiseRequestScreen = () => {
                 foodServiceExperience: '',
                 conditionOfUse: false,
                 status: 'PENDING',
-                user_id: userID,
+                // user_id: userID,
             },
             validationSchema,
             onSubmit,
