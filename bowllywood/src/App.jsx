@@ -15,7 +15,7 @@ import ProfileScreen from './screens/profiles/ProfileScreen';
 import HomeScreen from './screens/home/HomeScreen';
 import FranchiseRequestDetailsScreen from './screens/franchiseRequestDetails';
 import FranchiseRequestEditScreen from './screens/franchiseRequestEditScreen';
-
+import FranchiseRequestCancelScreen from './screens/franchiseRequestCancelScreen';
 
 function App() {
     return (
@@ -43,6 +43,7 @@ function App() {
                         <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>
                         <Route path="/my-franchise-requests/:id" element={<FranchiseRequestDetailsScreen/>} />
                         <Route path="/my-franchise-requests/edit/:id" element={<FranchiseRequestEditScreen/>} />
+                        <Route path="/my-franchise-requests/cancel/:id" element={<FranchiseRequestCancelScreen/>} />
                         <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>                 
                         <Route path="/profile" element={<ProfileScreen/>}/>
                       </Route>

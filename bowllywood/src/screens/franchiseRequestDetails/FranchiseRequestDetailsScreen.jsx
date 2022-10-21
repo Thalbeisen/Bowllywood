@@ -60,6 +60,14 @@ const FranchiseRequestDetailsScreen = () => {
                                     <p>Mofidier</p>
                                 </Link>
                             </Button>
+                            <Button>
+                                <Link
+                                    to={`/my-franchise-requests/cancel/${id}`}
+                                    className="text-decoration-none text-black text-center"
+                                >
+                                    <p>Annuler</p>
+                                </Link>
+                            </Button>
                         </div>
                     </Col>
                 </Row>

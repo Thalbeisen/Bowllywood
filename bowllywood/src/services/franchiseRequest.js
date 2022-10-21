@@ -11,3 +11,8 @@ export const getFranchiseRequestDetail = (id) => {
 export const editFranchiseRequest = (values, id) => {
 	return AxiosInstance.patch(`/franchiseRequests/edit/${id}`, values);
 }
+
+export const cancelFranchiseRequest = (id) => {
+	return AxiosInstance.delete(`/franchiseRequests/cancel/${id}`);
+}
+
