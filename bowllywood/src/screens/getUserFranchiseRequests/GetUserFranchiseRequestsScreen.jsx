@@ -1,3 +1,5 @@
+import jwt_decode from "jwt-decode";
+
 import { Link } from 'react-router-dom';
 import { getUserFranchiseRequests } from '../../services/users';
 import { useEffect, useState } from 'react';
@@ -5,11 +7,16 @@ import { Col, Row, Container } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
+const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
+const token =   authHeaders['token'];
+const decoded = jwt_decode(token);
+const userID = decoded.id
+
 const GetUserFranchiseRequestsScreen = () => {
     const [userFranchiseRequests, setUserFranchiseRequests] = useState([]);
 
     useEffect(() => {
-        getUserFranchiseRequests('6324d81ea70c53011eaf4733')
+        getUserFranchiseRequests(userID)
             .then((res) => {
                 setUserFranchiseRequests(res.data.franchiseContracts);
             })
