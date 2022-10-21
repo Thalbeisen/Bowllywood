@@ -69,7 +69,17 @@ const generateToken = (payload, secret, ttl) =>
  */
 exports.usersList = async (req, res) => {
     try {
-        const users = await User.find({});
+        // START EDIT filters
+        const filters = {};
+        if (req.query) {
+            const sQuery = req.query;
+            const key = Object.keys(sQuery)[0];
+            const filValues = sQuery[key].split(',');
+            filters[key] = filValues;
+        }
+
+        const users = await User.find(filters);
+        // END EDIT filters
 
         if (!users) {
             res.status(404).json({

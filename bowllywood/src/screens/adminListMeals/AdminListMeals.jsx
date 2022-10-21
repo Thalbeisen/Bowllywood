@@ -1,6 +1,8 @@
 import './AdminListMeals.scss';
 import { useEffect, useState } from 'react';
 import { getAllBowls } from '../../services/meal';
+import { getAllUsers } from '../../services/users';
+
 import HeaderTitle from '../../components/HeaderTitle';
 import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
@@ -9,16 +11,39 @@ import { Card, CardHeader, CardMedia, CardContent, CardActions, Typography, colo
 function AdminMealsScreen() {
 
 	const [bowls, setBowls] = useState([]);
-
+	
 	useEffect( () => {
-		getAllBowls().then((res) => {
-				setBowls(res.data);
+		getAllBowls().then((bowlRes) => {
+
+			// set user filters
+			let usersID = [];
+			bowlRes.data.map((bowl, index) => {
+				if (bowl.createdBy !== undefined) // && !filters.includes(bowl.createdBy)
+				{
+					usersID.push(bowl.createdBy)
+				}
+			});
+			
+			// get users's names
+			const filters = (usersID.lentgh !== 0) ? `_id=${usersID}` : null ;
+			getAllUsers(filters).then((userRes) => {
+				console.log(userRes);
+				let users = userRes.data.data;
+				
+				users.map((user, index)=>{
+					// chopper un id direct
+				})
 			}).catch((err) => {
 				console.log(err);
-			});
-	}, [] );
+			})
 
-	console.log(typeof bowls[0])
+			// res.data.createdBy =
+			setBowls(bowlRes.data);
+
+		}).catch((err) => {
+			console.log(err);
+		});
+	}, [] );
 
 	const onOpenDetailsDialog = () => {
 
@@ -31,15 +56,14 @@ function AdminMealsScreen() {
 // template for the list
 const MealTemp = ({ bowl }) => {
 	return (
-		<li className="col-3 bb align-items-center">
+		<li className="col-12 col-sm-4 col-xl-3 align-items-center">
 {/*{`/menus/${bowl._id}`}*/}
 			<Card>
 
 				<CardHeader
 					title={bowl.name}
-					subheader={`Créé le ${Date(bowl.createdAt, '<dd/mm/YYYY>')} par ${bowl.createdBy ?? 'Créateur inconnu'}`}
+					subheader={`Créé le ${new Date(bowl.createdAt).toLocaleDateString()} par ${bowl.createdBy ?? 'Créateur inconnu'}`}
 				/>
-
 
 				<CardMedia
 					component="img"
@@ -61,10 +85,10 @@ const MealTemp = ({ bowl }) => {
 
 				<CardActions>
 					<Button className="no-border" onClick={onOpenDetailsDialog}>
-						<i class="fa-regular fa-pen-to-square"></i>
+						<i className="fa-regular fa-pen-to-square"></i>
 					</Button>
 					<Button className="no-border" onClick={onOpenDeleteDialog}>
-						<i class="fa-solid fa-square-minus"></i>
+						<i className="fa-solid fa-square-minus"></i>
 					</Button>
 				</CardActions>
 			</Card>
@@ -94,7 +118,7 @@ return (
 		<HeaderTitle>Les bowls</HeaderTitle>
 		<Container className="adminListCtnr">
 			<Row className="justify-content-center">
-				<Col xs lg="10" className="bb">
+				<Col lg="11" xl="10">
 					<ul className="row justify-content-evenly">
 						{
 							<ListRendering />

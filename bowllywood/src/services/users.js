@@ -16,7 +16,15 @@ export const loginUser = (values) => {
     return AxiosInstance.post('/users/login/', values);
 }
 
-export const getAllUsers = () => {
+// START EDIT filter
+export const getAllUsers = (filters=null) => {
+    debugger;
+    if (filters)
+    {
+        return AxiosInstance.get(`/users?${filters}`);
+    }
+// END EDIT filter
+
     return AxiosInstance.get('/users/');
 }
 
