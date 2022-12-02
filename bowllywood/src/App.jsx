@@ -2,39 +2,48 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.scss';
-import './sass/style.scss';
-import SearchBar from './components/SearchBar';
-// Normalement on le fait dans le dossier des services
-import axios from 'axios';
-// import
-import { useEffect, useState } from 'react';
-import MenuScreen from './screens/menu/MenuScreen';
-import Button from './components/Button';
-import ProductCard from './components/Card';
-//import Navbar from './components/Navbar';
-import LoginScreen from './screens/login/LoginScreen';
-import RegisterScreen from './screens/register/RegisterScreen';
-import 'bootstrap/dist/js/bootstrap.bundle.min';  
+import RouteProtector from './components/RouteProtector';
+import LoginScreen from './screens/login/';
+import RegisterScreen from './screens/register/';
+import MenuScreen from './screens/menu/';
+import MealScreen from './screens/meal/';
 import Template from './components/Template';
+import { AuthProvider } from './providers/AuthProvider';
+import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
+import GetUserFranchiseRequestsScreen from './screens/getUserFranchiseRequests';
+import ProfileScreen from './screens/profiles/ProfileScreen';
 
 function App() {
     return (
-        <div className="App">
-            <Router>
+        <AuthProvider>
+            <div className="App">
+                <Router>
                     <Routes>
                       <Route path="/" element={<Template/>}>
-                        {/* COMPLETER COMME L'EXEMPLE CI-DESSOUS */}
-                        {/* <Route path="/test" element={<Test/>}/> */}
-                        <Route path="/reservation" />
-                        <Route path="/menu" />
+                        <Route path="/" />
+                        <Route path="/reservations" />
+                        <Route
+                                path="/menus"
+                                element={
+                                    <RouteProtector>
+                                        <MenuScreen />
+                                    </RouteProtector>
+                                }
+                            />
+                        <Route path="/menus" element={<MenuScreen />} />
+                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                        <Route path="/menus/:id" element={<MealScreen />} />
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>
-                        </Route>
+                        <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>
+                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
+                        <Route path="/profile" element={<ProfileScreen/>}/>
+                      </Route>
                     </Routes>
-            </Router>
-        </div>
+                </Router>
+            </div>
+        </AuthProvider>
     );
 }
-
 export default App;

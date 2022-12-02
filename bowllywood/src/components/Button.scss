@@ -10,6 +10,8 @@
 .btn-primary{
     background-color: $pale-green;
     border: 0.1em solid $pale-green;
+    transition: background-color .2s ease-out !important;
+
     &:hover{
         background-color: $green !important;
         border-color: $green !important;
@@ -19,6 +21,8 @@
 .btn-secondary{
     background-color: #FFF;
     border: 0.1em solid $pale-green;
+    transition: all .2s ease-out;
+
     &:hover{
         background-color: #FFF !important;
         border-color: $green !important;

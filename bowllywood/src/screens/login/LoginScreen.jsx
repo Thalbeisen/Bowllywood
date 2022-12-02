@@ -1,8 +1,12 @@
+import { useContext, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import InputText from '../../components/Input';
+import Button from '../../components/Button';
 import { Col, Row, Container } from 'react-bootstrap';
-import '../../sass/styles.scss';
+import './LoginScreen.scss';
+import { loginUser } from '../../services/users';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const loginSchema = yup.object().shape({
     email: yup
@@ -16,12 +20,40 @@ const loginSchema = yup.object().shape({
 });
 
 function LoginScreen() {
+    const [loginSuccess, setLoginSuccess] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const redirectSource = location.state?.from?.pathname || '/';
+    const [errorMessage, setErrorMessage] = useState('');
+
     return (
         <Formik
             validationSchema={loginSchema}
             initialValues={{ email: '', password: '' }}
-            onSubmit={(values) => {
-                alert(JSON.stringify(values));
+            onSubmit={async (values) => {
+                try {
+                    const response = await loginUser(values);
+                    localStorage.setItem(
+                        'userTokens',
+                        JSON.stringify(response.data)
+                    );
+                    navigate(redirectSource, { replace: true });
+                    console.log(`test ${response.data}`);
+                } catch (err) {
+                    if (!err.response) {
+                        setErrorMessage('Pas de réponse du serveur');
+                    } else if (err.response.status === 422) {
+                        setErrorMessage('Identifiant/Mot de passe incorrect');
+                    } else if (err.response.status === 403) {
+                        setErrorMessage(
+                            'Compte non validé, avez-vous pensé à vérifier votre boîte mail?'
+                        );
+                    } else {
+                        setErrorMessage(
+                            'Connexion impossible, veuillez réessayer ultérieurement'
+                        );
+                    }
+                }
             }}
         >
             {({
@@ -32,62 +64,75 @@ function LoginScreen() {
                 handleBlur,
                 handleSubmit,
             }) => (
-                <Container>
+                <Container className="pb-5">
+                    <Row className="flex-center mb-5">
+                        <Col lg="3">
+                            <img
+                                src="Bowllywood.png"
+                                alt="Logo du restaurant de bowls nommé Bowllywood"
+                            />
+                        </Col>
+                        <Col lg="6">
+                            <p className="loginText">
+                                Te connecter sur notre site te permettra de
+                                gérer ton espace fidélité et d’avoir une
+                                traçabilité de tes réservations
+                            </p>
+                        </Col>
+                    </Row>
                     <Row>
-                    <Col>
-                        <img
-                            src="Bowllywood.png"
-                            alt="Logo du restaurant de bowls nommé Bowllywood"
-                        />
-                        </Col>
                         <Col>
-                        <p className='loginText'>
-                            Te connecter sur notre site te permettra de gérer
-                            ton espace fidélité et d’avoir une traçabilité de
-                            tes réservations
-                        </p>
+                            <form
+                                noValidate
+                                onSubmit={handleSubmit}
+                                className="container"
+                            >
+                                <Row className="justify-content-center gap-4 mb-5">
+                                    <Col
+                                        lg="4"
+                                        className="d-flex justify-content-center px-4"
+                                    >
+                                        <InputText
+                                            error={
+                                                errors.email &&
+                                                touched.email &&
+                                                errors.email
+                                            }
+                                            type="email"
+                                            name="email"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            value={values.email}
+                                            placeholder="jbon@herta.fr"
+                                            desc="Email"
+                                            id="email"
+                                        />
+                                    </Col>
+                                    <Col
+                                        lg="4"
+                                        className="d-flex justify-content-center px-4"
+                                    >
+                                        <InputText
+                                            error={
+                                                errors.password &&
+                                                touched.password &&
+                                                errors.password
+                                            }
+                                            type="password"
+                                            name="password"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            value={values.password}
+                                            desc="Mot de passe"
+                                            placeholder="********"
+                                        />
+                                    </Col>
+                                </Row>
+                                <Button type="submit">Connexion</Button>
+                            </form>
                         </Col>
-                        </Row>
-                        <form noValidate onSubmit={handleSubmit}>
-                            <Row className="loginContainer">
-                                <Col className="d-flex justify-content-center">
-                                <InputText
-                                    error={
-                                        errors.email &&
-                                        touched.email &&
-                                        errors.email
-                                    }
-                                    type="email"
-                                    name="email"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.email}
-                                    placeholder="jbon@herta.fr"
-                                    desc="Email"
-                                    id="email"
-                                />
-                                </Col>
-                                <Col className="d-flex justify-content-center">
-                                <InputText
-                                    error={
-                                        errors.password &&
-                                        touched.password &&
-                                        errors.password
-                                    }
-                                    type="password"
-                                    name="password"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.password}
-                                    desc="Mot de passe"
-                                />
-                                </Col>
-                            </Row>
-                            <button type="submit" className="loginButton">
-                                Connexion
-                            </button>
-                        </form>
-                    </Container>
+                    </Row>
+                </Container>
             )}
         </Formik>
     );

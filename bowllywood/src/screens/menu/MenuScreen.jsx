@@ -1,69 +1,91 @@
 import './MenuScreen.scss';
+import { useEffect, useState } from 'react';
+import { getSaltedBowls, getSweetBowls } from '../../services/meal';
+import HeaderTitle from '../../components/HeaderTitle';
 
-// donnée en dure
-import tereakiImg from '../../assets/img/menu/sale/tereakiWeb.jpg';
-import tahitiImg  from '../../assets/img/menu/sale/tahitiWeb.jpg';
-import pouletImg  from '../../assets/img/menu/sale/pouletWeb.jpg';
-import veggieImg  from '../../assets/img/menu/sale/veggieWeb.jpg';
+function MenuScreen({ bowlsType="SALE" }) {
 
-function MenuScreen() {
+	const [bowls, setBowls] = useState([]);
 
-return (
-	<>
-		<section className="menuCtnr container">
-			<div className="row align-items-center justify-content-center gap-3">
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={tereakiImg}
-				          alt="tereaki bowl"
-			    	    />
-					</div>
-	          		<h3>Tereaki</h3>
-	          	</div>
+	useEffect( () => {
+		
+		// check if the asked bowls are the sweet or salted ones.
+		if (bowlsType === "SUCRE")
+		{
+			getSweetBowls().then((res) => {
+				setBowls(res.data);
+			}).catch((err) => {
+				console.log(err);
+			});
+		}
+		else
+		{
+			getSaltedBowls().then((res) => {
+				setBowls(res.data);
+			}).catch((err) => {
+				console.log(err);
+			});
+		}
+	}, [bowlsType] );
+
+// template for the list
+const MealTemp = ({ meal }) => {
+	return (
+		<li className="col-2">
+			<div className="d-flex flex-column flex-center">
+				<a href={`/menus/${meal._id}`} className="imgCtnr">
+					<img
+					src={`/menu/${meal.image}`}
+					alt={meal.name}
+					/>
+				</a>  	
+				<h3>{meal.name}</h3>
 			</div>
-	      	<div className="col-2">
-	      		<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={tahitiImg}
-				          alt="tahiti bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Tahiti</h3>
-		        </div>
-			</div>
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src='/menu/sale/pouletWeb.jpg'
-				          alt="poulet bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Poulet</h3>
-		        </div>
-			</div>
-			<div className="col-2">
-				<div className="d-flex flex-column flex-center">
-					<div className="imgCtnr">
-				        <img
-				          src={veggieImg}
-				          alt="veggie bowl"
-			    	    />
-		        	</div>  	
-		        	<h3>Veggie</h3>
-		        </div>
-			</div>
-			</div>
-		</section>
-		<section className="menuNav d-flex flex-column align-items-end px-3">
-			<a href="#"  className="mauikea_font">
-				Desserts
+		</li>
+	)
+}
+
+// custom navigation to desserts or salted bowls.
+const LinkNav = () => {
+	return (
+		<section className={`menuNav ${bowlsType === 'SALE' ? 'rightNav' : 'leftNav'} px-4`}>
+			<a href={`/menus/${bowlsType === 'SALE' ? 'desserts' : ''}`} className="mauikea_font">
+				{bowlsType === 'SALE' ? 'Desserts' : 'Bowls'}
 				<span className="d-block">fleche</span>
 			</a>
 		</section>
+)}
+
+// check if the list est empty or not, and return the adapted rendering.
+const ListRendering = () => {
+	if (bowls.length !== 0) {
+		return (
+			bowls.map((meal, index) => (
+				<MealTemp key={index} meal={meal}/>
+			))
+		)
+	} else {
+		return (
+			<li className="col">
+				<p className='infoText'>Oups ! Aucun bowls de cette catégories n'a été trouvé...
+				<br/>
+				Venez nous voir au restaurant, vous y trouverez tous nos bowls.</p>
+			</li>
+		)
+	}
+}
+
+return (
+	<>
+		<HeaderTitle>La carte <br/> {bowlsType === 'SALE' ? 'Nos bowls salés' : 'Nos desserts'}</HeaderTitle>
+		<section className="menuCtnr container">
+			<ul className="row align-items-center justify-content-center">
+				{
+					<ListRendering />
+				}
+			</ul>
+		</section>
+		<LinkNav />
 	</>
 	);
 }

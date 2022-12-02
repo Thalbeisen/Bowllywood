@@ -368,10 +368,13 @@ exports.userDelete = async (req, res) => {
     }
 };
 
-exports.userFranchiseRequests = async (req, res) => {
+exports.getUserFranchiseRequests = async (req, res) => {
     try {
         const selectedUser = await User.findOne({
-            _id: req.params.id,
+            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
+            // _id: req.params.id,
+            // DELETE LINE BELOW ONCE LOGIN FEATURE READY
+            _id: '6324d81ea70c53011eaf4733',
         }).populate('franchiseContracts');
 
         if (!selectedUser) {

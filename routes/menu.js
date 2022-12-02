@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   schemas:
- *     Menu:
+ *     Bowl:
  *       type: object
  *       required:
  *         - name
@@ -48,20 +48,20 @@
  *         image: path/img_haiti.png
  *
  * tags:
- *   name: Menu
+ *   name: Bowl
  *   description: La liste des plats d'un menu.
  *
  * /menu/create:
  *   post:
  *     summary: Create a meal
- *     tags: [Menu]
+ *     tags: [Bowl]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             items:
- *               $ref: '#/components/schemas/Menu'
+ *               $ref: '#/components/schemas/Bowl'
  *     responses:
  *       201:
  *         description: The meal was successfully created
@@ -70,7 +70,7 @@
  *             schema:
  *               items:
  *                 type: array
- *                 $ref: '#/components/schemas/Menu'
+ *                 $ref: '#/components/schemas/Bowl'
  *       404:
  *         description: If the creation has failed.
  *       400:
@@ -79,7 +79,7 @@
  * /menu/update/{id}:
  *   post:
  *     summary: Update a meal
- *     tags: [Menu]
+ *     tags: [Bowl]
  *     parameters:
  *       - in: path
  *         name: id
@@ -93,7 +93,7 @@
  *         application/json:
  *           schema:
  *             items:
- *               $ref: '#/components/schemas/Menu'
+ *               $ref: '#/components/schemas/Bowl'
  *     responses:
  *       200:
  *         description: The updated meal
@@ -102,7 +102,7 @@
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Menu'
+ *                 $ref: '#/components/schemas/Bowl'
  *       404:
  *         description: Request error.
  *       500:
@@ -111,7 +111,7 @@
  * /menu/delete/{id}:
  *   delete:
  *     summary: Delete a meal by id
- *     tags: [Menu]
+ *     tags: [Bowl]
  *     parameters:
  *       - in: path
  *         name: id
@@ -130,7 +130,7 @@
  * /menu/{id}:
  *   get:
  *     summary: Get one meal informations
- *     tags: [Menu]
+ *     tags: [Bowl]
  *     parameters:
  *       - in: path
  *         name: id
@@ -144,7 +144,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Menu'
+ *               $ref: '#/components/schemas/Bowl'
  *       404:
  *         description: The meal was not found.
  *       500:
@@ -153,7 +153,7 @@
  * /menu:
  *   get:
  *     summary: Get the menu
- *     tags: [Menu]
+ *     tags: [Bowl]
  *     responses:
  *       200:
  *         description: The menu (list of meals)
@@ -162,7 +162,7 @@
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Menu'
+ *                 $ref: '#/components/schemas/Bowl'
  *       404:
  *         description: The list is empty.
  *       500:
@@ -171,18 +171,19 @@
 
 // requires
 const express = require('express');
+const menuCtrl = require('../controllers/menu');
 
 const router = express.Router();
-const menuCtrl = require('../controllers/menu');
 
 // middlewares
 const auth = require('../middlewares/auth');
 
 // set the routers for each methods
 router.post('/create', auth, menuCtrl.createMeal);
+router.get('/desserts', menuCtrl.getSweetBowls);
 router.post('/update/:id', auth, menuCtrl.updateMeal);
 router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
 router.get('/:id', menuCtrl.getOneMeal);
-router.get('/', menuCtrl.getAllMenu);
+router.get('/', menuCtrl.getSaltedBowls);
 
 module.exports = router;

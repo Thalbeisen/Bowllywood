@@ -28,15 +28,27 @@ exports.createMeal = async (req, res) => {
 };
 
 /**
- * Get all the meals of the menu.
+ * Get all the salted bowls of the menu.
  * @param  {Response} res          Use the res.status 200 & 500.
  */
-exports.getAllMenu = async (req, res) => {
+exports.getSaltedBowls = async (req, res) => {
     try {
-        const meals = await Menu.find({});
-
+        const meals = await Menu.find({ category: 'SALE' });
         if (!meals) res.status(404).json(errors.emptyList);
+        res.status(200).json(meals);
+    } catch (err) {
+        res.status(500).json(errors.errorOccured + err.message);
+    }
+};
 
+/**
+ * Get all the sweet bowls (desserts) of the menu.
+ * @param  {Response} res          Use the res.status 200 & 500.
+ */
+exports.getSweetBowls = async (req, res) => {
+    try {
+        const meals = await Menu.find({ category: 'SUCRE' });
+        if (!meals) res.status(404).json(errors.emptyList);
         res.status(200).json(meals);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
@@ -50,7 +62,7 @@ exports.getAllMenu = async (req, res) => {
  */
 exports.getOneMeal = async (req, res) => {
     try {
-        const mealDetails = await Menu.findOne({ id: req.params.id });
+        const mealDetails = await Menu.findById({ _id: req.params.id });
 
         if (!mealDetails) {
             res.status(404).json({
