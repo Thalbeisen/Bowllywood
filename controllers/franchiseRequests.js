@@ -151,12 +151,25 @@ exports.cancelFranchiseRequest = async (req, res) => {
                 ...req.body,
             }
         );
-        if (!cancelRequest) {
-            res.status(404).json(errors.emptyList);
-        }
+
+        const user = await User.findOne({
+            _id: req.body.userID,
+        });
+
+        const removeUserContract = (array) => {
+            const index = array.indexOf(cancelRequest.id);
+            if (index !== -1) {
+                array.splice(index, 1);
+                return array;
+            }
+            return true;
+        };
+
+        removeUserContract(user.franchiseContracts);
+        user.save();
+
         res.status(200).json(cancelRequest);
     } catch (error) {
-        console.log(error.message);
         res.status(400).json(errors.deleteError);
     }
 };
