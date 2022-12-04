@@ -1,36 +1,34 @@
-// import jwt_decode from "jwt-decode";
-
-import { Link } from 'react-router-dom';
 import { getUserFranchiseRequests } from '../../services/users';
-import { useEffect, useState } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
+
+import { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 import { Col, Row, Container } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
-
-// const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
-// const token =   authHeaders['token'];
-// const decoded = jwt_decode(token);
-// const userID = decoded.id
 
 const GetUserFranchiseRequestsScreen = () => {
     const [userFranchiseRequests, setUserFranchiseRequests] = useState([]);
-    // const authContext = useContext(AuthContext);
-    // const userID = authContext.auth.userID;
+    const authContext = useContext(AuthContext);
+    const userID = authContext.auth.userID;
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        // getUserFranchiseRequests(userID)
-        getUserFranchiseRequests('634fa0e0814451ed5905fe24')
+        getUserFranchiseRequests(userID)
             .then((res) => {
                 setUserFranchiseRequests(res.data.franchiseContracts);
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
     return (
-        <>
+        !loading &&
             <Container>
                 <Row>
                     <Col>
@@ -91,7 +89,6 @@ const GetUserFranchiseRequestsScreen = () => {
                     </Col>
                 </Row>
             </Container>
-        </>
     );
 };
 
