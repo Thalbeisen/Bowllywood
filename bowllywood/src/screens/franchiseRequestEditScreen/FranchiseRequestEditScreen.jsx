@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 
 import { Col, Row, Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, redirect  } from 'react-router-dom';
 
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -34,9 +34,11 @@ const validationSchema = yup.object({
 });
 
 const EditFranchiseRequestScreen = () => {
-    // const authContext = useContext(AuthContext);
-    // const userID = authContext.auth.userID;
+    const authContext = useContext(AuthContext);
+    const userID = authContext.auth.userID;
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+
     const [initialValues, setInitialValues] = useState(
         {
             phone: '',
@@ -51,17 +53,24 @@ const EditFranchiseRequestScreen = () => {
     );
 
     let { id } = useParams();
-
+console.log(id);
     useEffect(() => {
         getFranchiseRequestDetail(id)
             .then((res) => {
                 setInitialValues(res.data);
-                // if(res.data.user_id !== userID){
-                //     navigate("/");
-                // }
+                // console.log(res.data);
+                // console.log(res.data.user_id);
+                // console.log(userID);
+                if(res.data.user_id !== userID){
+                    navigate("/");
+                    // return redirect("/");
+                }
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, [id]);
 
@@ -86,6 +95,7 @@ const EditFranchiseRequestScreen = () => {
 
 
     return (
+        !loading &&
         <Container>
             <HeaderTitle />
             <Row>
