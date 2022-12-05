@@ -181,7 +181,7 @@ exports.userNew = async (req, res) => {
 
 const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
-        url: `https://bowllywood.herokuapp.com/users/validate/${validationToken}`,
+        url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
         // url: `http://localhost:6000/users/validate/${validationToken}`,
     });
     const mailContent = {
