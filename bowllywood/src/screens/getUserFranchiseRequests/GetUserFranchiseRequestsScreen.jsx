@@ -1,23 +1,34 @@
 import { getUserFranchiseRequests } from '../../services/users';
-import { useEffect, useState } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
+
+import { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 import { Col, Row, Container } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 const GetUserFranchiseRequestsScreen = () => {
     const [userFranchiseRequests, setUserFranchiseRequests] = useState([]);
+    const authContext = useContext(AuthContext);
+    const userID = authContext.auth.userID;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getUserFranchiseRequests('6324d81ea70c53011eaf4733')
+        getUserFranchiseRequests(userID)
             .then((res) => {
                 setUserFranchiseRequests(res.data.franchiseContracts);
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
     return (
-        <>
+        !loading &&
             <Container>
                 <Row>
                     <Col>
@@ -29,60 +40,45 @@ const GetUserFranchiseRequestsScreen = () => {
                                     <th>Financement envisagé</th>
                                     <th>Ville d'implantation</th>
                                     <th>Status</th>
+                                    <th>Modification</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {userFranchiseRequests.map(
-                                    (franchiseContract, index) => {
+                                    (franchiseContract) => {
                                         return (
-                                            <tr>
-                                                <td
-                                                    key={
-                                                        'franchiseContract-' +
-                                                        { index }
-                                                    }
-                                                >
+                                            <tr
+                                                key={franchiseContract._id}>
+                                                <td>
                                                     {
                                                         franchiseContract.createdAt
                                                     }
                                                 </td>
-                                                <td
-                                                    key={
-                                                        'franchiseContract-' +
-                                                        { index }
-                                                    }
-                                                >
-                                                    {
-                                                        franchiseContract.estimatedAmount + ' €'
-                                                    }
+                                                <td>
+                                                    {franchiseContract.estimatedAmount +
+                                                        ' €'}
                                                 </td>
-                                                <td
-                                                    key={
-                                                        'franchiseContract-' +
-                                                        { index }
-                                                    }
-                                                >
-                                                    {
-                                                        franchiseContract.hopedFinancing + ' €'
-                                                    }
+                                                <td>
+                                                    {franchiseContract.hopedFinancing +
+                                                        ' €'}
                                                 </td>
-                                                <td
-                                                    key={
-                                                        'franchiseContract-' +
-                                                        { index }
-                                                    }
-                                                >
+                                                <td>
                                                     {
                                                         franchiseContract.shopLocation
                                                     }
                                                 </td>
-                                                <td
-                                                    key={
-                                                        'franchiseContract-' +
-                                                        { index }
-                                                    }
-                                                >
+                                                <td>
                                                     {franchiseContract.status}
+                                                </td>
+                                                <td>
+                                                    <Button>
+                                                        <Link
+                                                            to={`/my-franchise-requests/${franchiseContract._id}`}
+                                                            className="text-decoration-none text-black text-center"
+                                                        >
+                                                            <p>Consulter</p>
+                                                        </Link>
+                                                    </Button>
                                                 </td>
                                             </tr>
                                         );
@@ -93,7 +89,6 @@ const GetUserFranchiseRequestsScreen = () => {
                     </Col>
                 </Row>
             </Container>
-        </>
     );
 };
 

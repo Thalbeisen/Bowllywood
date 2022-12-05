@@ -12,7 +12,8 @@ exports.permit =
         console.log(req.body);
         if (
             (user && permittedRoles.includes(user.userRole)) ||
-            user.id === req.params.id
+            user.id === req.params.id ||
+            user.franchiseContracts.includes(req.params.id)
         ) {
             next(); // role is allowed, so continue on the next middleware
         } else {
