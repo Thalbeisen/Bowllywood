@@ -13,16 +13,12 @@ exports.addFranchiseRequest = async (req, res) => {
     try {
         const fanchiseRequest = new FranchiseRequest({
             ...req.body,
-            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
-            // user_id: req.body.userID,
+            user_id: req.body.userID,
         });
         const subscriptionRequest = await fanchiseRequest.save();
 
         const user = await User.findOne({
-            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
-            // _id: req.body.userID,
-            // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-            _id: req.body.user_id,
+            _id: req.body.userID,
         });
         // eslint-disable-next-line no-underscore-dangle
         user.franchiseContracts.push(subscriptionRequest._id);
@@ -138,6 +134,42 @@ exports.editFranchiseRequest = async (req, res) => {
 
         res.status(200).json(editRequestStatus);
     } catch (error) {
-        res.status(403).json(errors.updateError);
+        res.status(400).json(errors.message);
+    }
+};
+
+/**
+ * Cancel a franchise request
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.cancelFranchiseRequest = async (req, res) => {
+    try {
+        const cancelRequest = await FranchiseRequest.findByIdAndDelete(
+            req.params.id,
+            {
+                ...req.body,
+            }
+        );
+
+        const user = await User.findOne({
+            _id: req.body.userID,
+        });
+
+        const removeUserContract = (array) => {
+            const index = array.indexOf(cancelRequest.id);
+            if (index !== -1) {
+                array.splice(index, 1);
+                return array;
+            }
+            return true;
+        };
+
+        removeUserContract(user.franchiseContracts);
+        user.save();
+
+        res.status(200).json(cancelRequest);
+    } catch (error) {
+        res.status(400).json(errors.deleteError);
     }
 };

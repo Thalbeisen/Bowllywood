@@ -49,7 +49,7 @@ app.use('/reviews', reviewRouter);
 app.use('/stocks', stockRouter);
 app.use('/menus', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
-app.use('/restaurants', auth, restaurantsRouter);
+app.use('/restaurants', restaurantsRouter);
 
 // server
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
+import jwt_decode from "jwt-decode";
 
 
 
@@ -8,9 +9,12 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const currentTokens = localStorage.getItem('userTokens')
-        console.log(currentTokens)
         if (currentTokens) {
-            setAuth(currentTokens);
+            const currentTokenObj = JSON.parse(currentTokens);
+            const decodedToken = jwt_decode(currentTokenObj.token);
+            const userID = decodedToken.id;
+            console.log(userID);
+            setAuth({userID});
         }
     },[])
 
