@@ -11,7 +11,7 @@ const items = [
             <p className='text-black'>Accueil</p>
         </Link>
     </SidebarItem>,
-     <SidebarItem>
+    <SidebarItem>
         <Link to="/profile" className='text-decoration-none text-black text-center'>
             <i className="fa-solid fa-user text-black flex-center"></i>
             <p className='text-black'>Profile</p>
@@ -52,19 +52,17 @@ const items = [
     </SidebarItem>,
     <SidebarItem>
         <Link to="/login" className="text-black text-decoration-none flex-center">Connexion</Link>
-    </SidebarItem>,
+    </SidebarItem>
   ];
 
 const Template = () => {
     return (
-        <>
-         <Sidebar content={items} background="#91D5A3" width={200} >
-         <div className='main-content'>
+        <Sidebar content={items} background="#91D5A3" width={200} >
+            <div className='main-content'>
                 <Outlet />
-            <div className='col-12 footer'></div>
+                <div className='col-12 footer'></div>
             </div>
-          </Sidebar>
-        </>
+        </Sidebar>
     );
 };
 
