@@ -1,3 +1,4 @@
 node_modules/
-bin/www
+old.env
 .env
+bin/www
