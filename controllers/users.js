@@ -115,6 +115,28 @@ exports.userDetails = async (req, res) => {
     }
 };
 
+exports.userDetailsMobile = async (req, res) => {
+    const id = req.body.userID;
+    try {
+        const filterUser = { _id: id };
+        const userDetails = await User.findOne(filterUser);
+
+        if (!userDetails) {
+            res.status(404).json({
+                message: "Aucun utilisateur pour l'id donné",
+            });
+        }
+
+        res.status(200).send({
+            data: userDetails,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error,
+        });
+    }
+};
+
 /**
  * Méthode d'édition de l'utilisateur
  * @param {Request} req
