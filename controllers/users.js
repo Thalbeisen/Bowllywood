@@ -94,8 +94,9 @@ exports.usersList = async (req, res) => {
  * @param {Response} res
  */
 exports.userDetails = async (req, res) => {
+    const id = req.body.userID;
     try {
-        const filterUser = { _id: req.params.id };
+        const filterUser = { _id: id };
         const userDetails = await User.findOne(filterUser);
 
         if (!userDetails) {

@@ -169,7 +169,7 @@ router.post('/add', userController.userNew);
 
 router.get('/validate/:validationToken', userController.userValidate);
 
-router.get('/:id', userController.userDetails);
+router.get('/:id', auth, userController.userDetails);
 
 router.patch('/:id', auth, userController.userEdit);
 
