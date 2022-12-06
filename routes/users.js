@@ -171,6 +171,8 @@ router.get('/validate/:validationToken', userController.userValidate);
 
 router.get('/:id', auth, userController.userDetails);
 
+router.get('/userDetails', auth, userController.userDetailsMobile);
+
 router.patch('/:id', auth, userController.userEdit);
 
 router.post('/login', userController.userLogin);

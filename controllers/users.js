@@ -94,8 +94,31 @@ exports.usersList = async (req, res) => {
  * @param {Response} res
  */
 exports.userDetails = async (req, res) => {
+    const id = req.body.userID;
     try {
-        const filterUser = { _id: req.params.id };
+        const filterUser = { _id: id };
+        const userDetails = await User.findOne(filterUser);
+
+        if (!userDetails) {
+            res.status(404).json({
+                message: "Aucun utilisateur pour l'id donné",
+            });
+        }
+
+        res.status(200).send({
+            data: userDetails,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error,
+        });
+    }
+};
+
+exports.userDetailsMobile = async (req, res) => {
+    const id = req.body.userID;
+    try {
+        const filterUser = { _id: id };
         const userDetails = await User.findOne(filterUser);
 
         if (!userDetails) {
@@ -181,7 +204,8 @@ exports.userNew = async (req, res) => {
 
 const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
-        url: `http://localhost:3000/users/validate/${validationToken}`,
+        url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
+        // url: `http://localhost:6000/users/validate/${validationToken}`,
     });
     const mailContent = {
         from: 'admin@bollywood.fr',
@@ -370,12 +394,8 @@ exports.userDelete = async (req, res) => {
 exports.getUserFranchiseRequests = async (req, res) => {
     try {
         const selectedUser = await User.findOne({
-            // UNCOMMENT LINE BELOW ONCE LOGIN FEATURE READY
-            // _id: req.params.id,
-            // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-            _id: '6324d81ea70c53011eaf4733',
+            _id: req.params.id,
         }).populate('franchiseContracts');
-
         if (!selectedUser) {
             res.status(404).json({
                 message: "Aucun utilisateur trouvé pour l'id donné",

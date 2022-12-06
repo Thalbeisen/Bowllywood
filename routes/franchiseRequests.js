@@ -162,6 +162,33 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
  *          description: Aucune données n'a été trouvé.
  *       403:
  *          description: Impossible d'accéder à la liste demandée.
+ * /franchiseRequests/cancel/{id}:
+ *   delete:
+ *     summary: Cancel a franchise request status.
+ *     tags: [FranchiseRequest]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The franchise request id.
+ *     requestBody:
+ *      content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/FranchiseRequest'
+ *     responses:
+ *       200:
+ *         description: Cancel a franchise request status.
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FranchiseRequest'
+ *       404:
+ *          description: Aucune données n'a été trouvé.
+ *       400:
+ *          description: Impossible d'accéder à la liste demandée.
  * /franchiseRequests/add:
  *   post:
  *     summary: Create a franchise request.
@@ -209,8 +236,10 @@ router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
 
 router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
 
+router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
+
 router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
 
-router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
+router.delete('/cancel/:id', franchiseRequestsCtrl.cancelFranchiseRequest);
 
 module.exports = router;

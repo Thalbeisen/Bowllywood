@@ -20,6 +20,10 @@ const options = {
                 url: 'https://bowllywood.herokuapp.com',
                 description: 'Serveur Heroku',
             },
+            {
+                url: 'https://bowllywood.onrender.com/',
+                description: 'Serveur Onrender',
+            },
         ],
     },
     apis: ['./routes/*.js'],

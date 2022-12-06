@@ -36,6 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
     '/mailRessources',
     express.static(path.join(__dirname, '/assets/mailRessources'))
@@ -48,7 +49,7 @@ app.use('/reviews', reviewRouter);
 app.use('/stocks', stockRouter);
 app.use('/menus', menuRouter);
 app.use('/franchiseRequests', auth, franchiseRequestsRouter);
-app.use('/restaurants', auth, restaurantsRouter);
+app.use('/restaurants', restaurantsRouter);
 
 // server
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
