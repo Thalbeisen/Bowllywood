@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const restaurantSchema = new Schema(
     {
-        adress: {
+        address: {
             type: String,
             required: true,
         },
@@ -110,6 +110,11 @@ const restaurantSchema = new Schema(
         zipcode: {
             type: Number,
             required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
         },
         deletedAt: {
             type: Date,
