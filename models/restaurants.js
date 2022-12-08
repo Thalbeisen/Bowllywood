@@ -103,6 +103,10 @@ const restaurantSchema = new Schema(
             type: String,
             required: true,
         },
+        district: {
+            type: String,
+            required: true,
+        },
         zipcode: {
             type: Number,
             required: true,
