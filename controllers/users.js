@@ -94,29 +94,10 @@ exports.usersList = async (req, res) => {
  * @param {Response} res
  */
 exports.userDetails = async (req, res) => {
-    const id = req.body.userID;
-    try {
-        const filterUser = { _id: id };
-        const userDetails = await User.findOne(filterUser);
-
-        if (!userDetails) {
-            res.status(404).json({
-                message: "Aucun utilisateur pour l'id donné",
-            });
-        }
-
-        res.status(200).send({
-            data: userDetails,
-        });
-    } catch (error) {
-        res.status(500).json({
-            error,
-        });
+    let id = req.body.userID;
+    if (req.params?.userID) {
+        id = req.params.userID;
     }
-};
-
-exports.userDetailsMobile = async (req, res) => {
-    const id = req.body.userID;
     try {
         const filterUser = { _id: id };
         const userDetails = await User.findOne(filterUser);
@@ -144,7 +125,7 @@ exports.userDetailsMobile = async (req, res) => {
  */
 exports.userEdit = async (req, res) => {
     try {
-        const selectedUser = await User.findOne({ _id: req.params.id });
+        const selectedUser = await User.findOne({ _id: req.body.id });
 
         if (!selectedUser) {
             res.status(404).json({
