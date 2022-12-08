@@ -1,5 +1,7 @@
 const express = require('express');
 
+const auth = require('../middlewares/auth');
+
 const router = express.Router();
 
 const restaurantCtrl = require('../controllers/restaurants');
@@ -254,7 +256,7 @@ const restaurantCtrl = require('../controllers/restaurants');
  *          description: Impossible d'accéder à la liste demandée.
  */
 
-router.post('/add', restaurantCtrl.addRestaurant);
+router.post('/add', auth, restaurantCtrl.addRestaurant);
 
 router.get('/city/:city', restaurantCtrl.filterRestaurantFromCity);
 
@@ -262,8 +264,8 @@ router.get('/:id', restaurantCtrl.getRestaurantDetail);
 
 router.get('/', restaurantCtrl.getAllRestaurants);
 
-router.patch('/edit/:id', restaurantCtrl.editRestaurant);
+router.patch('/edit/:id', auth, restaurantCtrl.editRestaurant);
 
-router.patch('/delete/:id', restaurantCtrl.archiveRestaurant);
+router.patch('/delete/:id', auth, restaurantCtrl.archiveRestaurant);
 
 module.exports = router;
