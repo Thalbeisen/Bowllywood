@@ -188,3 +188,11 @@ router.get('/desserts', menuCtrl.getSweetBowls);
 router.get('/', menuCtrl.getSaltedBowls);
 
 module.exports = router;
+
+// router.get('/adminlist', auth, menuCtrl.getAllBowls);
+// router.get('/:id', menuCtrl.getOneMeal);
+// router.post('/update/:id', auth, menuCtrl.updateMeal);
+// router.post('/create', auth, menuCtrl.createMeal);
+// router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
+// router.get('/desserts', menuCtrl.getSweetBowls);
+// router.get('/', menuCtrl.getSaltedBowls);

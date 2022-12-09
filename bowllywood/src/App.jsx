@@ -6,10 +6,7 @@ import RouteProtector from './components/RouteProtector';
 import LoginScreen from './screens/login/';
 import RegisterScreen from './screens/register/';
 import MenuScreen from './screens/menu/';
-import AddEditMeal from './screens/addEditMeal/';
-import DeleteMeal from './screens/deleteMeal/';
 import MealScreen from './screens/meal/';
-import AdminListMeal from './screens/adminListMeals/';
 import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
 import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
@@ -30,39 +27,13 @@ function App() {
                         <Route path="/" element={<HomeScreen />}/>
                         <Route path="/reservations" />
                         <Route
-                                path="/menus/create"
+                                path="/menus"
                                 element={
-                                    // <RouteProtector>
-                                        <AddEditMeal />
-                                    // </RouteProtector>
+                                    <RouteProtector>
+                                        <MenuScreen />
+                                    </RouteProtector>
                                 }
                             />
-                         <Route
-                                path="/menus/update/:id"
-                                element={
-                                    // <RouteProtector>
-                                        <AddEditMeal />
-                                    // </RouteProtector>
-                                }
-                            />
-                        <Route
-                                path="/menus/delete/:id"
-                                element={
-                                    // <RouteProtector>
-                                        <DeleteMeal />
-                                    // </RouteProtector>
-                                }
-                            />
-                        <Route
-                                path="/menus/adminlist"
-                                element={
-                                    // <RouteProtector>
-                                        <AdminListMeal />
-                                    // </RouteProtector>
-                                }
-                            />
-
-
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                         <Route path="/menus/:id" element={<MealScreen />} />
