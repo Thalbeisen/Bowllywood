@@ -175,6 +175,8 @@ router.get('/me', auth, userController.userDetails);
 
 router.patch('/', auth, userController.userEdit);
 
+router.patch('/me', auth, userController.userEdit);
+
 router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
