@@ -6,12 +6,13 @@ import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
-import HeaderTitle from '../../components/HeaderTitle';
 import { Col, Row, Container } from 'react-bootstrap';
+import HeaderTitle from '../../components/HeaderTitle';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import { useChecklist } from 'react-checklist';
+import { getAllIngredients } from '../../services/ingredients';
 
 // Get ingredient & allergens data from ddb
 // const ingData = getAllIngredients();
@@ -54,6 +55,7 @@ const AddEditMeal = () => {
     const { id } = useParams();
     const isCreateMode = !id;
 
+    const [ingredients, setIngredients] = useState([]);
     const [errMsg, setErrMsg] = useState({
         title: 'Erreur !',
         message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
@@ -73,7 +75,6 @@ const AddEditMeal = () => {
             createMeal(values).then((res)=>{
                 // rediriger ?
                 console.log('Le bowl a bien été créé. Se rendre sur sa page');
-
             }).catch((err) => {
 
                 // appeler fragment erreur et lui passer err ?
@@ -173,7 +174,7 @@ const AddEditMeal = () => {
     ////////////////////////////
     // Handlers for checklist //
     ////////////////////////////
-    const ingChecklist = useChecklist(ingData, {
+    const ingChecklist = useChecklist(ingredients, {
         key: '_id',
         keyType: 'string'
     });
@@ -187,6 +188,24 @@ const AddEditMeal = () => {
     /////////////////////
     // values handlers //
     /////////////////////
+    useEffect(()=>{
+        getAllIngredients().then((res)=>{
+            setIngredients(res.data)
+        }).catch((err)=>{
+            // appeler fragment erreur et lui passer err ?
+            console.log(err);
+            // creation failed
+            switch (err.response.status)
+            {
+                default:
+                    setErrMsg({
+                        title: `Erreur ${err.code} !`,
+                        message: err.response.data
+                    })
+            }
+        })
+    }, [])
+
 
     // If it is the update mode, get the current bowl 
     useEffect(()=>{
@@ -351,7 +370,7 @@ const AddEditMeal = () => {
                                 </li>
                                 {
                                     ingData.map((item, index)=>(
-                                        <li key={index} className=" d-flex align-items-center">
+                                        <li key={index} className="d-flex align-items-center">
                                             <input
                                                 type="checkbox"
                                                 data-key={item._id}
@@ -359,7 +378,7 @@ const AddEditMeal = () => {
                                                 onChange={ingChecklist.handleCheck}
                                                 checked={ingChecklist.checkedItems.has(item._id)}
                                                 className="pointer me-2"/>
-                                            <label>{item.label}</label>
+                                            <label>{item.text}</label>
                                         </li>
                                     ))
                                 }
@@ -390,7 +409,6 @@ const AddEditMeal = () => {
                                     }
                                 </ul>
                             }
-
                         </Col>
                     </Row>
                     <Row className="justify-content-center mb-4">
