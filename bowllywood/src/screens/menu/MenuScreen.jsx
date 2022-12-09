@@ -66,8 +66,8 @@ const ListRendering = () => {
 		)
 	} else {
 		return (
-			<li className="col">
-				<p className='infoText'>Oups ! Aucun bowls de cette catégories n'a été trouvé...
+			<li className="col-12">
+				<p className='infoText textCenter'>Oups ! Aucun bowls de cette catégories n'a été trouvé...
 				<br/>
 				Venez nous voir au restaurant, vous y trouverez tous nos bowls.</p>
 			</li>

@@ -1,4 +1,4 @@
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -186,7 +186,9 @@ function RegisterScreen() {
                                 />
                             </Col>
                         </Row>
-                        <Button type="submit">S'enregistrer</Button>
+                        <div className="d-flex justify-content-center">
+                            <Button type="submit" className="">S'enregistrer</Button>
+                        </div>
                     </form>
                 </Col>
             </Row>

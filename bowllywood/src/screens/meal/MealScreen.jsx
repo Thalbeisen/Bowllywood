@@ -1,17 +1,19 @@
-// 62c6dd067a81f4008c1a667c
 import './MealScreen.scss';
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
+=======
 // import * as React from 'react';
+>>>>>>> dev
 import { getOneMeal } from '../../services/meal';
 import { useParams } from 'react-router-dom';
 import HeaderTitle from '../../components/HeaderTitle';
 
-let errMessage="Une erreur est survenue. Le plat a été supprimé ou s'est enfuit du restaurant...",
-errTitle="Erreur ! ";
-
 const MealScreen = () => {
-
 	const [bowl, setBowl] = useState(null);
+	const [errMsg, setErrMsg] = useState({
+		title: 'Erreur !',
+		message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
+	});
 	const {id} = useParams();
 
 	useEffect( () => {
@@ -20,8 +22,10 @@ const MealScreen = () => {
 			setBowl(res.data);
 		}).catch((err) => {
 			// pas récupérés
-			errTitle = `Erreur ! (${err.code})`; 
-			errMessage = err.response.data;
+			setErrMsg({
+				title: `Erreur ! (${err.code})`,
+				message: err.response.data
+			})
 		});
 	}, [id] );
 
@@ -30,7 +34,7 @@ const MealScreen = () => {
 		{
 			return (
 				<div className="col-7">
-					<p className="p-0">{errMessage}</p>
+					<p className="p-0">{errMsg.message}</p>
 					<a href="/menu" className="greenlink">En attendant, consultez nos autres plats !</a>
 				</div>
 			)
@@ -69,7 +73,7 @@ const MealScreen = () => {
 
 	return (
 		<>
-			<HeaderTitle>{ (bowl == null || typeof bowl != 'object') ? errTitle : `Le ${bowl.name}` }</HeaderTitle>
+			<HeaderTitle>{ (bowl == null || typeof bowl != 'object') ? errMsg.title : `Le ${bowl.name}` }</HeaderTitle>
 			<section className="mealCtnr container-lg my-5">
 				<div className="row text-start justify-content-center gap-5">
 					<Rendering/>
