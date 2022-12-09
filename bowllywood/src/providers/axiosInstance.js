@@ -6,18 +6,11 @@ export const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use(function(config) {
     const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
     if (authHeaders)
     {
         config.headers['Authorization'] = 'bearer ' + authHeaders['token'];
     }
-<<<<<<< HEAD
     
-=======
->>>>>>> dev
     return config;
 }, function (error) {
     return Promise.reject(error)
