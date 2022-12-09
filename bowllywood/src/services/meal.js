@@ -1,11 +1,11 @@
 import { AxiosInstance } from "../providers/axiosInstance";
 
-	export const createMeal = (id, values) => {
+	export const createMeal = (values) => {
 		return AxiosInstance.post('/menus/create', values);
 	}
 
 	export const updateMeal = (id, values) => {
-		return AxiosInstance.post(`/menus/update${id}`, values);
+		return AxiosInstance.post(`/menus/update/${id}`, values);
 	}
 
 	export const deleteMeal = (id) => {
@@ -19,4 +19,8 @@ import { AxiosInstance } from "../providers/axiosInstance";
 
 	export const getSaltedBowls = () => {
 		return AxiosInstance.get('/menus/');
+	}
+
+	export const getAllBowls = () => {
+		return AxiosInstance.get('/menus/adminlist');
 	}

@@ -10,6 +10,7 @@ AxiosInstance.interceptors.request.use(function(config) {
     {
         config.headers['Authorization'] = 'bearer ' + authHeaders['token'];
     }
+    
     return config;
 }, function (error) {
     return Promise.reject(error)
