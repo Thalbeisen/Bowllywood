@@ -28,6 +28,10 @@
 	font-size: .8em;
 }
 
-.pointer {
-	cursor: pointer;
+.growIcon {
+		transform: scale(4, 4);    
+}
+
+.dark-green {
+	background-color: $dark-green;
 }

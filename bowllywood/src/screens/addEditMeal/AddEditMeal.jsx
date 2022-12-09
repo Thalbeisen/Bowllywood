@@ -223,9 +223,7 @@ const AddEditMeal = () => {
                 }
             });
         }
-    }, [isCreateMode,
-        id,
-        errMsg])
+    }, [isCreateMode, id, errMsg, ingChecklist.checkedItems, alrChecklist.checkedItems, setFieldValue])
 
     // When a checkbow is clicked, change the values of the both arrays ingredients[] & allergens[]
     useEffect(()=>{
