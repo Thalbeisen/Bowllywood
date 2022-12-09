@@ -28,6 +28,20 @@ exports.createMeal = async (req, res) => {
 };
 
 /**
+ * Get all the bowls of the menu for the administration.
+ * @param  {Response} res          Use the res.status 200 & 500.
+ */
+exports.getAllBowls = async (req, res) => {
+    try {
+        const meals = await Menu.find();
+        if (!meals) res.status(404).json(errors.emptyList);
+        res.status(200).json(meals);
+    } catch (err) {
+        res.status(500).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
  * Get all the salted bowls of the menu.
  * @param  {Response} res          Use the res.status 200 & 500.
  */
