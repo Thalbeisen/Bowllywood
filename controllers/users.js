@@ -124,8 +124,12 @@ exports.userDetails = async (req, res) => {
  * @param {Response} res
  */
 exports.userEdit = async (req, res) => {
+    let id = req.body.userID;
+    if (req.params?.userID) {
+        id = req.params.userID;
+    }
     try {
-        const selectedUser = await User.findOne({ _id: req.body.id });
+        const selectedUser = await User.findOne({ _id: id });
 
         if (!selectedUser) {
             res.status(404).json({
