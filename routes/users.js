@@ -163,17 +163,17 @@ const { permit } = require('../middlewares/permissions');
 // router.get('/', auth, permit('ROLE_ADMIN'), userController.usersList);
 
 // DELETE LINE BELOW ONCE LOGIN FEATURE READY
-router.get('/', userController.usersList);
+router.get('/usersList', userController.usersList);
 
 router.post('/add', userController.userNew);
 
 router.get('/validate/:validationToken', userController.userValidate);
 
-router.get('/:id', auth, userController.userDetails);
+router.get('/', auth, userController.userDetails);
 
-router.get('/userDetails', auth, userController.userDetailsMobile);
+router.get('/me', auth, userController.userDetails);
 
-router.patch('/:id', auth, userController.userEdit);
+router.patch('/', auth, userController.userEdit);
 
 router.post('/login', userController.userLogin);
 

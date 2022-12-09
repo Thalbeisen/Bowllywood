@@ -71,6 +71,6 @@ const router = express.Router();
 const ingredientCtrl = require('../controllers/ingredient');
 
 router.get('/:id', ingredientCtrl.getOneIngredient);
-router.get('/:cat', ingredientCtrl.getAllIngredients);
+router.get('/list/:cat', ingredientCtrl.getAllIngredients);
 
 module.exports = router;

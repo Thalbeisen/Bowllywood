@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const ingSchema = new Schema(
     {
         text: {
             type: String,
-            required: true
+            required: true,
         },
         category: {
-            type: String,
-            enum: ['SALE', 'SUCRE'],
-            default: 'SALE',
-            required: true
-        }
-    }
+            type: Array,
+            default: ['SALE'],
+            required: true,
+        },
+    },
     {
-        timestamps: true
+        timestamps: true,
     }
 );
 
