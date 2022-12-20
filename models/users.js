@@ -75,6 +75,12 @@ const userSchema = new Schema(
             ],
             default: 'ROLE_USER',
         },
+
+        favouriteRestaurant_id: {
+            // Clé étrangère
+            type: Schema.Types.ObjectId,
+            ref: 'Restaurant',
+        },
     },
 
     {

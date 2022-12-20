@@ -181,6 +181,12 @@ router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
 
+router.patch(
+    '/my-favourite-restaurant',
+    auth,
+    userController.setFavouriteRestaurant
+);
+
 router.delete('/:id', auth, permit('ROLE_ADMIN'), userController.userDelete);
 
 router.get(
