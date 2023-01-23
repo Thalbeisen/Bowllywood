@@ -9,12 +9,13 @@ import './../../sass/styles.scss';
 
 
 const Home = () => {
-    const [AllRestaurants, setAllRestaurants] = useState([]);
+    const [allRestaurants, setAllRestaurants] = useState([]);
 
     useEffect(() => {
         getAllRestaurants()
             .then((res) => {
-                setAllRestaurants(res.data.restaurants);
+                setAllRestaurants(res.data);
+                console.log(res.data)
             })
             .catch((err) => {
                 console.log(err);
