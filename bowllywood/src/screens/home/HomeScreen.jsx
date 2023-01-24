@@ -10,7 +10,6 @@ import './../../sass/styles.scss';
 
 const Home = () => {
     const [allRestaurants, setAllRestaurants] = useState([]);
-
     useEffect(() => {
         getAllRestaurants()
             .then((res) => {
@@ -21,8 +20,7 @@ const Home = () => {
                 console.log(err);
             });
     }, []);
-    return (
-        <>
+    return (        
             <Container>
                 <Row>
                 <Col className='col-12 flex-center'>
@@ -225,107 +223,24 @@ const Home = () => {
                 </Row>
                
                 <Row className='flex-center'>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                    <Col className='col-12 col-md-3 my-2 flex-center'>
-                        <Card border="dark" style={{ width: '18rem' }} className='text-center'>
-                            <Card.Header>AMIENS</Card.Header>
-                            <Card.Body>
-                                <Card.Title>Adresse du restaurant</Card.Title>
-                                <Card.Text>
-                                    Horaire du jour: 10h 22h
-                                </Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                <small className="text-muted">  03 33 33 33 33</small>
-                            </Card.Footer>
-                        </Card>
-                    </Col>
+                    {allRestaurants.map((item)=>(
+                        <Col key={item._id} className='col-12 col-md-3 my-2 flex-center'>
+                            <Card border="dark" style={{ width: '18rem' }} className='text-center'>
+                                <Card.Header>{item.city}</Card.Header>
+                                <Card.Body>
+                                    <Card.Title>{item.address}</Card.Title>
+                                    <Card.Text>
+                                        Horaire du jour: 10h 22h
+                                    </Card.Text>
+                                </Card.Body>
+                                <Card.Footer>
+                                    <small className="text-muted">{item.phone}</small>
+                                </Card.Footer>
+                            </Card>
+                        </Col>
+                    ))}
                 </Row>
             </Container>
-        </>
     );
 };
 export default Home;
