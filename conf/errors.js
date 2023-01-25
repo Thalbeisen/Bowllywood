@@ -36,6 +36,9 @@ const getEntityDesc = (entity) => {
         case 'ING':
             entityDesc = "de l'ingrédient ";
             break;
+        case 'EVENT':
+            entityDesc = "de l'évènement";
+            break;
         default:
             entityDesc = '';
             break;
