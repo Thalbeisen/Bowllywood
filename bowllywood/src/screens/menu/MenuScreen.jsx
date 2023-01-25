@@ -12,11 +12,11 @@ function MenuScreen({ bowlsType="SALE" }) {
 		// check if the asked bowls are the sweet or salted ones.
 		if (bowlsType === "SUCRE")
 		{
-			getSweetBowls().then((res) => {
-				setBowls(res.data);
-			}).catch((err) => {
-				console.log(err);
-			});
+			// getSweetBowls().then((res) => {
+			// 	setBowls(res.data);
+			// }).catch((err) => {
+			// 	console.log(err);
+			// });
 		}
 		else
 		{
