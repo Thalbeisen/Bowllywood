@@ -1,5 +1,4 @@
 const Restaurant = require('../models/restaurants');
-
 const errors = require('../conf/errors');
 
 const entity = 'RESTAURANT';
@@ -35,7 +34,7 @@ exports.getAllRestaurants = async (req, res) => {
         }
         res.status(200).json(allRestaurants);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
@@ -54,7 +53,7 @@ exports.getRestaurantDetail = async (req, res) => {
 
         res.status(200).json(restaurantInfos);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
@@ -77,7 +76,7 @@ exports.editRestaurant = async (req, res) => {
         }
         res.status(200).json(editingRestaurant);
     } catch (error) {
-        res.status(403).json(errors.updateError(entity));
+        res.status(400).json(errors.updateError(entity));
     }
 };
 
@@ -96,7 +95,7 @@ exports.filterRestaurantFromCity = async (req, res) => {
         }
         res.status(200).json(restaurantFromCity);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
@@ -120,6 +119,6 @@ exports.archiveRestaurant = async (req, res) => {
         }
         res.status(200).json(archivingRestaurant);
     } catch (error) {
-        res.status(403).json(errors.deleteError);
+        res.status(400).json(errors.deleteError);
     }
 };
