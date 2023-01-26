@@ -1,4 +1,5 @@
 const KitchenCalendar = require('../models/kitchenCalendar');
+const User = require('../models/users');
 const errors = require('../conf/errors');
 
 const entity = 'EVENT';
@@ -25,6 +26,13 @@ exports.getAllEvents = async (req, res) => {
             });
         }
         const listEvents = JSON.parse(JSON.stringify(events));
+        const user = await User.findOne({ _id: events.title });
+        listEvents.forEach((event) => {
+            // eslint-disable-next-line no-param-reassign
+            event.firstName = user.firstName;
+            // eslint-disable-next-line no-param-reassign
+            event.lastName = user.lastName;
+        });
         res.status(200).send({
             data: listEvents,
         });
