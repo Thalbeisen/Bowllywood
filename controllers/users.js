@@ -70,18 +70,35 @@ const generateToken = (payload, secret, ttl) =>
  */
 exports.usersList = async (req, res) => {
     try {
-        const users = await User.find({});
+        console.log(req.params.selectedRole);
+        if (req.params?.selectedRole) {
+            const { selectedRole } = req.params;
 
-        if (!users) {
-            res.status(404).json({
-                message: 'Aucun utilisateur trouvé',
+            const users = await User.find({ userRole: selectedRole });
+
+            if (!users) {
+                res.status(404).json({
+                    message: 'Aucun utilisateur trouvé pour ce rôle',
+                });
+            }
+
+            res.status(200).send({
+                data: users,
+            });
+        } else {
+            const users = await User.find({});
+
+            if (!users) {
+                res.status(404).json({
+                    message: 'Aucun utilisateur trouvé',
+                });
+            }
+            const listObject = JSON.parse(JSON.stringify(users));
+            delete listObject.password;
+            res.status(200).send({
+                data: listObject,
             });
         }
-        const listObject = JSON.parse(JSON.stringify(users));
-        delete listObject.password;
-        res.status(200).send({
-            data: listObject,
-        });
     } catch (err) {
         res.status(500).json({
             err,
