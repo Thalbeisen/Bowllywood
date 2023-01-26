@@ -178,3 +178,29 @@ exports.supplyStock = async (req, res) => {
         res.status(400).json(errors.message);
     }
 };
+
+exports.extractStock = async (req, res) => {
+    try {
+        const extractThisProduct = await Stock.findOne({
+            _id: req.params.id,
+        });
+
+        if (!extractThisProduct) {
+            res.status(404).json(errors.updateError(entity));
+        }
+        const oldQuantity = Number(extractThisProduct.quantity);
+        const newQuantity = oldQuantity - Number(req.body.quantity);
+
+        const update = await Stock.updateOne(
+            {
+                _id: req.params.id,
+            },
+            {
+                $set: { quantity: newQuantity },
+            }
+        );
+        res.status(200).json(update);
+    } catch (error) {
+        res.status(400).json(errors.message);
+    }
+};
