@@ -61,7 +61,7 @@ exports.getAllstock = async (req, res) => {
  */
 exports.getOneStock = async (req, res) => {
     try {
-        const stock = await Stock.findOne({ id: req.params.id });
+        const stock = await Stock.findOne({ _id: req.params.id });
 
         if (!stock) {
             res.status(404).json({
