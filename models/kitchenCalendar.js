@@ -3,19 +3,19 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const kitchenCalendarSchema = new Schema({
-    eventStart: {
+    start: {
         type: Date,
         required: true,
     },
-    eventEnd: {
+    end: {
         type: Date,
         required: true,
     },
-    eventPeople: {
+    title: {
         type: String,
         required: true,
     },
-    eventColor: {
+    color: {
         type: String,
         required: true,
     },
