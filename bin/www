@@ -14,6 +14,7 @@ const app = require('../app');
 
 function normalizePort(val) {
     const port = parseInt(val, 10);
+    console.log(`L'API tourne sur le port ${port}`);
 
     if (port.isNan) {
         // named pipe
