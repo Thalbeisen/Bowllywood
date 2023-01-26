@@ -158,24 +158,16 @@ exports.supplyStock = async (req, res) => {
         const supplyThisProduct = await Stock.findOne({
             _id: req.params.id,
         });
-        console.log('id du produit:', supplyThisProduct.id);
+
         if (!supplyThisProduct) {
             res.status(404).json(errors.updateError(entity));
         }
         const oldQuantity = Number(supplyThisProduct.quantity);
         const newQuantity = oldQuantity + Number(req.body.quantity);
-        console.log(
-            oldQuantity,
-            'new',
-            newQuantity,
-            'id',
-            supplyThisProduct.id,
-            'name',
-            supplyThisProduct.name
-        );
+
         const update = await Stock.updateOne(
             {
-                id: supplyThisProduct.id,
+                _id: req.params.id,
             },
             {
                 $set: { quantity: newQuantity },
