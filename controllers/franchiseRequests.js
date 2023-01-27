@@ -47,7 +47,7 @@ exports.getFranchiseRequestDetail = async (req, res) => {
 
         res.status(200).json(franchiseResquestDetail);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
@@ -66,7 +66,7 @@ exports.getAllFranchiseRequests = async (req, res) => {
         }
         res.status(200).json(allFranchiseResquests);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
@@ -85,12 +85,12 @@ exports.getAllAcceptedFranchiseRequests = async (req, res) => {
         }
         res.status(200).json(allAcceptedFranchiseRequests);
     } catch (error) {
-        res.status(403).json(errors.listError);
+        res.status(400).json(errors.listError);
     }
 };
 
 /**
- * Archive a franchise request
+ * Archive a franchise request (Seem to be unused - checking later on)
  * @param {Request} req
  * @param {Response} res
  */
@@ -109,7 +109,57 @@ exports.archiveFranchiseRequest = async (req, res) => {
         }
         res.status(200).json(archiveRequest);
     } catch (error) {
-        res.status(403).json(errors.deleteError);
+        res.status(400).json(errors.deleteError);
+    }
+};
+
+/**
+ * Set a franchise request as refused.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.refuseFranchiseRequest = async (req, res) => {
+    try {
+        const refuseRequest = await FranchiseRequest.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+                status: 'REFUSED',
+            },
+            { returnDocument: 'after' }
+        );
+        if (!refuseRequest) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(refuseRequest);
+    } catch (error) {
+        res.status(400).json(errors.deleteError);
+    }
+};
+
+/**
+ * Set a franchise request as accepted.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.acceptFranchiseRequest = async (req, res) => {
+    try {
+        const acceptRequest = await FranchiseRequest.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+                status: 'ACCEPTED',
+            },
+            { returnDocument: 'after' }
+        );
+        if (!acceptRequest) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(acceptRequest);
+    } catch (error) {
+        res.status(400).json(errors.deleteError);
     }
 };
 
