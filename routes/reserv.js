@@ -8,10 +8,11 @@ const reservCtrl = require('../controllers/reserv');
 const auth = require('../middlewares/auth');
 
 // set the routers for each methods
-router.post('/create', auth, reservCtrl.createReserv);
-router.post('/update/:id', auth, reservCtrl.updateReserv);
-router.patch('/delete/:id', auth, reservCtrl.deleteReserv);
-router.get('/:id', auth, reservCtrl.getOneReserv);
-router.get('/', auth, reservCtrl.getAllReserv);
+router.post('/create', reservCtrl.createReserv); // auth, 
+router.patch('/update/:id', reservCtrl.updateReserv); // auth, 
+// router.patch('/cancel/:id', reservCtrl.deleteReserv); // auth, 
+// router.patch('/close/:id', reservCtrl.deleteReserv); // auth, 
+router.get('/:id', reservCtrl.getOneReserv); // auth, 
+router.get('/', reservCtrl.getAllReserv); // auth, 
 
 module.exports = router;

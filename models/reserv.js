@@ -34,7 +34,7 @@ const reservSchema = new Schema(
         },
         type: {
             type: String,
-            enum: ['PHONE', 'WEB'], // si le client a appelé le restau ou s'il a réservé en ligne
+            enum: ['SALLE', 'WEB'], // si le client a appelé le restau ou s'il a réservé en ligne
             default: 'WEB',
             required: true,
         },
