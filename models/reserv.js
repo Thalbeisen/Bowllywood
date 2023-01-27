@@ -8,9 +8,10 @@ const reservSchema = new Schema(
             type: String,
             required: true,
         },
+        // si le client a passé commande en ligne
         reservPhone: {
-            type: String,
-            required: true,
+            type: String
+,            required: false,
         },
         reservDate: {
             type: Date,
@@ -22,11 +23,11 @@ const reservSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['EN_COURS', 'ANNULE', 'TERMINE'],
-            default: 'EN_COURS',
+            enum: ['KEPT', 'CLD', 'CLS'],
+            default: 'KEPT',
             required: true,
         },
-        // si le client a passé commande en ligne ou si le retrouve avec son n° de tel
+        // si le client a passé commande en ligne
         userID: {
             type: Schema.Types.ObjectId,
             ref: 'User',
@@ -34,7 +35,7 @@ const reservSchema = new Schema(
         },
         type: {
             type: String,
-            enum: ['SALLE', 'WEB'], // si le client a appelé le restau ou s'il a réservé en ligne
+            enum: ['INDOOR', 'WEB'], // si c'est serveur ou client (en ligne) qui a créé la séservation
             default: 'WEB',
             required: true,
         },
