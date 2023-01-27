@@ -8,10 +8,10 @@ const reservCtrl = require('../controllers/reserv');
 const auth = require('../middlewares/auth');
 
 // set the routers for each methods
-router.post('/create', auth, reservCtrl.createReserv);
-router.post('/update/:id', auth, reservCtrl.updateReserv);
-router.patch('/delete/:id', auth, reservCtrl.deleteReserv);
-router.get('/:id', auth, reservCtrl.getOneReserv);
-router.get('/', auth, reservCtrl.getAllReserv);
+router.post('/create', reservCtrl.createReserv); // auth, // serveur, customer 
+router.patch('/update/:id', reservCtrl.updateReserv); // auth, // auth : celui qui a créé la réservation
+router.delete('/delete/:id', reservCtrl.deleteReserv); // auth, 
+router.get('/:id', reservCtrl.getOneReserv); // auth, // user connecté qui regarde sa propre truc, ou serveur qui en a sélectionné un.
+router.get('/', reservCtrl.getAllReserv); // auth, // que serveurs
 
 module.exports = router;
