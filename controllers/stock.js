@@ -34,7 +34,7 @@ exports.createStock = async (req, res) => {
 
         res.status(201).json(stock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -50,7 +50,7 @@ exports.getAllstock = async (req, res) => {
 
         res.status(200).json(stocks);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -70,9 +70,9 @@ exports.getOneStock = async (req, res) => {
         }
 
         // throw
-        res.status(201).json(stock);
+        res.status(200).json(stock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -111,9 +111,9 @@ exports.updateStock = async (req, res) => {
         if (!updatedStock) res.status(404).json(errors.updateError(entity));
 
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
-        res.status(201).json(updatedStock);
+        res.status(200).json(updatedStock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -144,7 +144,7 @@ exports.deleteStock = async (req, res) => {
         // une fois supprimé, retour sur la liste avec msg toast ?
         res.status(200).json('Suppression réussie');
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(204).json(errors.errorOccured + err.message);
     }
 };
 

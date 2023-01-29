@@ -56,7 +56,7 @@ const stockSchema = new Schema(
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true,
+            required: false,
         },
         lastUpdateBy: {
             type: Schema.Types.ObjectId,
