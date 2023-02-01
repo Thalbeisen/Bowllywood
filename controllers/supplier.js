@@ -57,3 +57,50 @@ exports.getSupplierDetail = async (req, res) => {
         res.status(400).json(errors.listError);
     }
 };
+
+/**
+ * Edit a restaurant information
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.editSupplier = async (req, res) => {
+    try {
+        const editingSupplier = await Supplier.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+            },
+            { returnDocument: 'after' }
+        );
+        if (!editingSupplier) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(editingSupplier);
+    } catch (error) {
+        res.status(400).json(errors.updateError(entity));
+    }
+};
+
+/**
+ * Archive a restaurant.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.archiveSupplier = async (req, res) => {
+    try {
+        const archivingSupplier = await Supplier.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...req.body,
+                deletedAt: Date.now(),
+            },
+            { returnDocument: 'after' }
+        );
+        if (!archivingSupplier) {
+            res.status(404).json(errors.emptyList);
+        }
+        res.status(200).json(archivingSupplier);
+    } catch (error) {
+        res.status(400).json(errors.deleteError);
+    }
+};

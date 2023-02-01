@@ -12,4 +12,8 @@ router.get('/:id', supplierCtrl.getSupplierDetail);
 
 router.get('/', supplierCtrl.getAllSuppliers);
 
+router.patch('/edit/:id', supplierCtrl.editSupplier);
+
+router.patch('/archive/:id', supplierCtrl.archiveSupplier);
+
 module.exports = router;
