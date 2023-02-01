@@ -16,4 +16,6 @@ router.patch('/edit/:id', supplierCtrl.editSupplier);
 
 router.patch('/archive/:id', supplierCtrl.archiveSupplier);
 
+router.delete('/delete/:id', supplierCtrl.deleteSupplier);
+
 module.exports = router;

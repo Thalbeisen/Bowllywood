@@ -22,7 +22,7 @@ exports.addSupplier = async (req, res) => {
 };
 
 /**
- * Retrieve a list of every supplier.
+ * Retrieve a list of every active supplier.
  * @param {Request} req
  * @param {Response} res
  */
@@ -40,7 +40,7 @@ exports.getAllSuppliers = async (req, res) => {
 };
 
 /**
- * Retrieve a specific restaurant informations
+ * Retrieve a specific supplier's informations
  * @param {Request} req
  * @param {Response} res
  */
@@ -59,7 +59,7 @@ exports.getSupplierDetail = async (req, res) => {
 };
 
 /**
- * Edit a restaurant information
+ * Edit a supplier
  * @param {Request} req
  * @param {Response} res
  */
@@ -82,7 +82,7 @@ exports.editSupplier = async (req, res) => {
 };
 
 /**
- * Archive a restaurant.
+ * Archive a supplier.
  * @param {Request} req
  * @param {Response} res
  */
@@ -100,6 +100,26 @@ exports.archiveSupplier = async (req, res) => {
             res.status(404).json(errors.emptyList);
         }
         res.status(200).json(archivingSupplier);
+    } catch (error) {
+        res.status(400).json(errors.deleteError);
+    }
+};
+
+/**
+ * Delete a supplier
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.deleteSupplier = async (req, res) => {
+    try {
+        const deletingSupplier = await Supplier.findByIdAndDelete(
+            req.params.id,
+            {
+                ...req.body,
+            }
+        );
+
+        res.status(204).json(deletingSupplier);
     } catch (error) {
         res.status(400).json(errors.deleteError);
     }
