@@ -48,6 +48,10 @@ const supplierSchema = new Schema(
             type: Number,
             required: true,
         },
+        imagePath: {
+            type: String,
+            required: false,
+        },
         deletedAt: {
             type: Date,
             required: false,
