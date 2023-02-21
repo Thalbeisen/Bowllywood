@@ -37,7 +37,8 @@ const stockSchema = new Schema(
             required: true,
         },
         supplier: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'Supplier',
             required: true,
         },
         DLC: {
