@@ -165,6 +165,8 @@ const { permit } = require('../middlewares/permissions');
 // DELETE LINE BELOW ONCE LOGIN FEATURE READY
 router.get('/usersList', userController.usersList);
 
+router.get('/usersByRole/:selectedRole', userController.usersList);
+
 router.post('/add', userController.userNew);
 
 router.get('/validate/:validationToken', userController.userValidate);
@@ -180,6 +182,12 @@ router.patch('/me', auth, userController.userEdit);
 router.post('/login', userController.userLogin);
 
 router.post('/refresh', userController.refreshUserToken);
+
+router.patch(
+    '/my-favourite-restaurant',
+    auth,
+    userController.setFavouriteRestaurant
+);
 
 router.delete('/:id', auth, permit('ROLE_ADMIN'), userController.userDelete);
 

@@ -36,6 +36,12 @@ const getEntityDesc = (entity) => {
         case 'ING':
             entityDesc = "de l'ingrédient ";
             break;
+        case 'EVENT':
+            entityDesc = "de l'évènement";
+            break;
+        case 'SUPPLIER':
+            entityDesc = 'du fournisseur';
+            break;
         default:
             entityDesc = '';
             break;
