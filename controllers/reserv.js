@@ -31,8 +31,9 @@ exports.createReserv = async (req, res) => {
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        const reservations = await Reserv.find({ deletedAt: '' });
-
+        const reservations = await Reserv.find();
+        
+        console.log(reservations)
         if (!reservations) res.status(404).json(errors.emptyList);
 
         res.status(200).json(reservations);
@@ -104,28 +105,19 @@ this.getDeletedDate = async function (req, res) {
 };
 
 /**
- * Archive a specific reservation
- * @param {Request} req
- * @param {Response} res
+ * Cancel a specific reservation
  */
-exports.deleteReserv = async (req, res) => {
+exports.cancelReserv = async (req, res) => {
     try {
-        // check if the reservation has been deleted
-        const deletedDate = await this.getDeletedDate(req, res);
-        if (deletedDate) {
-            res.status(403).json(errors.alreadyDeleted(entity));
-            return;
-        }
+        const canceledReserv = await Reserv.findByIdAndUpdate(req.params.id, 
+            { status: 'CLD' },
+            { returnDocument: 'after' }
+        );
 
-        // start the "deletion"
-        const archivedReserv = await Reserv.findByIdAndUpdate(req.params.id, {
-            deletedAt: Date.now(),
-        });
+        if (!canceledReserv)
+            res.status(404).json(errors.deleteError(entity) + errors.itemNotFound);
 
-        if (!archivedReserv)
-            res.status(404).json(errors.deleteError + errors.itemNotFound);
-
-        res.status(200).json(archivedReserv);
+        res.status(200).json(canceledReserv);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
