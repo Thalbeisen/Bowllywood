@@ -34,7 +34,7 @@ exports.createStock = async (req, res) => {
 
         res.status(201).json(stock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -50,7 +50,7 @@ exports.getAllstock = async (req, res) => {
 
         res.status(200).json(stocks);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -61,7 +61,7 @@ exports.getAllstock = async (req, res) => {
  */
 exports.getOneStock = async (req, res) => {
     try {
-        const stock = await Stock.findOne({ id: req.params.id });
+        const stock = await Stock.findOne({ _id: req.params.id });
 
         if (!stock) {
             res.status(404).json({
@@ -70,9 +70,9 @@ exports.getOneStock = async (req, res) => {
         }
 
         // throw
-        res.status(201).json(stock);
+        res.status(200).json(stock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -111,9 +111,9 @@ exports.updateStock = async (req, res) => {
         if (!updatedStock) res.status(404).json(errors.updateError(entity));
 
         // une fois updaté, redirection sur la page des détails de la recette avec message toast ?
-        res.status(201).json(updatedStock);
+        res.status(200).json(updatedStock);
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -144,6 +144,63 @@ exports.deleteStock = async (req, res) => {
         // une fois supprimé, retour sur la liste avec msg toast ?
         res.status(200).json('Suppression réussie');
     } catch (err) {
-        res.status(500).json(errors.errorOccured + err.message);
+        res.status(204).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
+ * Supply a product in the stock (increase product quantity).
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.supplyStock = async (req, res) => {
+    try {
+        const supplyThisProduct = await Stock.findOne({
+            _id: req.params.id,
+        });
+
+        if (!supplyThisProduct) {
+            res.status(404).json(errors.updateError(entity));
+        }
+        const oldQuantity = Number(supplyThisProduct.quantity);
+        const newQuantity = oldQuantity + Number(req.body.quantity);
+
+        const update = await Stock.updateOne(
+            {
+                _id: req.params.id,
+            },
+            {
+                $set: { quantity: newQuantity },
+            }
+        );
+        res.status(200).json(update);
+    } catch (error) {
+        res.status(400).json(errors.message);
+    }
+};
+
+exports.extractStock = async (req, res) => {
+    try {
+        const extractThisProduct = await Stock.findOne({
+            _id: req.params.id,
+        });
+
+        if (!extractThisProduct) {
+            res.status(404).json(errors.updateError(entity));
+        }
+        const oldQuantity = Number(extractThisProduct.quantity);
+        const newQuantity = oldQuantity - Number(req.body.quantity);
+
+        const update = await Stock.updateOne(
+            {
+                _id: req.params.id,
+            },
+            {
+                $set: { quantity: newQuantity },
+            }
+        );
+        res.status(200).json(update);
+    } catch (error) {
+        res.status(400).json(errors.message);
     }
 };

@@ -39,6 +39,7 @@ const { v4: uuidv4 } = require('uuid');
 
 // J'importe mon modèle users
 const User = require('../models/users');
+const Restaurant = require('../models/restaurants');
 
 // Je déclare un transporter pour pouvoir envoyer les mails
 const transporter = nodemailer.createTransport({
@@ -69,18 +70,35 @@ const generateToken = (payload, secret, ttl) =>
  */
 exports.usersList = async (req, res) => {
     try {
-        const users = await User.find({});
+        console.log(req.params.selectedRole);
+        if (req.params?.selectedRole) {
+            const { selectedRole } = req.params;
 
-        if (!users) {
-            res.status(404).json({
-                message: 'Aucun utilisateur trouvé',
+            const users = await User.find({ userRole: selectedRole });
+
+            if (!users) {
+                res.status(404).json({
+                    message: 'Aucun utilisateur trouvé pour ce rôle',
+                });
+            }
+
+            res.status(200).send({
+                data: users,
+            });
+        } else {
+            const users = await User.find({});
+
+            if (!users) {
+                res.status(404).json({
+                    message: 'Aucun utilisateur trouvé',
+                });
+            }
+            const listObject = JSON.parse(JSON.stringify(users));
+            delete listObject.password;
+            res.status(200).send({
+                data: listObject,
             });
         }
-        const listObject = JSON.parse(JSON.stringify(users));
-        delete listObject.password;
-        res.status(200).send({
-            data: listObject,
-        });
     } catch (err) {
         res.status(500).json({
             err,
@@ -392,5 +410,31 @@ exports.getUserFranchiseRequests = async (req, res) => {
         res.status(500).json({
             err,
         });
+    }
+};
+
+/**
+ * Set a restaurant as favourite.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.setFavouriteRestaurant = async (req, res) => {
+    try {
+        const selectedRestaurant = await Restaurant.find({
+            _id: req.body.id,
+        });
+        console.log(selectedRestaurant);
+        const user = await User.findOne({
+            _id: req.body.userID,
+        });
+        console.log(user);
+        // eslint-disable-next-line no-underscore-dangle
+        user.favouriteRestaurant_id.push(selectedRestaurant._id);
+        user.save();
+
+        res.status(200).json(selectedRestaurant);
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).json(error);
     }
 };

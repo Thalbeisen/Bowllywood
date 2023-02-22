@@ -231,14 +231,13 @@ const franchiseRequestsCtrl = require('../controllers/franchiseRequests');
 router.post('/add', franchiseRequestsCtrl.addFranchiseRequest);
 
 router.get('/accepted', franchiseRequestsCtrl.getAllAcceptedFranchiseRequests);
-
 router.get('/:id', franchiseRequestsCtrl.getFranchiseRequestDetail);
-
 router.get('/', franchiseRequestsCtrl.getAllFranchiseRequests);
 
-router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
-
+router.patch('/accepted/:id', franchiseRequestsCtrl.acceptFranchiseRequest);
 router.patch('/delete/:id', franchiseRequestsCtrl.archiveFranchiseRequest);
+router.patch('/edit/:id', franchiseRequestsCtrl.editFranchiseRequest);
+router.patch('/refused/:id', franchiseRequestsCtrl.refuseFranchiseRequest);
 
 router.delete('/cancel/:id', franchiseRequestsCtrl.cancelFranchiseRequest);
 
