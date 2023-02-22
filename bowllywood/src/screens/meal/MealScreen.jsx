@@ -1,9 +1,5 @@
 import './MealScreen.scss';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-=======
-// import * as React from 'react';
->>>>>>> dev
 import { getOneMeal } from '../../services/meal';
 import { useParams } from 'react-router-dom';
 import HeaderTitle from '../../components/HeaderTitle';
