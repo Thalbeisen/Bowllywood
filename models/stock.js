@@ -12,6 +12,10 @@ const stockSchema = new Schema(
             type: String,
             required: true,
         },
+        category: {
+            type: String,
+            required: true,
+        },
         quantity: {
             type: String,
             required: true,
@@ -37,7 +41,8 @@ const stockSchema = new Schema(
             required: true,
         },
         supplier: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'Supplier',
             required: true,
         },
         DLC: {
