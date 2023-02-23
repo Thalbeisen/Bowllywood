@@ -5,29 +5,22 @@ import { Col, Row, Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import './../../sass/styles.scss';
-
-
+import { sortingArray } from '../../utils/sortingArray';
 
 const Home = () => {
     const [allRestaurants, setAllRestaurants] = useState([]);
     useEffect(() => {
         getAllRestaurants()
             .then((res) => {
-                setAllRestaurants(res.data);
-                console.log(res.data)
+                const result = res.data;
+                sortingArray(result)
+                setAllRestaurants(result);
+                console.log(result)
             })
             .catch((err) => {
                 console.log(err);
             });
     }, []);
-
-    // console.log('sans tri', allRestaurants)
-    // console.log('avec tri', allRestaurants.sort())
-
-    // const months = ['March', 'Jan', 'Feb', 'Dec'];
-    // console.log('avant tri', months)
-    // months.sort();
-    // console.log('après tri', months);
 
     return (        
             <Container>
