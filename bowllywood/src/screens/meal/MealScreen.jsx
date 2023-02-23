@@ -5,11 +5,12 @@ import { useParams } from 'react-router-dom';
 import HeaderTitle from '../../components/HeaderTitle';
 import { Oval } from 'react-loader-spinner';
 
+let decodedTokens;
+
 const MealScreen = () => {
 	const [bowl, setBowl] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-	const [isConnected, setIsConnected] = useState(true); //false
-	// si connecté, alors setIsConnected(true)
+	const [isConnected, setIsConnected] = useState(false);
 
 	const [errMsg, setErrMsg] = useState({
 		title: 'Erreur !',
@@ -21,7 +22,6 @@ const MealScreen = () => {
 		//  verifier si est bien de type objID ?
 		getOneMeal(id).then((res) =>{
 			setBowl(res.data);
-			console.log(res.data)
 		}).catch((err) => {
 			setErrMsg({
 				title: `Erreur ! (${err.code})`,
@@ -30,7 +30,10 @@ const MealScreen = () => {
 		}).finally(()=>{
 			setLoaded(true)
 		});;
-	}, [id] );
+
+		decodedTokens = JSON.parse(localStorage.getItem('userTokens'));
+    	setIsConnected((decodedTokens.token) ? true : false);
+	}, [id, decodedTokens] );
 
 	const Rendering = () => {
 		if (bowl == null || typeof bowl != 'object')
@@ -44,7 +47,6 @@ const MealScreen = () => {
 		}
 		else
 		{
-			// setEditLink(`${bowl_id}`)
 			return (
 				<>
 				<div className="imgCtnr col-4">
@@ -81,7 +83,7 @@ const MealScreen = () => {
 			<HeaderTitle>{ (bowl == null || typeof bowl != 'object') ? errMsg.title : `Le ${bowl.name}` }</HeaderTitle>
 			{
 				(isConnected && loaded)
-				? <div class="d-flex justify-content-center">
+				? <div className="d-flex justify-content-center">
 					<a href={`/menus/edit/${bowl._id}`} className="addLink d-flex align-items-center">
 						<i className="fa-solid fa-circle-plus me-3"></i>
 						Modifier le bowl
