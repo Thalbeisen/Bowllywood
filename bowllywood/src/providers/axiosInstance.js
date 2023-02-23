@@ -23,7 +23,6 @@ AxiosInstance.interceptors.response.use(function(response) {
     if (!response.headers.Authorization) {
         const authHeaders = JSON.parse(localStorage.getItem('userTokens'));
         response.headers.Authorization = localStorage.getItem('userTokens')
-        console.log(authHeaders)
     }
     return response;
 }, function(error) {
