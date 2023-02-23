@@ -5,7 +5,26 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import './../../sass/styles.scss';
 
+// import { getUserDetails } from '../../services/users';
+// import { AuthContext } from '../../contexts/AuthContext';
+// import { useEffect, useState, useContext } from 'react';
+
+
 function ProfileScreen() {
+    // const authContext = useContext(AuthContext);
+    // const userID = authContext.auth.userID;
+    // console.log(userID);
+    // const [userDetails, setUserDetails] = useState([]);
+    // useEffect(() => {
+    //     getUserDetails(userID)
+    //         .then((res) => {
+    //             setUserDetails(res.data);
+    //             console.log(res.data)
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
   return (
     <>
         <Container>
