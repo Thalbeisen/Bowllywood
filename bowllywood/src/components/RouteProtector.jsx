@@ -5,7 +5,7 @@ import { AuthContext } from "../contexts/AuthContext";
 const RouteProtector = ({children}) => {
     const authContext = useContext(AuthContext);
     const location = useLocation();
-    console.log(authContext);
+    // console.log(authContext);
 
     useEffect(() => {
         const currentTokens = localStorage.getItem('userTokens')

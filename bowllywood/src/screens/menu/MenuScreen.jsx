@@ -2,21 +2,28 @@ import './MenuScreen.scss';
 import { useEffect, useState } from 'react';
 import { getSaltedBowls, getSweetBowls } from '../../services/meal';
 import HeaderTitle from '../../components/HeaderTitle';
+import { Oval } from 'react-loader-spinner';
+import { AuthProvider } from '../../providers/AuthProvider';
 
 function MenuScreen({ bowlsType="SALE" }) {
 
 	const [bowls, setBowls] = useState([]);
+	const [loaded, setLoaded] = useState(false);
+	const [isConnected, setIsConnected] = useState(true); //false
 
+	// si connecté, alors setIsConnected(true)
+	
 	useEffect( () => {
-		
 		// check if the asked bowls are the sweet or salted ones.
 		if (bowlsType === "SUCRE")
 		{
-			// getSweetBowls().then((res) => {
-			// 	setBowls(res.data);
-			// }).catch((err) => {
-			// 	console.log(err);
-			// });
+			getSweetBowls().then((res) => {
+				setBowls(res.data);
+			}).catch((err) => {
+				console.log(err);
+			}).finally(()=>{
+				setLoaded(true)
+			});
 		}
 		else
 		{
@@ -24,6 +31,8 @@ function MenuScreen({ bowlsType="SALE" }) {
 				setBowls(res.data);
 			}).catch((err) => {
 				console.log(err);
+			}).finally(()=>{
+				setLoaded(true)
 			});
 		}
 	}, [bowlsType] );
@@ -51,7 +60,7 @@ const LinkNav = () => {
 		<section className={`menuNav ${bowlsType === 'SALE' ? 'rightNav' : 'leftNav'} px-4`}>
 			<a href={`/menus/${bowlsType === 'SALE' ? 'desserts' : ''}`} className="mauikea_font">
 				{bowlsType === 'SALE' ? 'Desserts' : 'Bowls'}
-				<span className="d-block">fleche</span>
+				<i className={`d-block fa-solid fa-arrow-${bowlsType === 'SALE' ? 'right' : 'left'} text-center`}></i>
 			</a>
 		</section>
 )}
@@ -78,10 +87,33 @@ const ListRendering = () => {
 return (
 	<>
 		<HeaderTitle>La carte <br/> {bowlsType === 'SALE' ? 'Nos bowls salés' : 'Nos desserts'}</HeaderTitle>
+		{
+			(isConnected)
+			? <div className="d-flex justify-content-center">
+				<a href="/menus/create" className="addLink d-flex align-items-center">
+					<i className="fa-solid fa-circle-plus me-3"></i>
+					Créer un nouveau bowl
+				</a>
+			</div>
+			: ''
+		}
 		<section className="menuCtnr container">
 			<ul className="row align-items-center justify-content-center">
 				{
-					<ListRendering />
+					(loaded) 
+					? <ListRendering /> 
+					: <span className='col-9'>
+						<Oval
+							strokeWidth="5"
+							strokeWidthSecondary="5"
+							secondaryColor="#000"
+							height="25"
+							width="25"
+							color="#CECECE"
+							ariaLabel="loading"
+							wrapperStyle
+						/>
+					</span>
 				}
 			</ul>
 		</section>

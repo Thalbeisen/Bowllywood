@@ -16,6 +16,7 @@ import HomeScreen from './screens/home/HomeScreen';
 import FranchiseRequestDetailsScreen from './screens/franchiseRequestDetails';
 import FranchiseRequestEditScreen from './screens/franchiseRequestEditScreen';
 import FranchiseRequestCancelScreen from './screens/franchiseRequestCancelScreen';
+import AddEditMealScreen from './screens/addEditMeal/';
 
 function App() {
     return (
@@ -36,6 +37,8 @@ function App() {
                             />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                        <Route path="/menus/create" element={<AddEditMealScreen />} />
+                        <Route path="/menus/edit/:id" element={<AddEditMealScreen />} />
                         <Route path="/menus/:id" element={<MealScreen />} />
                         <Route path="/mark" />
                         <Route path="/register" element={<RegisterScreen />} />
