@@ -20,6 +20,15 @@ const Home = () => {
                 console.log(err);
             });
     }, []);
+
+    // console.log('sans tri', allRestaurants)
+    // console.log('avec tri', allRestaurants.sort())
+
+    // const months = ['March', 'Jan', 'Feb', 'Dec'];
+    // console.log('avant tri', months)
+    // months.sort();
+    // console.log('après tri', months);
+
     return (        
             <Container>
                 <Row>
