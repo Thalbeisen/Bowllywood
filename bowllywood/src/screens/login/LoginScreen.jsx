@@ -7,6 +7,7 @@ import { Col, Row, Container } from 'react-bootstrap';
 import './LoginScreen.scss';
 import { loginUser } from '../../services/users';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const loginSchema = yup.object().shape({
     email: yup
@@ -25,6 +26,7 @@ function LoginScreen() {
     const location = useLocation();
     const redirectSource = location.state?.from?.pathname || '/';
     const [errorMessage, setErrorMessage] = useState('');
+    const authContext = useContext(AuthContext);
 
     return (
         <Formik
@@ -37,8 +39,8 @@ function LoginScreen() {
                         'userTokens',
                         JSON.stringify(response.data)
                     );
+                    authContext.setAuth(JSON.stringify(response.data));
                     navigate(redirectSource, { replace: true });
-                    console.log(`test ${response.data}`);
                 } catch (err) {
                     if (!err.response) {
                         setErrorMessage('Pas de réponse du serveur');

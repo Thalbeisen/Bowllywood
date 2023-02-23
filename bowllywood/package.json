@@ -20,6 +20,7 @@
     "react-bootstrap": "^2.5.0",
     "react-checklist": "^1.0.12",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^5.3.4",
     "react-responsive-sidebar": "^0.1.16",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
