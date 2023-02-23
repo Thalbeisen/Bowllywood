@@ -25,6 +25,7 @@ const franchiseRequestsRouter = require('./routes/franchiseRequests');
 const restaurantsRouter = require('./routes/restaurants');
 const ingredientRouter = require('./routes/ingredient');
 const kitchenCalendarRouter = require('./routes/kitchenCalendar');
+const supplierRouter = require('./routes/suppliers');
 
 const app = express();
 // setup defini dans le dossier docs
@@ -54,6 +55,7 @@ app.use('/franchiseRequests', auth, franchiseRequestsRouter);
 app.use('/restaurants', restaurantsRouter);
 app.use('/ingredients', ingredientRouter);
 app.use('/kitchenCalendar', kitchenCalendarRouter);
+app.use('/suppliers', supplierRouter);
 
 // server
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));

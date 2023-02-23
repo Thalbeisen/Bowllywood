@@ -1,7 +1,18 @@
+// console.log(event.target.files[0])
+// let file = event.target.files[0];
+// if (!FORMATS.includes(file?.type)) {
+//     setErrors({
+//         ...errors
+//     }) 
+// }
+// if (file?.size <= 1024 * 1024) {
+//     setErrors({...errors})
+// }
+
 import './AddEditMeal.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
+import { createMeal, updateMeal, getOneMeal, deleteMeal } from '../../services/meal';
 
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -14,48 +25,24 @@ import Button from '../../components/Button';
 import { useChecklist } from 'react-checklist';
 import { getAllIngredients } from '../../services/ingredients';
 
-// Get ingredient & allergens data from ddb
-// const ingData = getAllIngredients();
-// const alrData = getAllAllergenes();
-
-const ingData = [
-   { _id: 'ID456485415d548', label : 'Chou'},
-   { _id: 'ID456485415d549', label : 'Wakame'},
-   { _id: 'ID456485415d550', label : 'Champignon'},
-   { _id: 'ID4564854456388', label : 'Shiisake'},
-   { _id: 'ID456j54ry6t455', label : 'Oignon Rouge'},
-   { _id: 'IDfreg48trs5hgt', label : 'Oignon Blanc'},
-   { _id: 'ID454f4r54g5r44', label : 'Algue Nori'},
-   { _id: 'ID0000000000000', label : 'Feta'},
-   { _id: 'ID1111111111111', label : 'Carotte'},
-   { _id: 'ID2222222222222', label : 'Tomates'},
-   { _id: 'ID3333333333333', label : 'Salade'},
-   { _id: 'ID4444444444444', label : 'Riz'}
-]
-
+// allergens data from ddb
 const alrData = [
-    { _id: 'ID5555555555555', label : 'Arachide'},
-    { _id: 'ID6666666666666', label : 'Lactose'},
-    { _id: 'ID7777777777777', label : 'autre ?'}
+    { _id: 'ID456485415d550', label : 'Arachide'},
+    { _id: 'ID454f4r54g5r44', label : 'Lactose'}
 ]
-
-////////////////
-// constantes //
-////////////////
 const catData = [
     {_id: 'SALE', label: 'Salé'},
     {_id: 'SUCRE', label: 'Sucré'}
 ]
-const emptyField = 'Ce champ est obligatoire';
-const emptyArray = 'Veuillez sélectionner au moins un élément.';
-const descToShort = "Une description trop petite n'est pas très attrayant...";
-const desToLong = "Oups ! La description est trop longue... Raccoucissez un peu."
+const FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
 const AddEditMeal = () => {
     const { id } = useParams();
     const isCreateMode = !id;
 
     const [ingredients, setIngredients] = useState([]);
+    const [bowlID, setBowlID] = useState('');
+    
     const [errMsg, setErrMsg] = useState({
         title: 'Erreur !',
         message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
@@ -118,6 +105,19 @@ const AddEditMeal = () => {
         }
     }
 
+    const archiveBowl = (bowlID) => {
+        deleteMeal(bowlID).then((res)=>{
+            // navigate
+        }).catch((err)=>{
+            console.log(err);
+            // deletion failed
+            setErrMsg({
+                title: `Erreur ${err.code} !`,
+                message: err.response.data
+            })
+        })
+    }
+
     ///////////////////
     // Formik config //
     ///////////////////
@@ -125,37 +125,48 @@ const AddEditMeal = () => {
     {
         name: yup
             .string()
-            .required(emptyField),
+            .required('Ce champ est obligatoire'),
     
         category: yup
             .string()
-            .required(emptyField),
+            .required('Ce champ est obligatoire'),
     
         price: yup
             .string()
-            .required(emptyField),
+            .required('Ce champ est obligatoire'),
     
         description: yup
             .string()
-            .required(emptyField)
-            .min(10, descToShort)
-            .max(255, desToLong),
+            .required('Ce champ est obligatoire')
+            .min(10, "Une description trop petite n'est pas très attrayant... Minimum 10 caractères.")
+            .max(255, "Oups ! La description est trop longue... Raccoucissez un peu. Maximum 255 caractères."),
     
         ingredients: yup
             .array()
             .nullable(true)
-            .required(emptyArray),
+            .required('Veuillez sélectionner au moins un élément.'),
     
         allergens: yup
             .array()
             .nullable(true),
     
         image: yup
-            .string()
-            .required(emptyField)
+            .mixed()
+            .nullable()
+            .test(
+                "type",
+                "Le format d'image est invalide.",
+                (value) => !value || (value && FORMATS.includes(value?.type))
+            )
+            .test(
+                "size",
+                "Le fichier est trop lourd. 5MB maximum.",
+                (value) => value && value.size <= 1024 * 1024 // 5MB
+            )
+            .required('Ce champ est obligatoire')
     });
 
-    const { values, errors, handleSubmit, handleChange, touched, setFieldValue } =
+    const { values, errors, handleSubmit, handleChange, touched, setFieldValue, setTouched, setErrors } =
     useFormik(
     {
         initialValues: {
@@ -165,7 +176,7 @@ const AddEditMeal = () => {
             description: '',
             ingredients: [],
             allergens: [],
-            image: ''
+            image: null
         },
         validationSchema,
         onSubmit
@@ -191,21 +202,17 @@ const AddEditMeal = () => {
     useEffect(()=>{
         getAllIngredients().then((res)=>{
             setIngredients(res.data)
+            console.log(res.data)
         }).catch((err)=>{
             // appeler fragment erreur et lui passer err ?
             console.log(err);
             // creation failed
-            switch (err.response.status)
-            {
-                default:
-                    setErrMsg({
-                        title: `Erreur ${err.code} !`,
-                        message: err.response.data
-                    })
-            }
+            setErrMsg({
+                title: `Erreur ${err.code} !`,
+                message: err.response.data
+            })
         })
     }, [])
-
 
     // If it is the update mode, get the current bowl 
     useEffect(()=>{
@@ -213,7 +220,7 @@ const AddEditMeal = () => {
 
             getOneMeal(id).then((res) =>
             {
-                const values = ['name', 'category', 'price', 'description', 'image'];
+                const values = ['name', 'category', 'price', 'description'/*, 'image'*/];
                 
                 res.data.ingredients.forEach((item, index)=>{
                     ingChecklist.checkedItems.add(item);
@@ -226,6 +233,8 @@ const AddEditMeal = () => {
                 values.forEach((value) => {
                     setFieldValue(value, res.data[value], false);
                 });
+
+                setBowlID(res.data._id);
                 
             }).catch((err)=>{
                 // appeler fragment erreur et lui passer err ?
@@ -343,11 +352,22 @@ const AddEditMeal = () => {
                             md="8"
                             lg="4"
                             className="d-flex justify-content-center px-4">
-                            <Input
-                                type="text"
+                            <input
+                                type="file"
                                 name="image"
                                 value={values.image}
-                                onChange={handleChange}
+                                onChange={(event) => {
+
+                                    
+                                    setTouched({
+                                      ...touched,
+                                      image: true,
+                                    });
+                                    // setFieldValue(
+                                    //   "image",
+                                    //   event.target.files[0]
+                                    // );
+                                  }}
                                 desc="Image de présentation : upload."
                                 error={
                                     errors.image &&
@@ -369,7 +389,7 @@ const AddEditMeal = () => {
                                     <button onClick={handleReset} className="border rounded px-4 py-1">Réinitialier la sélection</button>
                                 </li>
                                 {
-                                    ingData.map((item, index)=>(
+                                    ingredients.map((item, index)=>(
                                         <li key={index} className="d-flex align-items-center">
                                             <input
                                                 type="checkbox"
@@ -384,8 +404,7 @@ const AddEditMeal = () => {
                                 }
                             </ul>
                         </Col>
-                        <Col 
-                            md="8"
+                        <Col md="8"
                             lg="4">
 
                             <p>Sélectionnez les allergènes présents</p>
@@ -435,7 +454,12 @@ const AddEditMeal = () => {
 
                         </Col>
                     </Row>
-                    <div className="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center gap-5">
+                        {
+                            (!isCreateMode && bowlID) ?
+                                <Button bsType="secondary" onClick={()=>{archiveBowl(bowlID)}}>Supprimer le bowl</Button>
+                            : ''
+                        }
                         <Button type="submit">Soumettre</Button>
                     </div>
                 </form>

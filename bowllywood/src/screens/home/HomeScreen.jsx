@@ -23,11 +23,11 @@ const Home = () => {
         <Container>
             <Row>
                 <Col className='col-12 flex-center'>
-                    <img
-                        src="Bowllywood.png"
-                        alt="Logo du restaurant de bowls nommé Bowllywood"
-                        class="img-fluid"
-                    />
+                        <img
+                            src="bowllywood.png"
+                            alt="Logo du restaurant de bowls nommé Bowllywood"
+                            className="img-fluid"
+                        />
                 </Col>
                 <Col className='col-12 flex-center'>
                     <Carousel>
