@@ -286,7 +286,7 @@ const AddEditMeal = () => {
                                 value={values.name}
                                 onChange={handleChange}
                                 desc="Nom du bowl"
-                                placeholder="Bâtisez-le..."
+                                placeholder="Bâptisez-le..."
                                 error={
                                     errors.name &&
                                     touched.name &&
