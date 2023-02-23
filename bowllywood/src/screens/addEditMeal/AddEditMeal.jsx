@@ -11,17 +11,15 @@
 
 import './AddEditMeal.scss';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createMeal, updateMeal, getOneMeal, deleteMeal } from '../../services/meal';
-
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-
 import { Col, Row, Container } from 'react-bootstrap';
+import { Oval } from 'react-loader-spinner';
 import HeaderTitle from '../../components/HeaderTitle';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-
 import { useChecklist } from 'react-checklist';
 import { getAllIngredients } from '../../services/ingredients';
 
@@ -39,15 +37,15 @@ const FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 const AddEditMeal = () => {
     const { id } = useParams();
     const isCreateMode = !id;
-
     const [ingredients, setIngredients] = useState([]);
+    const [ingLoaded, setIngLoaded] = useState(false);
     const [bowlID, setBowlID] = useState('');
-    
+    const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState({
         title: 'Erreur !',
         message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
     });
-        
+
     /////////////////////
     // submit function //
     /////////////////////
@@ -96,7 +94,8 @@ const AddEditMeal = () => {
         {
             updateMeal(id, values).then((res)=>{
                 if (res.status === 200) {
-                    console.log('Message comme quoi c\'est ok, et btn rediriger ?');
+                    console.log('Bowl updated');
+                    navigate(`/menus/${res.data._id}`, {replace: true})
                 }
             }).catch((err) => {
                 debugger;
@@ -107,7 +106,7 @@ const AddEditMeal = () => {
 
     const archiveBowl = (bowlID) => {
         deleteMeal(bowlID).then((res)=>{
-            // navigate
+            navigate('/menus', {replace: true})
         }).catch((err)=>{
             console.log(err);
             // deletion failed
@@ -201,8 +200,7 @@ const AddEditMeal = () => {
     /////////////////////
     useEffect(()=>{
         getAllIngredients().then((res)=>{
-            setIngredients(res.data)
-            console.log(res.data)
+            setIngredients(res.data)    
         }).catch((err)=>{
             // appeler fragment erreur et lui passer err ?
             console.log(err);
@@ -211,6 +209,8 @@ const AddEditMeal = () => {
                 title: `Erreur ${err.code} !`,
                 message: err.response.data
             })
+        }).finally(()=>{
+            setIngLoaded(true)
         })
     }, [])
 
@@ -241,14 +241,10 @@ const AddEditMeal = () => {
                 console.log(err);
 
                 // creation failed
-                switch (err.response.status)
-                {
-                    default:
-                        setErrMsg({
-                            title: `Erreur ${err.code} !`,
-                            message: err.response.data
-                        })
-                }
+                setErrMsg({
+                    title: `Erreur ${err.code} !`,
+                    message: err.response.data
+                })
             });
         }
     }, [isCreateMode, id, errMsg, ingChecklist.checkedItems, alrChecklist.checkedItems, setFieldValue])
@@ -389,7 +385,8 @@ const AddEditMeal = () => {
                                     <button onClick={handleReset} className="border rounded px-4 py-1">Réinitialier la sélection</button>
                                 </li>
                                 {
-                                    ingredients.map((item, index)=>(
+                                    (ingLoaded === true)
+                                    ? ingredients.map((item, index)=>(
                                         <li key={index} className="d-flex align-items-center">
                                             <input
                                                 type="checkbox"
@@ -401,6 +398,20 @@ const AddEditMeal = () => {
                                             <label>{item.text}</label>
                                         </li>
                                     ))
+                                    : <span className='col-1 mt-5'>
+                                        <Oval
+                                            strokeWidth="5"
+                                            strokeWidthSecondary="5"
+                                            secondaryColor="#000"
+                                            height="25"
+                                            width="25"
+                                            radius="9"
+                                            color="#CECECE"
+                                            ariaLabel="loading"
+                                            wrapperStyle
+                                            wrapperClass
+                                        />
+                                    </span>
                                 }
                             </ul>
                         </Col>
@@ -460,7 +471,7 @@ const AddEditMeal = () => {
                                 <Button bsType="secondary" onClick={()=>{archiveBowl(bowlID)}}>Supprimer le bowl</Button>
                             : ''
                         }
-                        <Button type="submit">Soumettre</Button>
+                        <Button type="submit" onClick={()=>{onSubmit(values)}}>Soumettre</Button>
                     </div>
                 </form>
             </Col>

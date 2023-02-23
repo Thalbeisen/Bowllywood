@@ -5,14 +5,14 @@ import HeaderTitle from '../../components/HeaderTitle';
 import { Oval } from 'react-loader-spinner';
 import { AuthProvider } from '../../providers/AuthProvider';
 
+let decodedTokens;
+
 function MenuScreen({ bowlsType="SALE" }) {
 
 	const [bowls, setBowls] = useState([]);
 	const [loaded, setLoaded] = useState(false);
-	const [isConnected, setIsConnected] = useState(true); //false
+	const [isConnected, setIsConnected] = useState(false);
 
-	// si connecté, alors setIsConnected(true)
-	
 	useEffect( () => {
 		// check if the asked bowls are the sweet or salted ones.
 		if (bowlsType === "SUCRE")
@@ -35,6 +35,9 @@ function MenuScreen({ bowlsType="SALE" }) {
 				setLoaded(true)
 			});
 		}
+
+		decodedTokens = JSON.parse(localStorage.getItem('userTokens'));
+    	setIsConnected((decodedTokens.token) ? true : false);
 	}, [bowlsType] );
 
 // template for the list
