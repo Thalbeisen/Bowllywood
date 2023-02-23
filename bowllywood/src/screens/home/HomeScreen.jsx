@@ -14,7 +14,7 @@ const Home = () => {
         getAllRestaurants()
             .then((res) => {
                 setAllRestaurants(res.data);
-                console.log(res.data)
+                // console.log(res.data)
             })
             .catch((err) => {
                 console.log(err);
