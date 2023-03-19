@@ -18,6 +18,7 @@ import FranchiseRequestEditScreen from './screens/franchiseRequestEditScreen';
 import FranchiseRequestCancelScreen from './screens/franchiseRequestCancelScreen';
 import AddEditMealScreen from './screens/addEditMeal/';
 import MaintenanceScreen from './screens/maintenance/';
+import ErrorScreen from './screens/errorScreen/';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
+                        <Route path="/erreur" element={<ErrorScreen />} />
                         <Route path="/reservations" element={<MaintenanceScreen />} />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
