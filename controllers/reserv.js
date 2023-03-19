@@ -33,7 +33,6 @@ exports.getAllReserv = async (req, res) => {
     try {
         const reservations = await Reserv.find();
         
-        console.log(reservations)
         if (!reservations) res.status(404).json(errors.emptyList);
 
         res.status(200).json(reservations);

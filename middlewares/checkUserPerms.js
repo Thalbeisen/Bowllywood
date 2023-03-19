@@ -12,7 +12,6 @@ exports.ceoAUTH = (req, res, next) => {
             (err, decodedToken) => {
                 console.log(decodedToken);
                 if (err) {
-
                     res.status(401).json({ message: 'Non autorisé' });
                 }
                 if (decodedToken.roleID.roleName !== 'PDG') {

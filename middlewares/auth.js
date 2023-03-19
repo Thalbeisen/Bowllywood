@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
  */
 const auth = async (req, res, next) => {
     const authHeader = req.headers.authorization;
-    console.log(authHeader);
     const token = authHeader && authHeader.split(' ')[1];
 
     try {
@@ -20,12 +19,11 @@ const auth = async (req, res, next) => {
         req.body.userID = user.id;
         next();
     } catch (err) {
+        let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Unauthorized';
         res.status(401).json({
-            message: 'Unauthorized',
+            message: errMsg,
         });
     }
 };
 
 module.exports = auth;
-
-// code : TokenExpiredError
