@@ -1,7 +1,5 @@
-@import '../../sass/styles.scss';
-
 .maintCntr {
-    background-image: url('../../assets/img/homeBg_cut.png');
+    background-image: url('../../assets/img/saltedBg.png');
     background-position: bottom right;
     background-position: 100% 100%;
     background-attachment: fixed;
@@ -10,10 +8,9 @@
     min-height: 100vh;
 
     .textCntr {
-    	row-gap: 1em;
-    	width: 40em;
+    	row-gap: 2em;
 
-	    h2 {font-size: 1.7em}
+	    h2 {font-size: 2em}
 
     	.homeLink {
 		    i {
@@ -22,14 +19,15 @@
 		    }
 		    
 		    span {
-		    	font-size: 1.1em;
+		    	font-size: 1.4em;
 		    	border-bottom: 1px solid #3D3D3D;
+		    	color: #3D3D3D;
 		    }
     	}
-
-	    + span {
-	    	font-size: .8em;
-	    	font-style: italic;
-	    }
     }
+
+	.bottomSpan {
+		font-size: .9em;
+		font-style: italic;
+	}
 }
