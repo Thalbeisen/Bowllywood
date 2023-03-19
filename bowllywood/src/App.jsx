@@ -27,14 +27,6 @@ function App() {
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
                         <Route path="/reservations" />
-                        <Route
-                                path="/menus"
-                                element={
-                                    <RouteProtector>
-                                        <MenuScreen />
-                                    </RouteProtector>
-                                }
-                            />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                         <Route path="/menus/create" element={<AddEditMealScreen />} />

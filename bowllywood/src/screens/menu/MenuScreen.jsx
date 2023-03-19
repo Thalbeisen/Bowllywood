@@ -37,7 +37,7 @@ function MenuScreen({ bowlsType="SALE" }) {
 		}
 
 		decodedTokens = JSON.parse(localStorage.getItem('userTokens'));
-    	setIsConnected((decodedTokens.token) ? true : false);
+    	setIsConnected((decodedTokens?.token) ? true : false);
 	}, [bowlsType] );
 
 // template for the list
