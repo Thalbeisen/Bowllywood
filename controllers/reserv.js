@@ -48,15 +48,35 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        const reservDetails = await Reserv.findOne({ _id: req.params.id });
+        const reservation = await Reserv.findOne({ _id: req.params.id });
 
-        if (!reservDetails) {
+        if (!reservation) {
             res.status(404).json({
                 message: errors.emptyData(entity),
             });
         }
 
-        res.status(200).json(reservDetails);
+        const userID = req.body.userID
+
+        if (userID)
+        {
+            
+        }
+
+        /* const jwt = require('jsonwebtoken');
+          require('dotenv').config();
+        const authHeader = req.headers.authorization;
+        console.log(authHeader);
+        const token = authHeader && authHeader.split(' ')[1];
+
+        const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);*/
+
+        /*
+            get ID connected
+            reservation.userID != ID connected
+         */
+
+        res.status(200).json(reservation);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
