@@ -6,8 +6,7 @@ const reservCtrl = require('../controllers/reserv');
 
 // middlewares
 const auth = require('../middlewares/auth'),
-    { permit } = require('../middlewares/permissions'),
-    { ceoAUTH } = require('../middlewares/checkUserPerms');
+    { permit } = require('../middlewares/permissions');
 
 // set the routers for each methods
 router.post('/create', auth, permit('ROLE_WAITER', 'ROLE_USER'), reservCtrl.createReserv);

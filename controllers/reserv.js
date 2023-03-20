@@ -1,4 +1,5 @@
 const Reserv = require('../models/reserv');
+// const User = require('../models/user');
 const errors = require('../conf/errors');
 
 const entity = 'RESERV';
@@ -56,25 +57,19 @@ exports.getOneReserv = async (req, res) => {
             });
         }
 
-        const userID = req.body.userID
+        // check user roles
+        const userID = req.body.userID,
+              roleID = req.body.roleID,
+              workingResID = req.body.workingResID;
 
-        if (userID)
+        if (roleID.constains('ROLE_USER') && userID !== reservation.userID) // if user is not the one who created the reservation
+        || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID) // if the restaurant != the of the employing one
         {
-            
+            res.status(401).json(errors.forbidden);
+            // const req.params.userID = userID;
+            // const waiter = await User.userDetails(req);
+            // if (waiter.workingRestaurant_id != reservation.restaurantID) {}
         }
-
-        /* const jwt = require('jsonwebtoken');
-          require('dotenv').config();
-        const authHeader = req.headers.authorization;
-        console.log(authHeader);
-        const token = authHeader && authHeader.split(' ')[1];
-
-        const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);*/
-
-        /*
-            get ID connected
-            reservation.userID != ID connected
-         */
 
         res.status(200).json(reservation);
     } catch (err) {

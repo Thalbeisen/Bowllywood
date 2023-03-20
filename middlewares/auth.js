@@ -17,6 +17,7 @@ const auth = async (req, res, next) => {
             throw new Error();
         }
         req.body.userID = user.id;
+        req.body.userRoles = user.roles;
         next();
     } catch (err) {
         let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Unauthorized';
