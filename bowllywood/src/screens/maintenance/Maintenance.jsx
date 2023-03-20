@@ -20,7 +20,7 @@ const Maintenance = () => {
 					</div>
 				</div>
 			</div>
-			<span className="bottomSpan text-center">Nous nous excusons pour la gêne occasionnée.</span>
+			<span className="bottomSpan text-center">Excusez-nous pour la gêne occasionnée.</span>
 		</div>
 	)
 }

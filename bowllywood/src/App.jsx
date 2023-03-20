@@ -28,7 +28,6 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
-                        <Route path="/erreur" element={<ErrorScreen />} />
                         <Route path="/reservations" element={<MaintenanceScreen />} />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
@@ -42,8 +41,9 @@ function App() {
                         <Route path="/my-franchise-requests/:id" element={<FranchiseRequestDetailsScreen/>} />
                         <Route path="/my-franchise-requests/edit/:id" element={<FranchiseRequestEditScreen/>} />
                         <Route path="/my-franchise-requests/cancel/:id" element={<FranchiseRequestCancelScreen/>} />
-                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>                 
+                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
                         <Route path="/profile" element={<ProfileScreen/>}/>
+                        <Route path="*" element={<ErrorScreen errCode={404} errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
                       </Route>
                     </Routes>
                 </Router>
