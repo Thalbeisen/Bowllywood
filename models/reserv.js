@@ -8,10 +8,9 @@ const reservSchema = new Schema(
             type: String,
             required: true,
         },
-        // si le client a passé commande en ligne
         reservPhone: {
-            type: String
-,            required: false,
+            type: String,
+            required: false,
         },
         reservDate: {
             type: Date,
@@ -27,15 +26,19 @@ const reservSchema = new Schema(
             default: 'KEPT',
             required: true,
         },
-        // si le client a passé commande en ligne
         userID: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: false,
         },
+        restaurantID: {
+            type: Schema.Types.ObjectId,
+            ref: 'Restaurant',
+            required: true,
+        },
         type: {
             type: String,
-            enum: ['INDOOR', 'WEB'], // si c'est serveur ou client (en ligne) qui a créé la séservation
+            enum: ['INDOOR', 'WEB'],
             default: 'WEB',
             required: true,
         },
