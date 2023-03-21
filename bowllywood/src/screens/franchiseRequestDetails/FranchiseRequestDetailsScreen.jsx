@@ -57,7 +57,7 @@ const FranchiseRequestDetailsScreen = () => {
                                     to={`/my-franchise-requests/edit/${id}`}
                                     className="text-decoration-none text-black text-center"
                                 >
-                                    <p>Mofidier</p>
+                                    <p>Modifier</p>
                                 </Link>
                             </Button>
                             <Button>
