@@ -62,8 +62,10 @@ exports.getOneReserv = async (req, res) => {
               roleID = req.body.roleID,
               workingResID = req.body.workingResID;
 
-        if (roleID.constains('ROLE_USER') && userID !== reservation.userID) // if user is not the one who created the reservation
-        || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID) // if the restaurant != the of the employing one
+        // if user is not the one who created the reservation
+        // if the restaurant != the of the employing one
+        if ((roleID.constains('ROLE_USER') && userID !== reservation.userID) 
+                || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID))
         {
             res.status(401).json(errors.forbidden);
             // const req.params.userID = userID;

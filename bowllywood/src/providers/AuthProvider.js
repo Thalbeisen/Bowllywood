@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
             const currentTokenObj = JSON.parse(currentTokens);
             const decodedToken = jwt_decode(currentTokenObj.token);
             const userID = decodedToken.id;
-            // console.log(userID);
             setAuth({userID});
         }
     },[])

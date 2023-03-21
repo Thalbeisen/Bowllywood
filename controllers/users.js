@@ -310,7 +310,7 @@ exports.userLogin = async (req, res) => {
         const token = generateToken(
             { 
                 id: user._id, 
-                roleID: user.roles,
+                roleID: user.userRole,
                 workingResID: user.workingRestaurant_id
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -320,7 +320,7 @@ exports.userLogin = async (req, res) => {
         const refreshToken = generateToken(
             { 
                 id: user._id,
-                roleID: user.roles,
+                roleID: user.userRole,
                 workingResID: user.workingRestaurant_id
             },
             process.env.REFRESH_TOKEN_SECRET,

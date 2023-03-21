@@ -8,6 +8,10 @@ import './LoginScreen.scss';
 import { loginUser } from '../../services/users';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
+// test
+import jwt_decode from "jwt-decode";
+
+
 const loginSchema = yup.object().shape({
     email: yup
         .string()
@@ -37,6 +41,11 @@ function LoginScreen() {
                         'userTokens',
                         JSON.stringify(response.data)
                     );
+
+                    // const currentTokenObj = JSON.parse(currentTokens);
+                    const decodedToken = jwt_decode(response.data.token);
+                    // const userID = decodedToken.id;
+
                     navigate(redirectSource, { replace: true });
                     console.log(`test ${response.data}`);
                 } catch (err) {

@@ -137,7 +137,8 @@ const router = express.Router();
 const reviewCtrl = require('../controllers/review');
 
 // middlewares
-const auth = require('../middlewares/auth');
+const auth = require('../middlewares/auth'),
+    { permit } = require('../middlewares/permissions');
 
 // set the routers for each action/methods
 router.post('/create', auth, permit('ROLE_USER'), reviewCtrl.createReview);
