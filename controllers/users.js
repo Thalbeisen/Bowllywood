@@ -60,8 +60,9 @@ transporter.verify((error) => {
     }
 });
 
-const generateToken = (payload, secret, ttl) =>
+const generateToken = (payload, secret, ttl) => {
     jwt.sign(payload, secret, { expiresIn: ttl });
+};
 
 /**
  * Méthode de récupération des utilisateurs
@@ -316,7 +317,7 @@ exports.userLogin = async (req, res) => {
         );
         /* eslint-disable no-underscore-dangle */
         const refreshToken = generateToken(
-            { id: user._id, roleID: user.roles },
+            { id: user._id, roleID: user.userRole },
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );
