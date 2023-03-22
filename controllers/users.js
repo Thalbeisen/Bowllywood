@@ -42,6 +42,7 @@ const User = require('../models/users');
 const Restaurant = require('../models/restaurants');
 
 // Je déclare un transporter pour pouvoir envoyer les mails
+
 const transporter = nodemailer.createTransport({
     service: 'Mailtrap',
     host: process.env.MAIL_HOST,
@@ -51,6 +52,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.MAIL_PASS,
     },
 });
+
 
 transporter.verify((error) => {
     if (error) {
