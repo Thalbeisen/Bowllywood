@@ -62,9 +62,8 @@ transporter.verify((error) => {
     }
 });
 
-const generateToken = (payload, secret, ttl) => {
+const generateToken = (payload, secret, ttl) =>
     jwt.sign(payload, secret, { expiresIn: ttl });
-};
 
 /**
  * Méthode de récupération des utilisateurs
