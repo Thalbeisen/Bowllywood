@@ -60,8 +60,9 @@ transporter.verify((error) => {
     }
 });
 
-const generateToken = (payload, secret, ttl) =>
+const generateToken = (payload, secret, ttl) => {
     jwt.sign(payload, secret, { expiresIn: ttl });
+};
 
 /**
  * Méthode de récupération des utilisateurs
@@ -207,8 +208,10 @@ exports.userNew = async (req, res) => {
 
 const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
-        url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
+        url: `https://bowllywood-8llo.onrender.com/users/validate/${validationToken}`,
+        // url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
         // url: `http://localhost:6000/users/validate/${validationToken}`,
+        // url: `http://localhost:5000/users/validate/${validationToken}`,
     });
     const mailContent = {
         from: 'admin@bollywood.fr',
@@ -308,13 +311,13 @@ exports.userLogin = async (req, res) => {
         }
         /* eslint-disable no-underscore-dangle */
         const token = generateToken(
-            { id: user._id, roleID: user.roles },
+            { id: user._id, roleID: user.userRole },
             process.env.ACCESS_TOKEN_SECRET,
             '10m'
         );
         /* eslint-disable no-underscore-dangle */
         const refreshToken = generateToken(
-            { id: user._id, roleID: user.roles },
+            { id: user._id, roleID: user.userRole },
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );
