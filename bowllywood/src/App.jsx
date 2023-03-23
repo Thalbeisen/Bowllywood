@@ -19,6 +19,8 @@ import FranchiseRequestCancelScreen from './screens/franchiseRequestCancelScreen
 import AddEditMealScreen from './screens/addEditMeal/';
 import MaintenanceScreen from './screens/maintenance/';
 import ErrorScreen from './screens/errorScreen/';
+import { ToastContainer } from 'react-toastify';
+import Popup from 'react-popup';
 
 function App() {
     return (
@@ -43,10 +45,23 @@ function App() {
                         <Route path="/my-franchise-requests/cancel/:id" element={<FranchiseRequestCancelScreen/>} />
                         <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
                         <Route path="/profile" element={<ProfileScreen/>}/>
+                        <Route path="/erreur" element={<ErrorScreen />}/>
                         <Route path="*" element={<ErrorScreen errCode={404} errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
                       </Route>
                     </Routes>
                 </Router>
+                <ToastContainer
+                    position="bottom-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored" />
+                <Popup />
             </div>
         </AuthProvider>
     );
