@@ -26,6 +26,10 @@ export const getAllUsers = (filters=null) => {
 
 export const getUserDetails = (id) => {
     return AxiosInstance.get('/users/' + id);
+    // return AxiosInstance.get(`/users/${id}`);
+    // return AxiosInstance.get(`/me`);
+
+
 }
 
 export const getUserFranchiseRequests = (id) => {

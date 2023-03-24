@@ -42,6 +42,7 @@ const User = require('../models/users');
 const Restaurant = require('../models/restaurants');
 
 // Je déclare un transporter pour pouvoir envoyer les mails
+
 const transporter = nodemailer.createTransport({
     service: 'Mailtrap',
     host: process.env.MAIL_HOST,
@@ -51,6 +52,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.MAIL_PASS,
     },
 });
+
 
 transporter.verify((error) => {
     if (error) {
@@ -207,8 +209,10 @@ exports.userNew = async (req, res) => {
 
 const sendEmailValidation = async (user, validationToken, res) => {
     const mailHtml = mailTemplate({
-        url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
+        url: `https://bowllywood-8llo.onrender.com/users/validate/${validationToken}`,
+        // url: `https://bowllywood.onrender.com/users/validate/${validationToken}`,
         // url: `http://localhost:6000/users/validate/${validationToken}`,
+        // url: `http://localhost:5000/users/validate/${validationToken}`,
     });
     const mailContent = {
         from: 'admin@bollywood.fr',
@@ -308,6 +312,7 @@ exports.userLogin = async (req, res) => {
         }
         /* eslint-disable no-underscore-dangle */
         const token = generateToken(
+
             { 
                 id: user._id, 
                 roleID: user.userRole,
