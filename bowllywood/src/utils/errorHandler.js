@@ -8,10 +8,10 @@ export function errorHandler(errType, errorCatched, navigate, subjectName) {
 	let errCode = errorCatched.response.status ?? errorCatched.code,
 		catchedMsg = errorCatched?.response?.data?.message ?? undefined;
 
-	if (typeof navigation === 'string' && !subjectName) 
+	if (typeof navigate === 'string' && !subjectName) 
 	{
-		subjectName = navigation;
-		navigation = null;
+		subjectName = navigate;
+		navigate = null;
 	} 
 
 	// define error message to display
