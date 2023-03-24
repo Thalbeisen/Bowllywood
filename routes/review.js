@@ -137,12 +137,13 @@ const router = express.Router();
 const reviewCtrl = require('../controllers/review');
 
 // middlewares
-const auth = require('../middlewares/auth');
+const auth = require('../middlewares/auth'),
+    { permit } = require('../middlewares/permissions');
 
 // set the routers for each action/methods
-router.post('/create', auth, reviewCtrl.createReview);
-router.post('/update/:id', auth, reviewCtrl.updateReview);
-router.patch('/delete/:id', auth, reviewCtrl.deleteReview);
+router.post('/create', auth, permit('ROLE_USER'), reviewCtrl.createReview);
+router.post('/update/:id', auth, reviewCtrl.updateReview); // garder ?
+router.patch('/delete/:id', auth, permit('ROLE_USER'), reviewCtrl.deleteReview); // + celui qui a créée
 router.get('/', reviewCtrl.getAllReview);
 
 module.exports = router;

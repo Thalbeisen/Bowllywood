@@ -16,14 +16,10 @@ export const loginUser = (values) => {
     return AxiosInstance.post('/users/login/', values);
 }
 
-// START EDIT filter
 export const getAllUsers = (filters=null) => {
-    debugger;
-    if (filters)
-    {
+    if (filters) {
         return AxiosInstance.get(`/users?${filters}`);
     }
-// END EDIT filter
 
     return AxiosInstance.get('/users/');
 }

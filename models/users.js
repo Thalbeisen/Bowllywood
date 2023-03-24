@@ -81,6 +81,7 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Restaurant',
         },
+        
         workingRestaurant_id: {
             // Clé étrangère
             type: Schema.Types.ObjectId,
