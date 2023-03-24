@@ -24,12 +24,6 @@ const Template = () => {
             </Link>
         </SidebarItem>,
         <SidebarItem>
-            <Link to="/profile" className='text-decoration-none text-black text-center'>
-                <i className="fa-solid fa-user text-black flex-center"></i>
-                <p className='text-black'>Profile</p>
-            </Link>
-        </SidebarItem>,
-        <SidebarItem>
             <Link to="/reservations" className='text-decoration-none text-black text-center'>
                 <i className="fa-solid fa-money-bill text-black flex-center"></i>
                 <p className='text-black'>Réservation</p>
@@ -45,18 +39,6 @@ const Template = () => {
             <Link to="/mark" className='text-decoration-none text-black text-center'>
                 <i className="fa-solid fa-star text-black flex-center"></i>
                 <p>Évaluation</p>
-            </Link>
-        </SidebarItem>,
-        <SidebarItem>
-            <Link to="/franchise-request" className='text-decoration-none text-black text-center'>
-                <i className="fa-solid fa-people-roof text-black flex-center"></i>
-                <p>Devenir franchisé</p>
-            </Link>
-        </SidebarItem>,
-        <SidebarItem className="text-center">
-            <Link to="/my-franchise-requests" className='text-decoration-none text-black text-center'>
-                <i className="fa-solid fa-people-roof text-black flex-center"></i>
-                <p>Mes demandes de franchise</p>
             </Link>
         </SidebarItem>,
         <SidebarItem>
