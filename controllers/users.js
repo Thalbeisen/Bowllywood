@@ -312,13 +312,22 @@ exports.userLogin = async (req, res) => {
         }
         /* eslint-disable no-underscore-dangle */
         const token = generateToken(
-            { id: user._id, roleID: user.userRole },
+
+            { 
+                id: user._id, 
+                roleID: user.userRole,
+                workingResID: user.workingRestaurant_id
+            },
             process.env.ACCESS_TOKEN_SECRET,
             '10m'
         );
         /* eslint-disable no-underscore-dangle */
         const refreshToken = generateToken(
-            { id: user._id, roleID: user.userRole },
+            { 
+                id: user._id,
+                roleID: user.userRole,
+                workingResID: user.workingRestaurant_id
+            },
             process.env.REFRESH_TOKEN_SECRET,
             '7h'
         );

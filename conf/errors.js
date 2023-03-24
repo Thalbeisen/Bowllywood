@@ -91,8 +91,9 @@ const errorsList = {
 
     itemNotFound: " L'élément n'existe pas ou été supprimé.",
 
-    contactIfPersist:
-        "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
+    contactIfPersist: "Veuillez réessayer plus tard ou contacter l'assistance tehnique si l'erreur persiste.",
+
+    forbidden: "Vous n'avez pas les droits pour accéder à cette page."
 };
 
 module.exports = errorsList;

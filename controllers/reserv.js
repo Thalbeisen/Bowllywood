@@ -1,4 +1,5 @@
 const Reserv = require('../models/reserv');
+// const User = require('../models/user');
 const errors = require('../conf/errors');
 
 const entity = 'RESERV';
@@ -33,7 +34,6 @@ exports.getAllReserv = async (req, res) => {
     try {
         const reservations = await Reserv.find();
         
-        console.log(reservations)
         if (!reservations) res.status(404).json(errors.emptyList);
 
         res.status(200).json(reservations);
@@ -49,15 +49,31 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        const reservDetails = await Reserv.findOne({ _id: req.params.id });
+        const reservation = await Reserv.findOne({ _id: req.params.id });
 
-        if (!reservDetails) {
+        if (!reservation) {
             res.status(404).json({
                 message: errors.emptyData(entity),
             });
         }
 
-        res.status(200).json(reservDetails);
+        // check user roles
+        const userID = req.body.userID,
+              roleID = req.body.roleID,
+              workingResID = req.body.workingResID;
+
+        // if user is not the one who created the reservation
+        // if the restaurant != the of the employing one
+        if ((roleID.constains('ROLE_USER') && userID !== reservation.userID) 
+                || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID))
+        {
+            res.status(401).json(errors.forbidden);
+            // const req.params.userID = userID;
+            // const waiter = await User.userDetails(req);
+            // if (waiter.workingRestaurant_id != reservation.restaurantID) {}
+        }
+
+        res.status(200).json(reservation);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }

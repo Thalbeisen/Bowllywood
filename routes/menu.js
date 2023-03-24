@@ -176,23 +176,24 @@ const menuCtrl = require('../controllers/menu');
 const router = express.Router();
 
 // middlewares
-// const auth = require('../middlewares/auth');
+const auth = require('../middlewares/auth'),
+    { permit } = require('../middlewares/permissions');
 
 // set the routers for each methods
-router.get('/adminlist', menuCtrl.getAllBowls);
+router.get('/adminlist', 
+            auth, 
+            permit('ROLE_WAITER', 
+                'ROLE_COOK', 
+                'ROLE_MANAGER',
+                'ROLE_CEO',
+                'ROLE_ADMIN',
+                'ROLE_SUPERADMIN'), 
+            menuCtrl.getAllBowls);
 router.get('/:id', menuCtrl.getOneMeal);
-router.post('/update/:id', menuCtrl.updateMeal);
-// router.post('/create', auth, menuCtrl.createMeal);
-router.delete('/delete/:id', menuCtrl.deleteMeal);
+router.post('/update/:id', auth, permit('ROLE_ADMIN'), menuCtrl.updateMeal);
+router.post('/create', auth,permit('ROLE_ADMIN'), menuCtrl.createMeal);
+router.delete('/delete/:id', auth,permit('ROLE_ADMIN'), menuCtrl.deleteMeal);
 router.get('/desserts', menuCtrl.getSweetBowls);
 router.get('/', menuCtrl.getSaltedBowls);
 
 module.exports = router;
-
-// router.get('/adminlist', auth, menuCtrl.getAllBowls);
-// router.get('/:id', menuCtrl.getOneMeal);
-// router.post('/update/:id', auth, menuCtrl.updateMeal);
-// router.post('/create', auth, menuCtrl.createMeal);
-// router.delete('/delete/:id', auth, menuCtrl.deleteMeal);
-// router.get('/desserts', menuCtrl.getSweetBowls);
-// router.get('/', menuCtrl.getSaltedBowls);

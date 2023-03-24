@@ -8,15 +8,16 @@ exports.permit =
         const user = await User.findOne({
             _id: req.body.userID,
         });
-        // if (user.id)
-        console.log(req.body);
+
         if (
             (user && permittedRoles.includes(user.userRole)) ||
             user.id === req.params.id ||
             user.franchiseContracts.includes(req.params.id)
         ) {
-            next(); // role is allowed, so continue on the next middleware
+            // role is allowed, so continue on the next middleware
+            next(); 
         } else {
-            res.status(403).json({ message: 'Forbidden' }); // user is forbidden
+            // user is forbidden
+            res.status(403).json({ message: 'Forbidden' });
         }
-    };
+    }

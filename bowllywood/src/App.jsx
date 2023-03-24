@@ -17,6 +17,10 @@ import FranchiseRequestDetailsScreen from './screens/franchiseRequestDetails';
 import FranchiseRequestEditScreen from './screens/franchiseRequestEditScreen';
 import FranchiseRequestCancelScreen from './screens/franchiseRequestCancelScreen';
 import AddEditMealScreen from './screens/addEditMeal/';
+import MaintenanceScreen from './screens/maintenance/';
+import ErrorScreen from './screens/errorScreen/';
+import { ToastContainer } from 'react-toastify';
+import Popup from 'react-popup';
 
 function App() {
     return (
@@ -26,15 +30,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
-                        <Route path="/reservations" />
-                        <Route
-                                path="/menus"
-                                element={
-                                    <RouteProtector>
-                                        <MenuScreen />
-                                    </RouteProtector>
-                                }
-                            />
+                        <Route path="/reservations" element={<MaintenanceScreen />} />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                         <Route path="/menus/create" element={<AddEditMealScreen />} />
@@ -47,11 +43,25 @@ function App() {
                         <Route path="/my-franchise-requests/:id" element={<FranchiseRequestDetailsScreen/>} />
                         <Route path="/my-franchise-requests/edit/:id" element={<FranchiseRequestEditScreen/>} />
                         <Route path="/my-franchise-requests/cancel/:id" element={<FranchiseRequestCancelScreen/>} />
-                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>                 
+                        <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
                         <Route path="/profile" element={<ProfileScreen/>}/>
+                        <Route path="/erreur" element={<ErrorScreen />}/>
+                        <Route path="*" element={<ErrorScreen errCode={404} errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
                       </Route>
                     </Routes>
                 </Router>
+                <ToastContainer
+                    position="bottom-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored" />
+                <Popup />
             </div>
         </AuthProvider>
     );
