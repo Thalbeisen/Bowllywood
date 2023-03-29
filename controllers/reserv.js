@@ -1,8 +1,21 @@
 const Reserv = require('../models/reserv');
-// const User = require('../models/user');
 const errors = require('../conf/errors');
-
 const entity = 'RESERV';
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const defineFilters = async (request) =>
+{
+    debugger
+    const authHeader = request.headers.authorization,
+          token = authHeader && authHeader.split(' ')[1];
+
+    const currToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    return (currToken.role === 'ROLE_USER') 
+        ? { _id: request.params.id, userID: currToken.id} 
+        : { _id: request.params.id, workingRestaurant_id: currToken.workingResID};
+}
 
 /**
  * Create a reservation
@@ -26,16 +39,45 @@ exports.createReserv = async (req, res) => {
 };
 
 /**
+ * Retrieve every reservations of one user
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.getUserReservList = async (req, res) => {
+    try {
+        debugger
+        const authHeader = request.headers.authorization,
+              token = authHeader && authHeader.split(' ')[1];
+        const currToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+        if (res?.params?.userID === currToken.id)
+          res.status(401).json(errors.forbidden)
+
+        const reservations = await Reserv.find({restaurandID: res.params.restauID});
+        
+        if (!reservations) res.status(404).json(errors.emptyList);
+        
+        res.status(200).json(reservations);
+    } catch (err) {
+        res.status(500).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
  * Retrieve every reservations
  * @param {Request} req
  * @param {Response} res
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        const reservations = await Reserv.find();
+        debugger
+        if (res?.params?.restauID !== currToken.workingResID)
+          res.status(401).json(errors.forbidden)
+
+        const reservations = await Reserv.find({restaurandID: res.params.restauID});
         
         if (!reservations) res.status(404).json(errors.emptyList);
-
+        
         res.status(200).json(reservations);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
@@ -49,7 +91,9 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        const reservation = await Reserv.findOne({ _id: req.params.id });
+        debugger
+        let filters = defineFilters(req)
+        const reservation = await Reserv.findOne({filters});
 
         if (!reservation) {
             res.status(404).json({
@@ -86,8 +130,11 @@ exports.getOneReserv = async (req, res) => {
  */
 exports.updateReserv = async (req, res) => {
     try {
+        debugger
+        let filters = defineFilters(req)
         const updatedReserv = await Reserv.findByIdAndUpdate(
             req.params.id,
+            // ? filters
             {
                 ...req.body,
             },
@@ -125,6 +172,8 @@ this.getDeletedDate = async function (req, res) {
  */
 exports.cancelReserv = async (req, res) => {
     try {
+        debugger
+        let filters = defineFilters(req) // idem que update??
         const canceledReserv = await Reserv.findByIdAndUpdate(req.params.id, 
             { status: 'CLD' },
             { returnDocument: 'after' }
