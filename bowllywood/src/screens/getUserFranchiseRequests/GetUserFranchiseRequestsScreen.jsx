@@ -26,7 +26,7 @@ const GetUserFranchiseRequestsScreen = () => {
                 setLoading(false);
             });
     }, []);
-
+    
     return (
         !loading &&
             <Container>
@@ -34,8 +34,8 @@ const GetUserFranchiseRequestsScreen = () => {
                     <Col>
                         <Table striped bordered hover>
                             <thead>
-                                <tr>
-                                    <th>Date de création</th>
+                                <tr className='text-center'>
+                                    <th>Référence</th>
                                     <th>Montant estimé</th>
                                     <th>Financement envisagé</th>
                                     <th>Ville d'implantation</th>
@@ -48,10 +48,11 @@ const GetUserFranchiseRequestsScreen = () => {
                                     (franchiseContract) => {
                                         return (
                                             <tr
+                                                className='text-center'
                                                 key={franchiseContract._id}>
                                                 <td>
                                                     {
-                                                        franchiseContract.createdAt
+                                                      franchiseContract.city + '-' + franchiseContract._id.substr(13, 10) + '-' + franchiseContract.shopLocation
                                                     }
                                                 </td>
                                                 <td>
