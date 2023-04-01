@@ -33,13 +33,13 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
-                        <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_CEO']} />}>
+                        <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_MANAGER']} />}>
                             <Route path="/reservations/form" element={<MaintenanceScreen />} />
                             <Route path="/reservations/form/:id"element={<MaintenanceScreen /*action="EDIT"*/ />} />
                             <Route path="/reservations/:id" element={<MaintenanceScreen />} />
                         </Route>
                         <Route path="/reservations" element={
-                            <RouteProtector permittedRoles={['ROLE_WAITER', 'ROLE_CEO']}>
+                            <RouteProtector>
                                 <MaintenanceScreen />
                             </RouteProtector>
                         } />
