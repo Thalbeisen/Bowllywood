@@ -21,6 +21,9 @@ import MaintenanceScreen from './screens/maintenance/';
 import ErrorScreen from './screens/errorScreen/';
 import { ToastContainer } from 'react-toastify';
 import Popup from 'react-popup';
+// import ReservationDetail from "./reservation/ReservationDetail";
+// import ReservationForm from "./reservation/ReservationForm";
+// import ReservationList from "./reservation/ReservationList";
 
 function App() {
     return (
@@ -30,7 +33,21 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
-                        <Route path="/reservations" element={<MaintenanceScreen />} />
+                        <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_CEO']} />}>
+                            <Route path="/reservations/form" element={<MaintenanceScreen />} />
+                            <Route path="/reservations/form/:id"element={<MaintenanceScreen /*action="EDIT"*/ />} />
+                            <Route path="/reservations/:id" element={<MaintenanceScreen />} />
+                        </Route>
+                        <Route path="/reservations" element={
+                            <RouteProtector permittedRoles={['ROLE_WAITER', 'ROLE_CEO']}>
+                                <MaintenanceScreen />
+                            </RouteProtector>
+                        } />
+                        <Route path="/my-reservations" element={
+                            <RouteProtector permittedRoles={['ROLE_USER']}>
+                                <MaintenanceScreen />
+                            </RouteProtector>
+                        } />
                         <Route path="/menus" element={<MenuScreen />} />
                         <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                         <Route path="/menus/create" element={<AddEditMealScreen />} />
