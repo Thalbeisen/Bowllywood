@@ -1,4 +1,5 @@
 const Reserv = require('../models/reserv');
+const User = require('../models/users');
 const errors = require('../conf/errors');
 const entity = 'RESERV';
 const jwt = require('jsonwebtoken');
@@ -6,15 +7,11 @@ require('dotenv').config();
 
 const defineFilters = async (request) =>
 {
-    debugger
-    const authHeader = request.headers.authorization,
-          token = authHeader && authHeader.split(' ')[1];
-
-    const currToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-    return (currToken.role === 'ROLE_USER') 
-        ? { _id: request.params.id, userID: currToken.id} 
-        : { _id: request.params.id, workingRestaurant_id: currToken.workingResID};
+    const connectedUser = request.body;
+    const filters = (connectedUser?.roleID === 'ROLE_USER') 
+        ? { _id: request?.params?.id, userID: connectedUser?.id} 
+        : { _id: request?.params?.id, restaurantID: connectedUser?.workingResID};
+    return filters;
 }
 
 /**
@@ -26,6 +23,23 @@ const defineFilters = async (request) =>
  */
 exports.createReserv = async (req, res) => {
     try {
+
+        const connectedUser = {
+            id: req?.body?.userID,
+            roleID: req?.body?.roleID,
+            workingResID: req?.body?.workingResID
+        }
+
+        if (connectedUser.roleID === 'ROLE_USER') {
+            const consummer = await User.userDetails();
+            req.body.restaurantID = consummer.favouriteRestaurant_id;
+        } else {
+            req.body.restaurantID = connectedUser.workingResID;
+            delete req.body.userID;
+            delete req.body.roleID;
+            delete req.body.workingResID;
+        }
+
         const newReserv = await new Reserv({
             ...req.body,
         }).save();
@@ -70,14 +84,11 @@ exports.getUserReservList = async (req, res) => {
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        debugger
-        if (res?.params?.restauID !== currToken.workingResID)
-          res.status(401).json(errors.forbidden)
+        const workingResID = req.body.workingResID;
 
-        const reservations = await Reserv.find({restaurandID: res.params.restauID});
-        
+        const reservations = await Reserv.find({restaurandID: workingResID});
         if (!reservations) res.status(404).json(errors.emptyList);
-        
+
         res.status(200).json(reservations);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
@@ -91,33 +102,13 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        debugger
-        let filters = defineFilters(req)
-        const reservation = await Reserv.findOne({filters});
+        let filters = await defineFilters(req)
+        const reservation = await Reserv.findOne(filters);
 
-        if (!reservation) {
-            res.status(404).json({
-                message: errors.emptyData(entity),
-            });
-        }
-
-        // check user roles
-        const userID = req.body.userID,
-              roleID = req.body.roleID,
-              workingResID = req.body.workingResID;
-
-        // if user is not the one who created the reservation
-        // if the restaurant != the of the employing one
-        if ((roleID.constains('ROLE_USER') && userID !== reservation.userID) 
-                || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID))
-        {
-            res.status(401).json(errors.forbidden);
-            // const req.params.userID = userID;
-            // const waiter = await User.userDetails(req);
-            // if (waiter.workingRestaurant_id != reservation.restaurantID) {}
-        }
-
-        res.status(200).json(reservation);
+        if (!reservation)
+            res.status(404).json(errors.emptyData(entity));
+        else
+            res.status(201).json(reservation);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }

@@ -49,6 +49,7 @@ const reservSchema = new Schema(
     },
     {
         timestamps: true,
+        strictQuery: false
     }
 );
 
