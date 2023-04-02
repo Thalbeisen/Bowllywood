@@ -21,13 +21,10 @@ const auth = async (req, res, next) => {
         req.body.workingResID = user.workingResID;
         next();
     } catch (err) {
-        // let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Vous devez être connecté pour accéder à ces informations.';
-        if (!err.name == 'TokenExpiredError') {
-            let errMsg = 'Vous devez être connecté pour accéder à ces informations.';
-            res.status(401).json({
-                message: errMsg,
-            });
-        }
+        let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Vous devez être connecté pour accéder à ces informations.';
+        res.status(401).json({
+            message: errMsg,
+        });
     }
 };
 

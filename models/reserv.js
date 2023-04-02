@@ -26,7 +26,7 @@ const reservSchema = new Schema(
             default: 'KEPT',
             required: true,
         },
-        userID: {
+        consumerID: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: false,

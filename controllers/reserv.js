@@ -9,7 +9,7 @@ const defineFilters = async (request) =>
 {
     const connectedUser = request.body;
     const filters = (connectedUser?.roleID === 'ROLE_USER') 
-        ? { _id: request?.params?.id, userID: connectedUser?.id} 
+        ? { _id: request?.params?.id, consumerID: connectedUser?.userID} 
         : { _id: request?.params?.id, restaurantID: connectedUser?.workingResID};
     return filters;
 }
@@ -23,16 +23,16 @@ const defineFilters = async (request) =>
  */
 exports.createReserv = async (req, res) => {
     try {
-
         const connectedUser = {
-            id: req?.body?.userID,
+            userID: req?.body?.userID,
             roleID: req?.body?.roleID,
             workingResID: req?.body?.workingResID
         }
 
+        // automatic filling of 'restaurantID'
         if (connectedUser.roleID === 'ROLE_USER') {
-            const consummer = await User.userDetails();
-            req.body.restaurantID = consummer.favouriteRestaurant_id;
+            const consumer = await User.userDetails();
+            req.body.restaurantID = consumer?.favouriteRestaurant_id;
         } else {
             req.body.restaurantID = connectedUser.workingResID;
             delete req.body.userID;
@@ -60,14 +60,7 @@ exports.createReserv = async (req, res) => {
 exports.getUserReservList = async (req, res) => {
     try {
         debugger
-        const authHeader = request.headers.authorization,
-              token = authHeader && authHeader.split(' ')[1];
-        const currToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-        if (res?.params?.userID === currToken.id)
-          res.status(401).json(errors.forbidden)
-
-        const reservations = await Reserv.find({restaurandID: res.params.restauID});
+        const reservations = await Reserv.find({customerID: res.body.userID});
         
         if (!reservations) res.status(404).json(errors.emptyList);
         
@@ -86,7 +79,7 @@ exports.getAllReserv = async (req, res) => {
     try {
         const workingResID = req.body.workingResID;
 
-        const reservations = await Reserv.find({restaurandID: workingResID});
+        const reservations = await Reserv.find({restaurantID: workingResID});
         if (!reservations) res.status(404).json(errors.emptyList);
 
         res.status(200).json(reservations);
@@ -121,11 +114,15 @@ exports.getOneReserv = async (req, res) => {
  */
 exports.updateReserv = async (req, res) => {
     try {
-        debugger
-        let filters = defineFilters(req)
-        const updatedReserv = await Reserv.findByIdAndUpdate(
-            req.params.id,
-            // ? filters
+        let filters = await defineFilters(req)
+
+        if (req?.body?.consumerID === '') delete req?.body?.consumerID;
+        delete req.body.userID;
+        delete req.body.roleID;
+        delete req.body.workingResID;
+        
+        const updatedReserv = await Reserv.findOneAndUpdate(
+            filters,
             {
                 ...req.body,
             },
@@ -163,9 +160,8 @@ this.getDeletedDate = async function (req, res) {
  */
 exports.cancelReserv = async (req, res) => {
     try {
-        debugger
-        let filters = defineFilters(req) // idem que update??
-        const canceledReserv = await Reserv.findByIdAndUpdate(req.params.id, 
+        let filters = await defineFilters(req);
+        const canceledReserv = await Reserv.findOneAndUpdate(filters, 
             { status: 'CLD' },
             { returnDocument: 'after' }
         );
