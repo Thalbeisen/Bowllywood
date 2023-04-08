@@ -49,15 +49,9 @@ exports.createReserv = async (req, res) => {
         delete req.body.roleID;
         delete req.body.workingResID;
 
-        /*if (connectedUser.roleID === 'ROLE_USER') {
-            const consumer = await User.userDetails();
-            req.body.restaurantID = consumer?.favouriteRestaurant_id;
-        } else {
-            req.body.restaurantID = connectedUser.workingResID;
-            delete req.body.userID;
-            delete req.body.roleID;
-            delete req.body.workingResID;
-        }*/
+        if (!req.body.consumerID) {
+            delete req.body.consumerID;
+        }
 
         const newReserv = await new Reserv({
             ...req.body,
@@ -67,7 +61,7 @@ exports.createReserv = async (req, res) => {
 
         res.status(201).json(newReserv);
     } catch (err) {
-        res.status(400).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(400).json(errors.errorOccured + err.message);
     }
 };
 
@@ -86,7 +80,7 @@ exports.getUserReservList = async (req, res) => {
         res.status(200).json(reservations);
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -105,7 +99,7 @@ exports.getAllReserv = async (req, res) => {
         res.status(200).json(reservations);
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -125,7 +119,7 @@ exports.getOneReserv = async (req, res) => {
             res.status(201).json(reservation);
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -156,7 +150,7 @@ exports.updateReserv = async (req, res) => {
         res.status(200).json(updatedReserv);
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -175,7 +169,7 @@ this.getDeletedDate = async function (req, res) {
         return reservation ? reservation.deletedAt : null;
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -196,7 +190,7 @@ exports.cancelReserv = async (req, res) => {
         res.status(200).json(canceledReserv);
     } catch (err) {
         debugger
-        res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+        res.status(500).json(errors.errorOccured + err.message);
     }
 };
 
@@ -207,7 +201,6 @@ exports.cancelReserv = async (req, res) => {
  */
 exports.getReservationByDay = async (req, res) => {
     try {
-        debugger
         const connectedUser = {
             userID: req?.body?.userID,
             roleID: req?.body?.roleID,
@@ -217,9 +210,13 @@ exports.getReservationByDay = async (req, res) => {
         // get consumer fav. restaurant or working restaurant
         const restaurantID = await getUserRestaurantID(connectedUser)
 
+        const filterDate = new Date(req?.params?.day),
+              start = filterDate.setHours(0,0,0,0),
+              end = filterDate.setHours(24,0,0,0);
+
         const reservationsDay = await Reserv.find({
             restaurantID: restaurantID,
-            reservDate: req.params.day,
+            reservDate: {$gte: start, $lt: end},
             status: 'KEPT'
         }, 'reservDate seatNr status restaurantID');
 
@@ -229,7 +226,6 @@ exports.getReservationByDay = async (req, res) => {
             res.status(200).json(reservationsDay);
     
         } catch (err) {
-            debugger
-            res.status(500).json(errors.errorOccured + ' BIP ' + err.message);
+            res.status(500).json(errors.errorOccured + err.message);
     }
 };

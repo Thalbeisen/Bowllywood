@@ -319,7 +319,7 @@ exports.userLogin = async (req, res) => {
                 workingResID: user.workingRestaurant_id
             },
             process.env.ACCESS_TOKEN_SECRET,
-            '10m'
+            '2h'
         );
         /* eslint-disable no-underscore-dangle */
         const refreshToken = generateToken(
