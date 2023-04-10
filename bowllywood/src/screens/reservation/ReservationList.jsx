@@ -1,6 +1,7 @@
 // data
 import { useState, useEffect } from 'react';
 import { getUserReservations, getAllReservations } from '../../services/reservation';
+import { getRestaurantDetail } from '../../services/restaurant';
 // component
 import { Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -28,7 +29,8 @@ function ReservationList () {
 		  [openedHours/*, setOpenedHours*/] = useState(12),
 		  [seatsPerDay, setSeatsPerDay] = useState(12),
 		  [refreshData, setRefreshData] = useState(false),
-		  [isLoaded, setIsLoaded] = useState(false);
+		  [isLoaded, setIsLoaded] = useState(false),
+		  [isConsumer, setIsConsumer] = useState(false);
 
 	let today = dayjs().format('YYYY-MM-DD'),
 		decodedToken,
@@ -74,15 +76,44 @@ function ReservationList () {
 		}
 
 		// get data depending on the user role
-		const profRoles = ['ROLE_MANAGER', 'ROLE_CEO', 'ROLE_WAITER'];
 		if (userRole === 'ROLE_USER')
 		{
+			setIsConsumer(true);
 			getUserReservations().then((res)=>{
 				if (cancel) return;
+
 				debugger
-				setDataContent(res)
+				const restaurantPromises = res.data.map((item) => {
+					return getRestaurantDetail(item.restaurantID).catch((err)=>{
+						item.city = 'Ville introuvable';
+					})
+				});
+
+			  	Promise.all(restaurantPromises).then((restaurantDetails) => {
+				    restaurantDetails.forEach((restaurant, index) => {
+				    if (restaurant) {
+				    	res.data[index].city = restaurant.data.city;
+				    }
+			    	});
+			    });
+			    setDataContent(res);
+
+				/*res.data.forEach((item)=>{
+				let test = '';
+						debugger
+					getRestaurantDetail(item.restaurantID).then((restaurant)=>{
+						debugger
+						item.city = restaurant.data.city;
+						test = restaurant.data.city;
+					}).catch((err)=>{
+						debugger
+						item.city = 'Ville introuvable';
+						test = 'int';
+					})
+				})*/
+
+				// setDataContent(res)
 			}).catch((err)=>{
-				debugger
 				setSeatNumber(0)
 				setReservations([])
 				if (err?.response?.status !== 404) errorHandler('TOAST', err)
@@ -90,7 +121,7 @@ function ReservationList () {
 				setIsLoaded(true)
 			})
 		}
-		else if (profRoles.includes(userRole))
+		else
 		{
 			getAllReservations(filterDate).then((res)=>{
 				if (cancel) return;
@@ -99,7 +130,19 @@ function ReservationList () {
 			}).catch((err)=>{
 				setSeatNumber(0)
 				setReservations([])
-				if (err?.response?.status !== 404) errorHandler('TOAST', err)
+				switch (err?.response?.status)
+				{
+				case 404:
+					break
+				case 403:
+					delete err?.response?.data?.message ;
+					delete err?.message ;
+					errorHandler('TOAST', err)
+					break
+				default:
+					errorHandler('TOAST', err)
+				}
+
 			}).finally(()=>{
 				setIsLoaded(true)
 			})
@@ -183,7 +226,11 @@ function ReservationList () {
 					<Row className="d-flex justify-content-between m-0 pt-2 w-100">
 						<Col className="p-0">
 							<span className="mediumText">{reserv.seatNr} Personnes</span>
-							<p>{reserv.reservName}</p>
+							{
+				               (!isConsumer)
+				               ? <p>{reserv.reservName}</p>
+				               : ''
+				            }
 						</Col>
 						<Col md={7} xl={5} className="p-0">
 							<p>
@@ -203,7 +250,10 @@ function ReservationList () {
 		{
 			return(
 				<div className="d-flex align-items-center justify-content-center text-center mt-5">
-					<span>Aucune réservation n'a encore été enregistrée dans votre restaurant pour la date sélectionnée.</span>
+					{ (!isConsumer)
+					 ? <span>Aucune réservation n'a encore été enregistrée dans votre restaurant pour la date sélectionnée.</span>
+					 : <span>Vous n'avez encore pas réservé de place.</span>
+					}
 				</div>
 			)
 		}
@@ -212,27 +262,37 @@ function ReservationList () {
 	return (
 	<div className="resCtnr d-flex flex-column px-5 py-4">
 
-		<h2>Gérer les réservations</h2>
-		<Row className="resStatistic justify-content-center" >
+		<h2>Gérer {(!isConsumer) ? 'des' : 'vos'} réservations</h2>
+		{ (!isConsumer)
+        ? <Row className="resStatistic justify-content-center" >
 			<ReservationListStat number={(seatNumber !== 0) ? 12 : 27} title="Tables disponibles" subNumber={(seatNumber !== 0) ? 15 : '0'} subTitle="tables réservées" />
 			<ReservationListStat number={seatNumber} title="Places réservées" subTitle={(today !== fullDate) ? getFullDate(selectedDate, 'DATS') : 'aujourd\'hui'} />
 			<ReservationListStat number={Math.round((seatNumber*100/seatsPerDay) * 10 )/10} title="Occupation de la salle" subTitle="pour toute la journée" isPercent="true"/>
 		</Row>
+        : <Row className="resStatistic justify-content-center" >
+			<ReservationListStat number={reservations.length} title={(reservations.length > 1 ) ? 'réservations' : 'réservation'} />
+		</Row>
+        }
 
 		<Row className="resListContent justify-content-center">
 			<Col xs={12} lg={11} xl={10} className="" >
 				<div className="mb-3 align-items-center">
-					<p className="d-inline">Liste des réservations</p>
-					<span className=" mx-2"> – </span> 
-					<span>journée du {getFullDate(selectedDate, 'DATS')}</span>
-					<DatePicker 
-						locale={locale}
-						allowClear={false}
-						bordered={false}
-						size='large'
-						value={selectedDate ? dayjs(selectedDate) : null}
-						onChange={modifyDate}
-					/>
+					<p className="d-inline">Liste {(!isConsumer) ? 'des' : 'de vos'} réservations</p>
+					{
+		               (!isConsumer)
+		               ? <>
+						<span className=" mx-2"> – </span> 
+						<span>journée du {getFullDate(selectedDate, 'DATS')}</span>
+						<DatePicker 
+							locale={locale}
+							allowClear={false}
+							bordered={false}
+							size='large'
+							value={selectedDate ? dayjs(selectedDate) : null}
+							onChange={modifyDate}/>
+		                </>
+		               : ''
+		            }
 				</div>
 				<Row className="flex-column-reverse flex-md-row justify-content-between px-4" >
 					<Col md={8} xxl={7} className="resList">
@@ -254,7 +314,7 @@ function ReservationList () {
 							? <ReservationsRender />
 							: <div className="d-flex align-items-center justify-content-center">
 								<LoadingSpinner />
-								<span className="ms-3">Chargement des réservations</span>
+								<span className="ms-3">Chargement {(!isConsumer) ? 'des' : 'de vos'} réservations</span>
 							  </div>
 
 						}
@@ -263,7 +323,7 @@ function ReservationList () {
 					<Col md={3} xxl={3}>
 						<Link to="/reservations/form" className="d-flex flex-column justify-content-center align-items-center text-decoration-none">
 							<i className="addIcon fa-solid fa-plus mb-3"></i>
-							<p className="addText text-center">Ajouter une réservation</p>
+							<p className="addText text-center">{(!isConsumer) ? 'Ajouter une réservation' : 'Réserver à nouveau'}</p>
 						</Link>
 					</Col>
 				</Row>

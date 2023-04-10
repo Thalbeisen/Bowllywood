@@ -29,6 +29,7 @@ function ReservationDetail () {
 
 		if (resID && !cancel)
 		{
+			debugger
 			getOneReservation(resID).then((res)=>{
 				formatStatus(res.data.status);
 
@@ -59,8 +60,14 @@ function ReservationDetail () {
 				setIsEditable(res.data.status === 'KEPT' || (res.data.status === 'CLD' && res.data.reservDate < currDate))
 
 			}).catch((err)=>{
-				// console.log('GET ONE RESERVATION : ', err);
-				// choisir si redirection quelque soit l'erreur, puisque c'est on click qu'on va dessus.
+				if (err?.response?.status === 403)
+				{
+					delete err?.response?.data?.message;
+					delete err?.message;
+				} else if (err?.response?.status === 404) {
+					// delete err?.response?.data?.message;
+					delete err?.message;
+				}
 				errorHandler('REDIRECT', err, navigate, 'réservation')
 			}).finally(() => {
 				setLoaded(true);

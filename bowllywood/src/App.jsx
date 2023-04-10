@@ -33,13 +33,13 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
-                        <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_MANAGER']} />}>
+                        <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_MANAGER', 'ROLE_CEO']} />}>
                             <Route path="/reservations/form" element={<ReservationForm />} />
                             <Route path="/reservations/form/:id"element={<ReservationForm action="EDIT" />} />
                             <Route path="/reservations/:id" element={<ReservationDetail />} />
                         </Route>
                         <Route path="/reservations" element={
-                            <RouteProtector>
+                            <RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_MANAGER', 'ROLE_CEO']} >
                                 <ReservationList />
                             </RouteProtector>
                         } />
@@ -58,6 +58,7 @@ function App() {
                         <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
                         <Route path="/profile" element={<ProfileScreen/>}/>
                         <Route path="/reviews" element={<MaintenanceScreen/>}/>
+                        <Route path="/restaurantList" element={<MaintenanceScreen/>}/>
                         <Route path="/erreur" element={<ErrorScreen />}/>
                         <Route path="*" element={<ErrorScreen errCode={404} errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
                       </Route>

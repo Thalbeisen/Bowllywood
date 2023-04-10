@@ -6,15 +6,16 @@ import { getRestaurantDetail } from '../../services/restaurant';
 import { getCurrentUserDetails } from '../../services/users';
 import { useParams, useNavigate } from 'react-router-dom';
 import { errorHandler } from '../../utils/errorHandler';
-import jwt_decode from "jwt-decode";
 // data
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import locale from 'antd/es/date-picker/locale/fr_FR'
 import moment from 'moment';
 import dayjs from 'dayjs';
+import jwt_decode from "jwt-decode";
 // front
 import { Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Input from '../../components/Input';
 import CustomTimePicker from '../../components/CustomTimePicker';
@@ -56,18 +57,34 @@ const validationSchema = yup.object({
 function ReservationDetail ({ action='ADD' }) {
 
 	const [ reservation, setReservation ] = useState({}),
-		  [ resDate, setResDate ] = useState(''),
+		  [ isLoaded, setIsLoaded ] = useState(false),
+		  // current restaurant
 		  [ restaurantID, setRestaurantID ] = useState(''),
 		  [ restauCapacity, setRestauCapacity ] = useState(''),
+		  [ schedule, setSchedule ] = useState(),
+		  // consumer
+		  [ isConsumer, setIsConsumer ] = useState(false),
+		  [ consumerName, setConsumerName ] = useState(),
+		  [ consumerRestau, setConsumerRestau ] = useState(),
+		  // date time
 		  [ disabledHours, setDisabledHours ] = useState([]),
 		  [ overBookedHalf, setOverBookedHalf ] = useState([]),
-		  [ schedule, setSchedule ] = useState(),
 		  [ dayOverBooked, setDayOverBooked ] = useState(false),
-		  [ isLoaded, setIsLoaded ] = useState(false),
+		  [ resDate, setResDate ] = useState(''),
 		  [ resTime, setResTime ] = useState('');
 
 	const { id } = useParams(),
+		  currentTokens = localStorage.getItem("userTokens"),
 		  navigate = useNavigate();
+
+	// get user token
+	let decodedToken, userRole, userID;
+	if (currentTokens)
+	{
+		decodedToken = jwt_decode(JSON.parse(currentTokens).token);
+		userRole = decodedToken?.roleID ?? '';
+		userID = decodedToken?.id;
+	}
 
 	let editMode = false,
 		resID = '';
@@ -83,7 +100,10 @@ function ReservationDetail ({ action='ADD' }) {
 	    delete values.resDate;
 	   	delete values.resTime;
 
-    	if (!values.consumerID) delete values.consumerID;
+	   	debugger
+    	if (!isConsumer) {
+    		delete values.consumerID;
+    	}
 
     	if (editMode) {
     		editReservation(resID, values).then((res) => {
@@ -116,42 +136,42 @@ function ReservationDetail ({ action='ADD' }) {
     	return new Date(correctDate)
     }
 
+    // formik desclaration
     const { values, errors, handleChange, setFieldValue, handleReset, handleSubmit } =
     useFormik(
     {
 		enableReinitialize: true,
 		initialValues: {
-			reservName: reservation.reservName ?? '',
+			consumerID: reservation.consumerID ?? userID ?? '',
+			reservName: reservation.reservName ?? consumerName ?? '',
 			reservPhone: reservation.reservPhone ?? '',
 			resDate: resDate ?? '',
 			resTime: resTime ?? '11:00',
 			seatNr: reservation.seatNr ?? 1,
 			status: reservation.status ?? 'KEPT',
 			restaurantID: reservation.restaurantID ?? '',
-			consumerID: reservation.consumerID ?? '',
 			type: reservation.type ?? 'INDOOR'
 		},
         validationSchema,
         onSubmit
     });
 
-	// get reservation informations if it is edit mode
+	// get reservation informations if edit mode
 	useEffect(()=>{
 		let cancel = false;
 
    		// get fav resturant
 		const currentTokens = localStorage.getItem("userTokens");
 		if (currentTokens) {
-			const decodedToken = jwt_decode(JSON.parse(currentTokens).token),
-				  userRole = decodedToken?.roleID ?? '',
-				  profRoles = ['ROLE_MANAGER', 'ROLE_CEO', 'ROLE_WAITER']
+			const profRoles = ['ROLE_MANAGER', 'ROLE_CEO', 'ROLE_WAITER']
 
 			if (profRoles.includes(userRole)) {
 				setRestaurantID(decodedToken?.workingResID)
 			} else {
+				setIsConsumer(true)
 				getCurrentUserDetails().then((res)=>{
 					if (cancel) return;
-					debugger
+					setConsumerName(res.data.data.lastName);
 					setRestaurantID(res.data.data.favouriteRestaurant_id);
 				}).catch((err)=>{
 					debugger
@@ -174,7 +194,7 @@ function ReservationDetail ({ action='ADD' }) {
 				setReservation(res.data)
 
 			}).catch((err)=>{
-				if (err?.code === 404) {
+				if (err?.response?.status === 404) {
 					errorHandler('REDIRECT', err, navigate, 'réservation') 
 				}
 				console.error(err)
@@ -193,7 +213,7 @@ function ReservationDetail ({ action='ADD' }) {
 		return () => { 
 		    cancel = true;
 		}
-	}, [editMode, resID, navigate]);
+	}, [editMode, resID, navigate, decodedToken, userRole]);
 
 	// get current restaurant infos
 	useEffect(()=>{   		
@@ -212,6 +232,7 @@ function ReservationDetail ({ action='ADD' }) {
 	        	}
 		    	setRestauCapacity(40) //res?.data?.capacity
 		        setSchedule(scheduleObj)
+				setConsumerRestau(`${res.data.city} – ${res.data.address}`)
 			}).catch((err)=>{
 				console.error('RESTAURANT : ', err)
 			})
@@ -304,6 +325,8 @@ function ReservationDetail ({ action='ADD' }) {
 				// if every hour are booked, disable the selection
 				if (bookedHour.lentgh >= 24) {
 					setDayOverBooked(true)
+				} else {
+					setDayOverBooked(false)
 				}
 
 				const userChoice = getHourFromString(values.resTime);
@@ -316,7 +339,15 @@ function ReservationDetail ({ action='ADD' }) {
 
 			}).catch((err)=>{
 				setOverBookedHalf([])
-				console.log('DAY SEATS : ', err?.response?.data ?? err)
+				setDayOverBooked(true) // disable time selection
+
+				if (err?.response?.status !== 404) {
+					delete err?.response?.message;
+					err.message="Nous ne pouvons pas vérifier la disponibilité du restaurant pour la journée sélectionnée. Veuillez recommencer plus tard.";
+					errorHandler('TOAST', err)
+				}
+
+				console.error('GET SEATS : ', err)
 			})
 		}
 
@@ -367,6 +398,14 @@ function ReservationDetail ({ action='ADD' }) {
 				{
 					(!editMode || isLoaded)
 					? <> <Col xs={12} sm={11} md={10} lg={8} xl={7} xxl={6} xxxl={5} className="d-flex flex-column ps-2 pe-0">
+						{ (isConsumer)
+						? <div className="w-100 px-0 mb-5">
+							<p>Bowllywood {consumerRestau}</p>
+							<Link to="/restaurantList" className="text-dark">Modifier le restaurant favori</Link>
+						</div>
+						: ''
+						}
+
 						<Input 
 							name="reservName"
 	                        desc="Nom du client"
