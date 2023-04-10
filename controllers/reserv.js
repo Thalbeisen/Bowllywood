@@ -27,7 +27,6 @@ const getUserRestaurantID = async (connectedUser) => {
     return restaurantID;
 }
 
-
 /**
  * Create a reservation
  * @param  {Request} req
@@ -91,12 +90,26 @@ exports.getUserReservList = async (req, res) => {
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        const workingResID = req.body.workingResID;
+        const workingResID = req.body.workingResID,
+              filterDate = req?.params?.day;
 
-        const reservations = await Reserv.find({restaurantID: workingResID});
-        if (!reservations) res.status(404).json(errors.emptyList);
+        let filters = {
+            restaurantID: workingResID
+        }
 
-        res.status(200).json(reservations);
+        if (filterDate && filterDate !== 'ALL') {
+            const date = new Date(filterDate)
+                  start = date.setHours(0,0,0,0),
+                  end = date.setHours(24,0,0,0);
+            
+            filters.reservDate= {$gte: start, $lt: end}
+        }
+
+        const reservations = await Reserv.find(filters);
+        if (!reservations || reservations?.length === 0) 
+            res.status(404).json(errors.emptyList);
+        else
+            res.status(200).json(reservations);
     } catch (err) {
         debugger
         res.status(500).json(errors.errorOccured + err.message);
@@ -211,14 +224,20 @@ exports.getReservationByDay = async (req, res) => {
         const restaurantID = await getUserRestaurantID(connectedUser)
 
         const filterDate = new Date(req?.params?.day),
+              filterStatus = req?.params?.status,
               start = filterDate.setHours(0,0,0,0),
               end = filterDate.setHours(24,0,0,0);
 
-        const reservationsDay = await Reserv.find({
+        let filters = {
             restaurantID: restaurantID,
-            reservDate: {$gte: start, $lt: end},
-            status: 'KEPT'
-        }, 'reservDate seatNr status restaurantID');
+            reservDate: {$gte: start, $lt: end}
+        }
+
+        if (filterStatus && filterStatus !== 'ALL') {
+            filters.status=filterStatus;
+        }
+              
+        const reservationsDay = await Reserv.find(filters, 'reservDate seatNr status restaurantID');
 
         if (!reservationsDay || reservationsDay?.length === 0) 
             res.status(404).json(errors.emptyList)
