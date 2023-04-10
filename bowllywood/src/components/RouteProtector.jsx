@@ -4,7 +4,6 @@ import jwt_decode from "jwt-decode";
 import { errorHandler } from '../utils/errorHandler';
 
 const RouteProtector = ({permittedRoles, children}) => {
-    debugger
     const [isAllowed, setIsAllowed] = useState(false),
         [checked, setChecked] = useState(false),
         location = useLocation(),

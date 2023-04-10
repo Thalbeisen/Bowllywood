@@ -21,9 +21,9 @@ import MaintenanceScreen from './screens/maintenance/';
 import ErrorScreen from './screens/errorScreen/';
 import { ToastContainer } from 'react-toastify';
 import Popup from 'react-popup';
-// import ReservationDetail from "./reservation/ReservationDetail";
-// import ReservationForm from "./reservation/ReservationForm";
-// import ReservationList from "./reservation/ReservationList";
+import ReservationForm from "./screens/reservation/ReservationForm";
+import ReservationDetail from "./screens/reservation/ReservationDetail";
+import ReservationList from "./screens/reservation/ReservationList";
 
 function App() {
     return (
@@ -34,18 +34,13 @@ function App() {
                       <Route path="/" element={<Template/>}>
                         <Route path="/" element={<HomeScreen />}/>
                         <Route element={<RouteProtector permittedRoles={['ROLE_USER', 'ROLE_WAITER', 'ROLE_MANAGER']} />}>
-                            <Route path="/reservations/form" element={<MaintenanceScreen />} />
-                            <Route path="/reservations/form/:id"element={<MaintenanceScreen /*action="EDIT"*/ />} />
-                            <Route path="/reservations/:id" element={<MaintenanceScreen />} />
+                            <Route path="/reservations/form" element={<ReservationForm />} />
+                            <Route path="/reservations/form/:id"element={<ReservationForm action="EDIT" />} />
+                            <Route path="/reservations/:id" element={<ReservationDetail />} />
                         </Route>
                         <Route path="/reservations" element={
                             <RouteProtector>
-                                <MaintenanceScreen />
-                            </RouteProtector>
-                        } />
-                        <Route path="/my-reservations" element={
-                            <RouteProtector permittedRoles={['ROLE_USER']}>
-                                <MaintenanceScreen />
+                                <ReservationList />
                             </RouteProtector>
                         } />
                         <Route path="/menus" element={<MenuScreen />} />
