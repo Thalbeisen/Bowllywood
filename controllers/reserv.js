@@ -18,7 +18,7 @@ const getUserRestaurantID = async (connectedUser) => {
     let restaurantID;
 
     if (connectedUser.roleID === 'ROLE_USER') {
-        const consumer = await User.userDetails();
+        const consumer = await User.findOne({_id: connectedUser.userID});
         restaurantID = consumer?.favouriteRestaurant_id;
     } else {
         restaurantID = connectedUser.workingResID;
@@ -71,12 +71,13 @@ exports.createReserv = async (req, res) => {
  */
 exports.getUserReservList = async (req, res) => {
     try {
-        debugger
-        const reservations = await Reserv.find({customerID: res.body.userID});
         
-        if (!reservations) res.status(404).json(errors.emptyList);
+        const reservations = await Reserv.find({consumerID: req.body.userID});
         
-        res.status(200).json(reservations);
+        if (!reservations || reservations?.length === 0)
+            res.status(404).json(errors.emptyList);
+        else
+            res.status(200).json(reservations);
     } catch (err) {
         debugger
         res.status(500).json(errors.errorOccured + err.message);
