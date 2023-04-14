@@ -7,121 +7,77 @@
 // }
 // if (file?.size <= 1024 * 1024) {
 //     setErrors({...errors})
-// }
+// }isTSS
 
-import './AddEditMeal.scss';
+// hooks
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createMeal, updateMeal, getOneMeal, deleteMeal } from '../../services/meal';
-import * as yup from 'yup';
+// data
+import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
+import { getAllStocks } from '../../services/stock';
 import { useFormik } from 'formik';
+import { errorHandler } from '../../utils/errorHandler';
+import * as yup from 'yup';
+// front
 import { Col, Row, Container } from 'react-bootstrap';
-import { Oval } from 'react-loader-spinner';
+import Multiselect from 'react-widgets/Multiselect'
+import LoadingSpinner from '../../components/LoadingSpinner';
 import HeaderTitle from '../../components/HeaderTitle';
-import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { useChecklist } from 'react-checklist';
-import { getAllIngredients } from '../../services/ingredients';
+import Input from '../../components/Input';
+import './AddEditMeal.scss';
 
-// allergens data from ddb
-const alrData = [
-    { _id: 'ID456485415d550', label : 'Arachide'},
-    { _id: 'ID454f4r54g5r44', label : 'Lactose'}
-]
-const catData = [
-    {_id: 'SALE', label: 'Salé'},
-    {_id: 'SUCRE', label: 'Sucré'}
-]
-const FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
+const categories = [{_id: 'SALE', label: 'Salé'}, {_id: 'SUCRE', label: 'Sucré'}],
+      FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
-const AddEditMeal = () => {
-    const { id } = useParams();
-    const isCreateMode = !id;
-    const [ingredients, setIngredients] = useState([]);
-    const [ingLoaded, setIngLoaded] = useState(false);
-    const [bowlID, setBowlID] = useState('');
-    const navigate = useNavigate();
-    const [errMsg, setErrMsg] = useState({
-        title: 'Erreur !',
-        message: 'Une erreur est survenue. Le plat a été supprimé ou s\'est enfuit du restaurant...'
-    });
+const AddEditMeal = ({action='ADD'}) => {
+// [selectedIngredients, setSelectedIngredients] = useState([]),
+    const [ingredients, setIngredients] = useState([]),
+          [bowl, setBowl] = useState({}),
+          [isLoaded, setIsLoaded] = useState(false);
 
-    /////////////////////
-    // submit function //
-    /////////////////////
+    const navigate = useNavigate(),
+          { id } = useParams(), 
+          bowlID = id; // bowlID = useParams().id
+    const editMode = (bowlID || action === 'EDIT') ? true : false;
+
+    // formik
     const onSubmit = (values) => {
-        if (isCreateMode) 
-        {
-            // add the currency caractere
-            values.price = values.price.trim();
-            let priceCurr = values.price.charAt(values.price.length -1);
-            values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
-
-            createMeal(values).then((res)=>{
-                // rediriger ?
-                console.log('Le bowl a bien été créé. Se rendre sur sa page');
+        debugger
+        /*const handlePromise = (promise) => {
+            promise.then((res)=>{
+                navigate(`/menus/${res.data._id}`, {replace: true})
             }).catch((err) => {
+                errorHandler('TOAST', err)
+            })
+        }*/
 
-                // appeler fragment erreur et lui passer err ?
-                console.log(err);
+        // add the currency caractere
+        values.price = values.price.trim();
+        let priceCurr = values.price.charAt(values.price.length -1);
+        values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
 
-                // creation failed
-                switch (err.response.status)
-                {
-                    case 401:
-                        setErrMsg({
-                            title: `Erreur ${err.response.status} !`,
-                            message: "appeler fragment \"vous n'êtes pas authorisé à faire cette action, vous allez être redirigé vers la page d'accueil.\""
-                        })
-
-                    break;
-                    case 400:
-                        setErrMsg({
-                            title: `Erreur ${err.response.status} !`,
-                            message: err.response.data
-                        })
-
-                    break;
-                    default:
-                        setErrMsg({
-                            title: `Erreur ${err.code} !`,
-                            message: 'Une erreur inconnue est survenue.'
-                        })
-                }
-            });
+        if (editMode)
+        {
+            // handlePromise(updateMeal(id, values));
+            updateMeal(id, values).then((res)=>{
+                navigate(`/menus/${res.data._id}`, {replace: true})
+            }).catch((err) => {
+                errorHandler('TOAST', err)
+            })
         }
         else
         {
-            updateMeal(id, values).then((res)=>{
-                if (res.status === 200) {
-                    console.log('Bowl updated');
-                    navigate(`/menus/${res.data._id}`, {replace: true})
-                }
+            // handlePromise(createMeal.(values));
+            createMeal(values).then((res)=>{
+                navigate.navigation(`/menus/${res.data._id}`, {replace: true})
             }).catch((err) => {
-                debugger;
-                console.log(err);
+                errorHandler('TOAST', err)
             })
         }
     }
 
-    const archiveBowl = (bowlID) => {
-        deleteMeal(bowlID).then((res)=>{
-            navigate('/menus', {replace: true})
-        }).catch((err)=>{
-            console.log(err);
-            // deletion failed
-            setErrMsg({
-                title: `Erreur ${err.code} !`,
-                message: err.response.data
-            })
-        })
-    }
-
-    ///////////////////
-    // Formik config //
-    ///////////////////
-    const validationSchema = yup.object(
-    {
+    const validationSchema = yup.object({
         name: yup
             .string()
             .required('Ce champ est obligatoire'),
@@ -142,144 +98,111 @@ const AddEditMeal = () => {
     
         ingredients: yup
             .array()
-            .nullable(true)
             .required('Veuillez sélectionner au moins un élément.'),
     
-        allergens: yup
-            .array()
-            .nullable(true),
-    
         image: yup
-            .mixed()
-            .nullable()
-            .test(
-                "type",
-                "Le format d'image est invalide.",
-                (value) => !value || (value && FORMATS.includes(value?.type))
-            )
-            .test(
-                "size",
-                "Le fichier est trop lourd. 5MB maximum.",
-                (value) => value && value.size <= 1024 * 1024 // 5MB
-            )
-            .required('Ce champ est obligatoire')
-    });
+        /* .mixed()
+            .test("fileSize", "The file is too large", (value) => {
+                debugger
+               if (!value.length) return true // attachment is optional
+               return value[0].size <= 2000000
+            })*/
 
-    const { values, errors, handleSubmit, handleChange, touched, setFieldValue, setTouched, setErrors } =
-    useFormik(
-    {
+            .mixed()
+             .nullable()
+             .test(
+                 "type",
+                 "Le format d'image est invalide.",
+                 (value) => {
+                   debugger
+                   return FORMATS.includes(value[0]?.type)
+                }
+             )
+             .test(
+                "fileSize",
+                "Le fichier est trop lourd. 5MB maximum.",
+                (value) => {
+                   debugger
+                   return value[0]?.size <= (1024 * 1024) // 5MB 
+                }
+             )
+             .required('Ce champ est obligatoire')
+    })
+
+    const { values, errors, handleSubmit, handleChange, setTouched, touched/*, setErrors, setFieldValue*/ } = useFormik({
         initialValues: {
-            name: '',
-            category: 'SALE',
-            price: '',
-            description: '',
-            ingredients: [],
-            allergens: [],
-            image: null
+            name: ingredients.name ?? '',
+            category: ingredients.category ?? 'SALE',
+            price: ingredients.price ?? '',
+            description: ingredients.description ?? '',
+            ingredients: ingredients.ingredients ?? [],
+            image: ingredients.image ?? ''
         },
         validationSchema,
         onSubmit
-    });
-    
-    ////////////////////////////
-    // Handlers for checklist //
-    ////////////////////////////
-    const ingChecklist = useChecklist(ingredients, {
-        key: '_id',
-        keyType: 'string'
-    });
-    const handleReset = () => ingChecklist.setCheckedItems(new Set());
-    
-    const alrChecklist = useChecklist(alrData, {
-        key: '_id',
-        keyType: 'string'
-    });
+    })
 
-    /////////////////////
-    // values handlers //
-    /////////////////////
+    // get data
     useEffect(()=>{
-        getAllIngredients().then((res)=>{
-            setIngredients(res.data)    
-        }).catch((err)=>{
-            // appeler fragment erreur et lui passer err ?
-            console.log(err);
-            // creation failed
-            setErrMsg({
-                title: `Erreur ${err.code} !`,
-                message: err.response.data
-            })
-        }).finally(()=>{
-            setIngLoaded(true)
-        })
-    }, [])
+        let cleaning = false;
 
-    // If it is the update mode, get the current bowl 
-    useEffect(()=>{
-        if (!isCreateMode) {
+        if (editMode)
+        {
+            getOneMeal(bowlID).then((res)=>{
+                if (cleaning) return; 
 
-            getOneMeal(id).then((res) =>
-            {
-                const values = ['name', 'category', 'price', 'description'/*, 'image'*/];
-                
-                res.data.ingredients.forEach((item, index)=>{
-                    ingChecklist.checkedItems.add(item);
-                });
+                // let stockIDs = [];
+                // res.data.ingredientsmap((stockID)=>{debugger; stockIDs.push(stockID) })
+                // setSelectedIngredients(stockIDs)
 
-                res.data.allergens.forEach((item, index)=>{
-                    alrChecklist.checkedItems.add(item);
-                });
+                setBowl(res.data)
 
-                values.forEach((value) => {
-                    setFieldValue(value, res.data[value], false);
-                });
-
-                setBowlID(res.data._id);
-                
             }).catch((err)=>{
-                // appeler fragment erreur et lui passer err ?
-                console.log(err);
-
-                // creation failed
-                setErrMsg({
-                    title: `Erreur ${err.code} !`,
-                    message: err.response.data
-                })
-            });
+                errorHandler('TOAST', err)
+            })
         }
-    }, [isCreateMode, id, errMsg, ingChecklist.checkedItems, alrChecklist.checkedItems, setFieldValue])
 
-    // When a checkbow is clicked, change the values of the both arrays ingredients[] & allergens[]
-    useEffect(()=>{
+        getAllStocks().then((res)=>{
+            if (cleaning) return; 
 
-        setFieldValue('ingredients', Array.from(ingChecklist.checkedItems));
-        setFieldValue('allergens', Array.from(alrChecklist.checkedItems));
+            let stockArr = []
+            res.data.forEach((stock)=>{
+                debugger;
+                stockArr.push({
+                    id: stock._id, 
+                    label: stock.name
+                })
+            })
 
-    }, [ingChecklist.checkedItems,
-        alrChecklist.checkedItems,
-        setFieldValue])
+            console.log(stockArr)
+            setIngredients(stockArr);
 
-    /////////////////////
-    // return the view //
-    /////////////////////
+        }).catch((err)=>{
+            errorHandler('TOAST', err)
+        }).finally(()=>{
+            setIsLoaded(true)
+        })
+
+        return () => {
+            cleaning = true;
+        }
+    }, [editMode, bowlID])
+
     return (
     <Container className="pb-5">
         <Row className="flex-center">
-            <Col lg="12">
-                <HeaderTitle>{(isCreateMode) ? 'Creation d\'un nouveau bowl' : `Modifier le bowl ${values.name}` }</HeaderTitle>
+            <Col lg={12}>
+                <HeaderTitle>{(!editMode) ? 'Creation d\'un nouveau bowl' : `Modifier le bowl ${values.name}` }</HeaderTitle>
             </Col>
         </Row>
         <Row>
-            <Col>
+            <Col> {(!editMode || isLoaded) ?
                 <form
                     noValidate
                     onSubmit={handleSubmit}
                     className="container">
                     <Row className="justify-content-evenly">
-                        <Col 
-                            md="8"
-                            lg="4"
-                            className="d-flex justify-content-center px-4">
+                        <Col md={8} lg={4} className="d-flex justify-content-center px-4">
                             <Input
                                 type="text"
                                 name="name"
@@ -287,17 +210,10 @@ const AddEditMeal = () => {
                                 onChange={handleChange}
                                 desc="Nom du bowl"
                                 placeholder="Bâptisez-le..."
-                                error={
-                                    errors.name &&
-                                    touched.name &&
-                                    errors.name
-                                }
+                                error={errors.name}
                             />
                         </Col>
-                        <Col 
-                            md="8"
-                            lg="4"
-                            className="d-flex justify-content-center px-4">
+                        <Col md={8} lg={4} className="d-flex justify-content-center px-4">
 
                             <div className="inputCtnr w-100 px-0 my-3">
                                 <label htmlFor="category" className="w-100">Catégorie</label>
@@ -306,13 +222,9 @@ const AddEditMeal = () => {
                                     value={values.category}
                                     onChange={handleChange}
                                     className="selectField pointer no-border w-100 py-2 ps-3"
-                                    error={
-                                        errors.category &&
-                                        touched.category &&
-                                        errors.category
-                                    }>
+                                    error={errors.category}>
                                     { 
-                                        catData.map((item, index)=> (
+                                        categories.map((item, index)=> (
                                             <option 
                                                 key={index} 
                                                 value={item._id}
@@ -326,10 +238,7 @@ const AddEditMeal = () => {
                         </Col>
                     </Row>
                     <Row className="justify-content-evenly">
-                        <Col 
-                            md="8"
-                            lg="4"
-                            className="d-flex justify-content-center px-4">
+                        <Col md={8} lg={4} className="d-flex justify-content-center px-4">
                             <Input
                                 type="text"
                                 name="price"
@@ -337,113 +246,51 @@ const AddEditMeal = () => {
                                 onChange={handleChange}
                                 desc="Prix du bowl"
                                 placeholder="17,5€"
-                                error={
-                                    errors.price &&
-                                    touched.price &&
-                                    errors.price
-                                }
+                                error={errors.price}
                             />
                         </Col>
-                         <Col 
-                            md="8"
-                            lg="4"
-                            className="d-flex justify-content-center px-4">
+                         <Col md={8} lg={4} className="d-flex justify-content-center px-4">
                             <input
                                 type="file"
                                 name="image"
                                 value={values.image}
                                 onChange={(event) => {
-
-                                    
                                     setTouched({
                                       ...touched,
                                       image: true,
-                                    });
+                                    })
                                     // setFieldValue(
                                     //   "image",
                                     //   event.target.files[0]
                                     // );
                                   }}
                                 desc="Image de présentation : upload."
-                                error={
-                                    errors.image &&
-                                    touched.image &&
-                                    errors.image
-                                }
+                                error={errors.image}
                             />
                         </Col>
                     </Row>
                     <Row className="justify-content-evenly">
-                        <Col 
-                            md="8"
-                            lg="4">
-
+                        <Col md={8} lg={4}>
                             <p>Sélectionnez les ingrédients</p>
-                            <p className="error">{errors.ingredients && touched.ingredients && errors.ingredients}</p>
-                            <ul>
-                                <li className="my-3">
-                                    <button onClick={handleReset} className="border rounded px-4 py-1">Réinitialier la sélection</button>
-                                </li>
-                                {
-                                    (ingLoaded === true)
-                                    ? ingredients.map((item, index)=>(
-                                        <li key={index} className="d-flex align-items-center">
-                                            <input
-                                                type="checkbox"
-                                                data-key={item._id}
-                                                name="ingredients[]"
-                                                onChange={ingChecklist.handleCheck}
-                                                checked={ingChecklist.checkedItems.has(item._id)}
-                                                className="pointer me-2"/>
-                                            <label>{item.text}</label>
-                                        </li>
-                                    ))
-                                    : <span className='col-1 mt-5'>
-                                        <Oval
-                                            strokeWidth="5"
-                                            strokeWidthSecondary="5"
-                                            secondaryColor="#000"
-                                            height="25"
-                                            width="25"
-                                            radius="9"
-                                            color="#CECECE"
-                                            ariaLabel="loading"
-                                            wrapperStyle
-                                            wrapperClass
-                                        />
-                                    </span>
-                                }
-                            </ul>
+                            {(ingredients.length > 0) ?
+                            <>
+                            <Multiselect
+                              dataKey="id"
+                              textField="label"
+                              // defaultValue={bowl.ingredients}
+                              data={ingredients}
+                            />
+                            <p className="error">{errors.ingredients}</p>
+                            </>
+                            : <p>Aucun ingrédient n'a pu être retrouvés</p>}
                         </Col>
-                        <Col md="8"
-                            lg="4">
-
+                        <Col md={8} lg={4}>
                             <p>Sélectionnez les allergènes présents</p>
-                            <p className="error">{errors.allergens && touched.allergens && errors.allergens}</p>
-                            {
-                                <ul>
-                                    {
-                                        alrData.map((item, index)=>(
-                                            <li key={index} className=" d-flex align-items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    data-key={item._id}
-                                                    name="allergens[]"
-                                                    onChange={alrChecklist.handleCheck}
-                                                    checked={alrChecklist.checkedItems.has(item._id)}
-                                                    className="pointer me-2"
-                                                    />
-                                                <label>{item.label}</label>
-                                            </li>
-                                        ))
-                                    }
-                                </ul>
-                            }
+                            <p>La section allergène sera bientôt disponible.</p>
                         </Col>
                     </Row>
                     <Row className="justify-content-center mb-4">
-                        <Col
-                            lg="5">
+                        <Col lg={5}>
 
                             <div className="inputCtnr w-100 px-0 my-3">
                                 <label htmlFor="Description" className="w-100">Description</label>
@@ -456,24 +303,16 @@ const AddEditMeal = () => {
                                     placeholder="Donnez une description clair et captivante"
                                     className="textMeal rounded p-3"
                                 />
-                                <p className="error">{
-                                        errors.description &&
-                                        touched.description &&
-                                        errors.description
-                                    }</p>
+                                <p className="error">{errors.description}</p>
                             </div>
 
                         </Col>
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
-                        {
-                            (!isCreateMode && bowlID) ?
-                                <Button bsType="secondary" onClick={()=>{archiveBowl(bowlID)}}>Supprimer le bowl</Button>
-                            : ''
-                        }
                         <Button type="submit" onClick={()=>{onSubmit(values)}}>Soumettre</Button>
                     </div>
                 </form>
+                : <LoadingSpinner />}
             </Col>
         </Row>
     </Container>

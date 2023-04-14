@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { getSaltedBowls, getSweetBowls } from '../../services/meal';
 import HeaderTitle from '../../components/HeaderTitle';
 import { Oval } from 'react-loader-spinner';
-import { AuthProvider } from '../../providers/AuthProvider';
 
 let decodedTokens;
 

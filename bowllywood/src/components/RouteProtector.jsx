@@ -32,7 +32,7 @@ const RouteProtector = ({permittedRoles, children}) => {
         } finally {
             setChecked(true)
         }
-    }, [])
+    }, [permittedRoles, navigate])
 
     const RenderPage = ({children, permittedRoles}) => {
         if (isAllowed) {
