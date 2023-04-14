@@ -16,6 +16,8 @@ import { errorHandler } from '../../utils/errorHandler';
 import jwt_decode from "jwt-decode";
 import './ReservationScreen.scss';
  
+const cl = console.log;
+
 function ReservationList () {
 
 	const [reservations, setReservations] = useState([]),
@@ -45,6 +47,8 @@ function ReservationList () {
 	}
 
 	useEffect(()=>{
+		cl('Enter for rendering')
+
 		setCancel(false)
 
 		// set selected date as formated
@@ -52,7 +56,7 @@ function ReservationList () {
 		setFullDate(filterDate)
 
 		// sort table and define time informations
-		const setDataContent = (res) => {
+		const dataContent = (res) => {
 			// place items depending of the date
 			// descendent mode
 			res.data.sort((first, second)=>{
@@ -70,8 +74,6 @@ function ReservationList () {
 
 				if (item.status === 'KEPT') { allSeatNumber += item.seatNr }
 			})
-
-			setReservations(res.data)
 			setSeatNumber(allSeatNumber)
 		}
 
@@ -82,8 +84,18 @@ function ReservationList () {
 			getUserReservations().then((res)=>{
 				if (cancel) return;
 
-				debugger
-				const restaurantPromises = res.data.map((item) => {
+			    dataContent(res)
+			    res.data.map((reservation)=>{
+				    getRestaurantDetail(reservation.restaurantID).then((res)=>{
+				    	reservation.city = res.data.city;
+				    }).catch((err)=>{
+				    	reservation.city = 'Ville introuvable';
+				    }).finally(()=>{
+						setReservations(res.data)
+				    })
+			    })
+
+				/*const restaurantPromises = res.data.map((item) => {
 					return getRestaurantDetail(item.restaurantID).catch((err)=>{
 						item.city = 'Ville introuvable';
 					})
@@ -93,26 +105,8 @@ function ReservationList () {
 				    restaurantDetails.forEach((restaurant, index) => {
 				    if (restaurant) {
 				    	res.data[index].city = restaurant.data.city;
-				    }
-			    	});
-			    });
-			    setDataContent(res);
-
-				/*res.data.forEach((item)=>{
-				let test = '';
-						debugger
-					getRestaurantDetail(item.restaurantID).then((restaurant)=>{
-						debugger
-						item.city = restaurant.data.city;
-						test = restaurant.data.city;
-					}).catch((err)=>{
-						debugger
-						item.city = 'Ville introuvable';
-						test = 'int';
-					})
-				})*/
-
-				// setDataContent(res)
+				    }});
+			    });*/
 			}).catch((err)=>{
 				setSeatNumber(0)
 				setReservations([])
@@ -125,8 +119,8 @@ function ReservationList () {
 		{
 			getAllReservations(filterDate).then((res)=>{
 				if (cancel) return;
-				
-				setDataContent(res)
+				dataContent(res)
+				setReservations(res.data)
 			}).catch((err)=>{
 				setSeatNumber(0)
 				setReservations([])
@@ -152,6 +146,7 @@ function ReservationList () {
 
 		return () => { 
 		    setCancel(true);
+			cl('cleaned unmounting render')
 		}
 	}, [refreshData, capacity, openedHours, selectedDate, cancel, userRole])
 		
@@ -229,7 +224,7 @@ function ReservationList () {
 							{
 				               (!isConsumer)
 				               ? <p>{reserv.reservName}</p>
-				               : ''
+				               : <p>{reserv.city}</p>
 				            }
 						</Col>
 						<Col md={7} xl={5} className="p-0">
