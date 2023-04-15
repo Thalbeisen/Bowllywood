@@ -1,0 +1,148 @@
+@import '../../sass/styles.scss';
+
+$positive   : #36B92B; // positive color
+$negative 	: #E34927; // negative color
+$warning	: #F9B100; // warning color
+
+.positiveColor {color: $positive}
+.negativeColor {color: $negative}
+.warningColor {color: $warning}
+.text-decoration-none {text-decoration: none !important}
+
+/************* common style of reservation view files **************/
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.rotate {
+	animation: rotation .5s ease-out;
+}
+
+.resCtnr {
+    background-image: url('https://bowllywood-8llo.onrender.com/images/saltedBg.png');
+    background-position: bottom right;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    row-gap: 4.7em !important;
+    min-height: 100vh;
+
+    .thinHeader {
+    	padding: 0;
+    }
+
+	p {
+		margin: 0;
+		font-family: $ibm-font;
+	}
+
+	.inheritText {font-size: inherit;}
+	.largeText {font-size: 1.3rem}
+	.mediumText {font-size: 0.85rem}
+	.smallText {font-size: 0.75rem}
+
+	i {
+		font-size: 1.7rem;
+		cursor: pointer;
+	}
+
+	.resListContent, .resDetailTop {
+		p:not(p.addText) {
+			font-size: 1.3rem;
+		}
+	}
+
+	i.disabled {
+		color: $pale-grey ;
+		cursor: default;
+	}
+}
+
+.resDetailTop, .resForm {
+	h2 {
+		font-size: 1.7rem;
+	  font-weight: 400;
+	    
+	    +p {
+	    	line-height: 1;
+	    }
+	}
+}
+
+/************* reservation list file **************/
+.resStatistic {
+	// column-gap: 3rem;
+
+	span.headerNbr {
+		font-size: 1.8rem;
+		font-weight: bold;
+	}
+}
+
+.resListContent {
+
+	.resList i {
+		font-size: 1.6rem;
+		cursor: pointer;
+	}
+
+	.resListItem {
+		// overwrite
+		border: none;
+		border-radius: 0;
+		border-bottom: 1px solid $dark-grey;
+		background-color: transparent !important;
+		color: $dark-grey;
+
+		p {
+			line-height: 1em;
+		}
+	}
+
+	a {
+		text-decoration: none;
+		color: $dark-grey;
+	}
+
+	.addIcon {font-size: 4.5rem}
+
+	.ant-picker-input{
+		cursor: pointer;
+		input {display: none}
+	}
+}
+
+/************* reservation details file **************/
+.resDetailTop {
+	column-gap: 2rem;
+	h2{
+		font-family: $ibm-font;
+	}
+	// overwrite
+	.fa-square-xmark {
+		line-height: .85;
+	}
+}
+
+.resDetailContent {
+	border-left: 2px solid $dark-grey;
+
+	p {
+		font-size: 1.6em
+	}
+
+	.detailNumbers {
+		line-height: 1.4;
+	}
+}
+
+/************* reservation form file **************/
+.resForm {
+	.btnCtnr {
+		column-gap: 2em;
+	}
+}

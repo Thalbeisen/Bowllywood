@@ -1,8 +1,31 @@
 const Reserv = require('../models/reserv');
-// const User = require('../models/user');
+const User = require('../models/users');
 const errors = require('../conf/errors');
-
 const entity = 'RESERV';
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const defineFilters = async (request) =>
+{
+    const connectedUser = request.body;
+    const filters = (connectedUser?.roleID === 'ROLE_USER') 
+        ? { _id: request?.params?.id, consumerID: connectedUser?.userID} 
+        : { _id: request?.params?.id, restaurantID: connectedUser?.workingResID};
+    return filters;
+}
+
+const getUserRestaurantID = async (connectedUser) => {
+    let restaurantID;
+
+    if (connectedUser.roleID === 'ROLE_USER') {
+        const consumer = await User.findOne({_id: connectedUser.userID});
+        restaurantID = consumer?.favouriteRestaurant_id;
+    } else {
+        restaurantID = connectedUser.workingResID;
+    }
+
+    return restaurantID;
+}
 
 /**
  * Create a reservation
@@ -13,6 +36,22 @@ const entity = 'RESERV';
  */
 exports.createReserv = async (req, res) => {
     try {
+        const connectedUser = {
+            userID: req?.body?.userID,
+            roleID: req?.body?.roleID,
+            workingResID: req?.body?.workingResID
+        }
+
+        // automatic filling of 'restaurantID'
+        req.body.restaurantID = await getUserRestaurantID(connectedUser)
+        delete req.body.userID;
+        delete req.body.roleID;
+        delete req.body.workingResID;
+
+        if (!req.body.consumerID) {
+            delete req.body.consumerID;
+        }
+
         const newReserv = await new Reserv({
             ...req.body,
         }).save();
@@ -26,18 +65,54 @@ exports.createReserv = async (req, res) => {
 };
 
 /**
+ * Retrieve every reservations of one user
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.getUserReservList = async (req, res) => {
+    try {
+        
+        const reservations = await Reserv.find({consumerID: req.body.userID});
+        
+        if (!reservations || reservations?.length === 0)
+            res.status(404).json(errors.emptyList);
+        else
+            res.status(200).json(reservations);
+    } catch (err) {
+        debugger
+        res.status(500).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
  * Retrieve every reservations
  * @param {Request} req
  * @param {Response} res
  */
 exports.getAllReserv = async (req, res) => {
     try {
-        const reservations = await Reserv.find();
-        
-        if (!reservations) res.status(404).json(errors.emptyList);
+        const workingResID = req.body.workingResID,
+              filterDate = req?.params?.day;
 
-        res.status(200).json(reservations);
+        let filters = {
+            restaurantID: workingResID
+        }
+
+        if (filterDate && filterDate !== 'ALL') {
+            const date = new Date(filterDate)
+                  start = date.setHours(0,0,0,0),
+                  end = date.setHours(24,0,0,0);
+            
+            filters.reservDate= {$gte: start, $lt: end}
+        }
+
+        const reservations = await Reserv.find(filters);
+        if (!reservations || reservations?.length === 0) 
+            res.status(404).json(errors.emptyList);
+        else
+            res.status(200).json(reservations);
     } catch (err) {
+        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -49,32 +124,15 @@ exports.getAllReserv = async (req, res) => {
  */
 exports.getOneReserv = async (req, res) => {
     try {
-        const reservation = await Reserv.findOne({ _id: req.params.id });
+        let filters = await defineFilters(req)
+        const reservation = await Reserv.findOne(filters);
 
-        if (!reservation) {
-            res.status(404).json({
-                message: errors.emptyData(entity),
-            });
-        }
-
-        // check user roles
-        const userID = req.body.userID,
-              roleID = req.body.roleID,
-              workingResID = req.body.workingResID;
-
-        // if user is not the one who created the reservation
-        // if the restaurant != the of the employing one
-        if ((roleID.constains('ROLE_USER') && userID !== reservation.userID) 
-                || (roleID.constains('ROLE_WAITER') && workingResID !== reservation.restaurantID))
-        {
-            res.status(401).json(errors.forbidden);
-            // const req.params.userID = userID;
-            // const waiter = await User.userDetails(req);
-            // if (waiter.workingRestaurant_id != reservation.restaurantID) {}
-        }
-
-        res.status(200).json(reservation);
+        if (!reservation)
+            res.status(404).json(errors.emptyData(entity));
+        else
+            res.status(201).json(reservation);
     } catch (err) {
+        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -86,8 +144,15 @@ exports.getOneReserv = async (req, res) => {
  */
 exports.updateReserv = async (req, res) => {
     try {
-        const updatedReserv = await Reserv.findByIdAndUpdate(
-            req.params.id,
+        let filters = await defineFilters(req)
+
+        if (req?.body?.consumerID === '') delete req?.body?.consumerID;
+        delete req.body.userID;
+        delete req.body.roleID;
+        delete req.body.workingResID;
+        
+        const updatedReserv = await Reserv.findOneAndUpdate(
+            filters,
             {
                 ...req.body,
             },
@@ -98,6 +163,7 @@ exports.updateReserv = async (req, res) => {
 
         res.status(200).json(updatedReserv);
     } catch (err) {
+        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -116,6 +182,7 @@ this.getDeletedDate = async function (req, res) {
 
         return reservation ? reservation.deletedAt : null;
     } catch (err) {
+        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -125,7 +192,8 @@ this.getDeletedDate = async function (req, res) {
  */
 exports.cancelReserv = async (req, res) => {
     try {
-        const canceledReserv = await Reserv.findByIdAndUpdate(req.params.id, 
+        let filters = await defineFilters(req);
+        const canceledReserv = await Reserv.findOneAndUpdate(filters, 
             { status: 'CLD' },
             { returnDocument: 'after' }
         );
@@ -135,6 +203,49 @@ exports.cancelReserv = async (req, res) => {
 
         res.status(200).json(canceledReserv);
     } catch (err) {
+        debugger
         res.status(500).json(errors.errorOccured + err.message);
+    }
+};
+
+/**
+ * Retrieve every reservations of a given day
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.getReservationByDay = async (req, res) => {
+    try {
+        const connectedUser = {
+            userID: req?.body?.userID,
+            roleID: req?.body?.roleID,
+            workingResID: req?.body?.workingResID
+        }
+
+        // get consumer fav. restaurant or working restaurant
+        const restaurantID = await getUserRestaurantID(connectedUser)
+
+        const filterDate = new Date(req?.params?.day),
+              filterStatus = req?.params?.status,
+              start = filterDate.setHours(0,0,0,0),
+              end = filterDate.setHours(24,0,0,0);
+
+        let filters = {
+            restaurantID: restaurantID,
+            reservDate: {$gte: start, $lt: end}
+        }
+
+        if (filterStatus && filterStatus !== 'ALL') {
+            filters.status=filterStatus;
+        }
+              
+        const reservationsDay = await Reserv.find(filters, 'reservDate seatNr status restaurantID');
+
+        if (!reservationsDay || reservationsDay?.length === 0) 
+            res.status(404).json(errors.emptyList)
+        else
+            res.status(200).json(reservationsDay);
+    
+        } catch (err) {
+            res.status(500).json(errors.errorOccured + err.message);
     }
 };

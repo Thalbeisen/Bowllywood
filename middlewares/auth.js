@@ -17,10 +17,11 @@ const auth = async (req, res, next) => {
             throw new Error();
         }
         req.body.userID = user.id;
-        req.body.userRoles = user.roles;
+        req.body.roleID = user.roleID;
+        req.body.workingResID = user.workingResID;
         next();
     } catch (err) {
-        let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Unauthorized';
+        let errMsg = (err.name == 'TokenExpiredError') ? 'Vous avez été déconnecté.' : 'Vous devez être connecté pour accéder à ces informations.';
         res.status(401).json({
             message: errMsg,
         });
