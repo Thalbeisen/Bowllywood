@@ -7,7 +7,7 @@
 // }
 // if (file?.size <= 1024 * 1024) {
 //     setErrors({...errors})
-// }isTSS
+// }
 
 // hooks
 import { useEffect, useState } from 'react';
@@ -21,7 +21,11 @@ import * as yup from 'yup';
 // front
 import { Col, Row, Container } from 'react-bootstrap';
 import Multiselect from 'react-widgets/Multiselect'
+import DropdownList from 'react-widgets/DropdownList'
+
+import {RadioGroup, Radio} from '@mui/material';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import CustomMultiSelect from '../../components/CustomMultiSelect';
 import HeaderTitle from '../../components/HeaderTitle';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -34,7 +38,10 @@ const AddEditMeal = ({action='ADD'}) => {
 // [selectedIngredients, setSelectedIngredients] = useState([]),
     const [ingredients, setIngredients] = useState([]),
           [bowl, setBowl] = useState({}),
-          [isLoaded, setIsLoaded] = useState(false);
+          [isLoaded, setIsLoaded] = useState(false),
+          [selectedIngredients, setSelectedIngredients] = useState(['635141dd6d2bc0f9d6b8f38b']),
+          [bowlImage, setBowlImage] = useState(),
+          [ingredientsLoaded, setIngredientsLoaded] = useState(false);
 
     const navigate = useNavigate(),
           { id } = useParams(), 
@@ -42,41 +49,6 @@ const AddEditMeal = ({action='ADD'}) => {
     const editMode = (bowlID || action === 'EDIT') ? true : false;
 
     // formik
-    const onSubmit = (values) => {
-        debugger
-        /*const handlePromise = (promise) => {
-            promise.then((res)=>{
-                navigate(`/menus/${res.data._id}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
-            })
-        }*/
-
-        // add the currency caractere
-        values.price = values.price.trim();
-        let priceCurr = values.price.charAt(values.price.length -1);
-        values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
-
-        if (editMode)
-        {
-            // handlePromise(updateMeal(id, values));
-            updateMeal(id, values).then((res)=>{
-                navigate(`/menus/${res.data._id}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
-            })
-        }
-        else
-        {
-            // handlePromise(createMeal.(values));
-            createMeal(values).then((res)=>{
-                navigate.navigation(`/menus/${res.data._id}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
-            })
-        }
-    }
-
     const validationSchema = yup.object({
         name: yup
             .string()
@@ -84,6 +56,7 @@ const AddEditMeal = ({action='ADD'}) => {
     
         category: yup
             .string()
+            .oneOf(['SUCRE', 'SALE'], 'La catégorie doit être "sucré" ou "salé" seulement')
             .required('Ce champ est obligatoire'),
     
         price: yup
@@ -103,40 +76,73 @@ const AddEditMeal = ({action='ADD'}) => {
         image: yup
         /* .mixed()
             .test("fileSize", "The file is too large", (value) => {
-                debugger
                if (!value.length) return true // attachment is optional
                return value[0].size <= 2000000
             })*/
 
             .mixed()
-             .nullable()
-             .test(
+            .nullable()
+            .test(
                  "type",
                  "Le format d'image est invalide.",
                  (value) => {
-                   debugger
-                   return FORMATS.includes(value[0]?.type)
+                   if (value)
+                    return FORMATS.includes(value[0]?.type)
                 }
              )
-             .test(
+            .test(
                 "fileSize",
                 "Le fichier est trop lourd. 5MB maximum.",
                 (value) => {
-                   debugger
-                   return value[0]?.size <= (1024 * 1024) // 5MB 
+                   if (value)
+                    return value[0]?.size <= (1024 * 1024) // 5MB 
                 }
              )
-             .required('Ce champ est obligatoire')
+            .required('Ce champ est obligatoire')
     })
 
-    const { values, errors, handleSubmit, handleChange, setTouched, touched/*, setErrors, setFieldValue*/ } = useFormik({
+    const onSubmit = (values) => {
+
+        let ingredientsID = []
+        selectedIngredients.map((object)=>{
+            ingredientsID.push(object.id);
+        })
+        values.ingredients = ingredientsID;
+
+        // add the currency caractere
+        values.price = values.price.trim();
+        let priceCurr = values.price.charAt(values.price.length -1);
+        values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
+
+        if (editMode)
+        {
+            // handlePromise(updateMeal(id, values));
+            updateMeal(bowlID, values).then((res)=>{
+                navigate(`/menus/${res.data._id}`, {replace: true})
+            }).catch((err) => {
+                errorHandler('TOAST', err)
+            })
+        }
+        else
+        {
+            // handlePromise(createMeal.(values));
+            createMeal(values).then((res)=>{
+                navigate(`/menus/${res.data._id}`, {replace: true})
+            }).catch((err) => {
+                errorHandler('TOAST', err)
+            })
+        }
+    }
+
+    const { values, errors, handleSubmit, handleChange, setTouched, touched, setFieldValue/*, setErrors*/ } = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            name: ingredients.name ?? '',
-            category: ingredients.category ?? 'SALE',
-            price: ingredients.price ?? '',
-            description: ingredients.description ?? '',
-            ingredients: ingredients.ingredients ?? [],
-            image: ingredients.image ?? ''
+            name: bowl.name ?? '',
+            category: bowl.category ?? 'SALE',
+            price: bowl.price ?? '',
+            description: bowl.description ?? '',
+            ingredients: selectedIngredients ?? [],
+            image: bowl.image ?? ''
         },
         validationSchema,
         onSubmit
@@ -151,14 +157,13 @@ const AddEditMeal = ({action='ADD'}) => {
             getOneMeal(bowlID).then((res)=>{
                 if (cleaning) return; 
 
-                // let stockIDs = [];
-                // res.data.ingredientsmap((stockID)=>{debugger; stockIDs.push(stockID) })
-                // setSelectedIngredients(stockIDs)
-
+                setSelectedIngredients(res.data.ingredients)
                 setBowl(res.data)
 
             }).catch((err)=>{
                 errorHandler('TOAST', err)
+            }).finally(()=>{
+                setIsLoaded(true)
             })
         }
 
@@ -167,20 +172,18 @@ const AddEditMeal = ({action='ADD'}) => {
 
             let stockArr = []
             res.data.forEach((stock)=>{
-                debugger;
                 stockArr.push({
                     id: stock._id, 
                     label: stock.name
                 })
             })
 
-            console.log(stockArr)
             setIngredients(stockArr);
 
         }).catch((err)=>{
             errorHandler('TOAST', err)
         }).finally(()=>{
-            setIsLoaded(true)
+            setIngredientsLoaded(true)
         })
 
         return () => {
@@ -200,7 +203,7 @@ const AddEditMeal = ({action='ADD'}) => {
                 <form
                     noValidate
                     onSubmit={handleSubmit}
-                    className="container">
+                    className="container bowlForm">
                     <Row className="justify-content-evenly">
                         <Col md={8} lg={4} className="d-flex justify-content-center px-4">
                             <Input
@@ -221,18 +224,18 @@ const AddEditMeal = ({action='ADD'}) => {
                                     name="category"
                                     value={values.category}
                                     onChange={handleChange}
-                                    className="selectField pointer no-border w-100 py-2 ps-3"
-                                    error={errors.category}>
+                                    className="selectField rw-widget-input rw-widget-picker rw-widget-container w-100 py-2 ps-3">
                                     { 
                                         categories.map((item, index)=> (
                                             <option 
                                                 key={index} 
                                                 value={item._id}
-                                                defaultValue='SALE'>{item.label}</option>  
+                                                defaultValue='SALE'
+                                                >{item.label}</option>  
                                         ))
                                     }
                                 </select>
-                                <p className="error"></p>
+                                <p className="error">{errors.category}</p>
                             </div>
 
                         </Col>
@@ -249,11 +252,11 @@ const AddEditMeal = ({action='ADD'}) => {
                                 error={errors.price}
                             />
                         </Col>
-                         <Col md={8} lg={4} className="d-flex justify-content-center px-4">
+                        <Col md={8} lg={4} className="d-flex justify-content-center px-4">
                             <input
                                 type="file"
                                 name="image"
-                                value={values.image}
+                                value={bowlImage}
                                 onChange={(event) => {
                                     setTouched({
                                       ...touched,
@@ -269,24 +272,44 @@ const AddEditMeal = ({action='ADD'}) => {
                             />
                         </Col>
                     </Row>
-                    <Row className="justify-content-evenly">
-                        <Col md={8} lg={4}>
-                            <p>Sélectionnez les ingrédients</p>
-                            {(ingredients.length > 0) ?
-                            <>
-                            <Multiselect
-                              dataKey="id"
-                              textField="label"
-                              // defaultValue={bowl.ingredients}
-                              data={ingredients}
+                    <Row className="multiSelectCtnr justify-content-evenly">
+                        <Col md={8} lg={4} className="inputCtnr">
+                            <CustomMultiSelect
+                                name="ingredients"
+                                desc="Sélectionnez les ingrédients"
+                                onChange={(selected)=>{
+                                    if (selected)
+                                    {
+                                        setSelectedIngredients(selected)
+                                    }
+                                }}
+                                value={selectedIngredients}
+                                error={errors.ingredients}
+                                data={ingredients}
+                                dataKey="id"
+                                textField="label"
+                                placeholder={(ingredients.length > 0) ? 'Riz, tomates...' : "Aucun ingrédient n'a pu être retrouvés"}
+                                disabled={(ingredients.length === 0)}
+                                busy={!ingredientsLoaded}
                             />
-                            <p className="error">{errors.ingredients}</p>
-                            </>
-                            : <p>Aucun ingrédient n'a pu être retrouvés</p>}
                         </Col>
-                        <Col md={8} lg={4}>
-                            <p>Sélectionnez les allergènes présents</p>
-                            <p>La section allergène sera bientôt disponible.</p>
+                        <Col md={8} lg={4} className="inputCtnr">
+                            <CustomMultiSelect
+                                // name="allergenes"
+                                desc="Sélectionnez les allergènes présents"
+                                onChange={(selected)=>{
+                                    if (selected)
+                                    {
+                                        setFieldValue('allergenes', selected);
+                                    }
+                                }}
+                                // value={values?.allergenes}
+                                // error={errors.allergenes}
+                                data={[]}
+                                dataKey="id"
+                                textField="label"
+                                placeholder="La section allergène sera bientôt disponible"
+                                disabled />
                         </Col>
                     </Row>
                     <Row className="justify-content-center mb-4">

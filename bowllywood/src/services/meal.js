@@ -25,5 +25,5 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	}
 
 	export const getAllBowls = () => {
-		return AxiosInstance.get('/menus/adminlist');
+		return AxiosInstance.get('/menus/admin-list');
 	}

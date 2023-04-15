@@ -32,7 +32,7 @@ const menuSchema = new Schema(
         },
         image: {
             type: String,
-            required: true,
+            required: false,
         },
         createdBy: {
             type: Schema.Types.ObjectId,

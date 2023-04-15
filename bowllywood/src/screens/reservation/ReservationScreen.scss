@@ -96,7 +96,7 @@ $warning	: #F9B100; // warning color
 		border-radius: 0;
 		border-bottom: 1px solid $dark-grey;
 		background-color: transparent !important;
-		color: $dark-grey;
+		color: $dark-grey !important;
 
 		p {
 			line-height: 1em;
@@ -105,7 +105,8 @@ $warning	: #F9B100; // warning color
 
 	a {
 		text-decoration: none;
-		color: $dark-grey;
+		color: $dark-grey !important;
+		border-color: $dark-grey !important;
 	}
 
 	.addIcon {font-size: 4.5rem}

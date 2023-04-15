@@ -34,8 +34,10 @@ exports.createMeal = async (req, res) => {
 exports.getAllBowls = async (req, res) => {
     try {
         const meals = await Menu.find();
-        if (!meals) res.status(404).json(errors.emptyList);
-        res.status(200).json(meals);
+        if (!meals || meals.length === 0) 
+            res.status(404).json(errors.emptyList);
+        else
+            res.status(200).json(meals);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }

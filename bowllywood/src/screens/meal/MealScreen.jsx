@@ -14,8 +14,9 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 
 const MealScreen = () => {
    const [bowl, setBowl] = useState(null),
-         [isConsumer, setIsConsumer] = useState(false),
+         [isAdmitted, setIsAdmitted] = useState(false),
          [isLoaded, setIsLoaded] = useState(false),
+         [ingredientsLoaded, setIngredientsLoaded] = useState(false),
          [ingredients, setIngredients] = useState([]);
 
    const navigate = useNavigate(),
@@ -26,9 +27,6 @@ const MealScreen = () => {
 
    // get user token
    const currentTokens = localStorage.getItem("userTokens")
-   console.log(JSON.parse(localStorage.getItem('userTokens')))
-   console.log(currentTokens)
-
    if (currentTokens)
    {
       decodedToken = jwt_decode(JSON.parse(currentTokens).token)
@@ -38,82 +36,111 @@ const MealScreen = () => {
    // get data
    useEffect( () => {
       let cleaning = false,
-          stockArr = [];
+          stockArr = [],
+          ingredientsID = [];
 
-      setIsConsumer((userRole === 'USER_ROLE') ? true : false)
+      let admittedRoles = ['ROLE_ADMIN'] ;
+      setIsAdmitted(admittedRoles.includes(userRole))
 
       // get data
       getOneMeal(bowlID).then((res)=>{
          if (cleaning) return;
 
-         setBowl(res.data)
+         let fetchStocks = async () => {
+            for (const ingredientID of res.data.ingredients) {
+               try
+               {
+                  const currStock = await getOneStock(ingredientID);
+                  stockArr.push(currStock?.data?.name ??  '')
+               }
+               catch(err)
+               {
+                  // nothing to inform
+                  // console.log(err)
+               }
+            }
+            setIngredients(stockArr)
+            setIngredientsLoaded(true)
+         }
 
-         res.data.ingredients.forEach((ingredientID)=> {
-            getOneStock(ingredientID).then((stock)=>{
-               stockArr.push(stock.name)
-            }).catch((err)=>{
-               errorHandler('TOAST', err, 'ingrédient')
-            }).finally(()=>{
-               debugger
-               // si s'arrête ici apès tout le traitement
-               // trouver une solution pour pouvoir faire le loaded et le setIng en dehors de la boucles.
-               // vérif si le finally est appelé à la fin de la boucle ou après chaque itération.
-            })
-         })
+         fetchStocks()
+         setBowl(res.data)
 
       }).catch((err)=>{
          errorHandler('REDIRECT', err, navigate, 'bowl')      
       }).finally(()=>{
-         debugger
-         // si s'arrête ici apès tout le traitement, loaeded et setingr ici. sinon, dans le finally de l'autre
          setIsLoaded(true)
-         setIngredients(stockArr)
       })
+
+      return ()=>{
+         cleaning = true
+      }
+
    }, [bowlID, userRole, navigate] )
 
-
    const navigateForm = () => {
-      navigate.navigation(`/menus/edit/${bowlID}`, { action: 'EDIT', replace: true })
+      navigate(`/menus/edit/${bowlID}`, { action: 'EDIT', replace: true })
    }
 
    const cancelReservationBtn = (bowlID) => {
       deleteMeal(bowlID).then((res) => {
-         navigate.navigation('menus/admin-list', { message: 'Le bowl a été supprimé avec succès', replace: true})
+         navigate('/menus/admin-list', 
+         {
+            replace: true, 
+            state: {
+               message: 'Le bowl a été supprimé avec succès'
+            } 
+         })
       }).catch((err) => {
          errorHandler('TOAST', err)
       })
    }
 
+   const Title = () => {
+      if (isAdmitted) {
+         return ( <>
+         Le {bowl?.name}
+         <div className="bowlBtnCtnr d-inline-flex align-items-end ms-5">
+            <i className='fa-solid fa-pen-to-square me-3' onClick={()=>{navigateForm(bowl?._id)}}></i>
+            <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id)}}></i>
+         </div>
+         </> )
+      } else {
+         return `Le ${bowl?.name}`
+      }
+   }
+
    return (
       <>
-         <HeaderTitle>{ (isLoaded) ? `Le ${bowl?.name}` : 'Chargement du bowl'}</HeaderTitle>
-         {
-            (!isConsumer && isLoaded)
-            ? <div className="d-flex align-items-end">
-               <i className='fa-solid fa-pen-to-square me-3' onClick={()=>{navigateForm(bowl?._id)}}></i>
-               <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id)}}></i>
-            </div>:''
-         }
+         <HeaderTitle>{(isLoaded) ? <Title /> : 'Chargement du bowl'}</HeaderTitle>
 
-         <Container lg className="mealCtnr my-5">
+         <Container lg={12} className="mealCtnr my-5">
             <Row className="text-start justify-content-center gap-5">
                {
                   (isLoaded) 
                   ? <>
                      <Col xs={4} className="imgCtnr">
-                        <img src={`/menu/${bowl?.image}`} alt={bowl?.name} className="img-fluid"/>
+                        <img src={(bowl?.image) ? `/menu/${bowl?.image}` : '/bowlicon_grey.png'} alt={bowl?.name} className="img-fluid"/>
                      </Col>
                      <Col xs={7}>
-                        <p>{bowl?.description}</p>
-                        <h2>{bowl?.price}</h2>
+                        <div>
+                           <h2>{bowl?.price}</h2>
+                           <p>{bowl?.description}</p>
+                        </div>
                         <Row className="mt-5">
                            <Col xs={6}>
                               <h4>Ingrédients</h4>
-                              <ul> {ingredients.map((ingr)=><li>{ingr}</li>)}</ul>
+                              {
+                                 (ingredientsLoaded)
+                                 ? (ingredients.length > 0)
+                                    ? <ul>{ingredients.map((ingr, index)=><li key={index}>{ingr}</li>)}</ul>
+                                    : <p className="infoStyle">Oups... Tous les ingrédients se sont enfuit ! Nous partirons à leur recherche très bientôt. Excusez-nous pour la gène occasionnée.</p>
+                                 : <LoadingSpinner />
+                              }
                            </Col>
                            <Col xs={6}>
                               <h4>Allergènes</h4>
-                              <p className="infoStyle">Aucun allergène renseignée pour cette recette ! Vous pourrez profiter tranquillement.</p>
+                              <p className="infoStyle pe-5">Aucun allergène renseigné pour cette recette ! Vous pourrez profiter tranquillement.</p>
                            </Col>
                         </Row>
                      </Col>

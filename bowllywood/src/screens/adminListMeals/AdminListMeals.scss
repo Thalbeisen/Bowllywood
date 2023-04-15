@@ -13,12 +13,8 @@
 	animation: rotation .5s ease-out;
 }
 
-.pinkColor {
-	color: pink;
-}
-.cyanColor {
-	color: cyan;
-}
+.sweetColor {color: #2D3CA8 } // 901534
+.saltedColor {color: #A87736 }
 
 .adminListCtnr{
 	margin-top: 6em;
@@ -44,8 +40,7 @@
 	}
 }
 
-/************* common style of reservation view files **************/
-
+/************* common style of bowl view files **************/
 .bowlCtnr {
     background-image: url('https://bowllywood-8llo.onrender.com/images/saltedBg.png');
     background-position: bottom right;
@@ -64,7 +59,7 @@
 	}
 
 	.inheritText {font-size: inherit;}
-	.largeText {font-size: 1.3rem}
+	.largeText {font-size: 1.2rem}
 	.mediumText {font-size: 0.85rem}
 	.smallText {font-size: 0.75rem}
 
@@ -75,7 +70,7 @@
 
 	.bowlListContent, .resDetailTop {
 		p:not(p.addText) {
-			font-size: 1.3rem;
+			font-size: 1.7rem;
 		}
 	}
 
@@ -96,7 +91,7 @@
 	}
 }
 
-/************* reservation list file **************/
+/************* bowl list file **************/
 .bowlStatistic {
 	// column-gap: 3rem;
 
@@ -107,6 +102,25 @@
 }
 
 .bowlListContent {
+
+	.checked{
+		background-color: $dark-green;
+		background-color: rgba(145,213,163,0.3);
+		color: $dark-grey;
+	}
+
+	.bowlListSelect.rw-dropdown-list{
+		width: 10rem;
+		div { 
+			background-color: transparent !important;
+			box-shadow: none;
+			border: none;
+
+			.rw-dropdown-list-input {
+				padding-left: 0;
+			} 
+		}
+	}
 
 	.bowlList i {
 		font-size: 1.6rem;
@@ -119,7 +133,7 @@
 		border-radius: 0;
 		border-bottom: 1px solid $dark-grey;
 		background-color: transparent !important;
-		color: $dark-grey;
+		color: $dark-grey !important;
 
 		p {
 			line-height: 1em;
@@ -128,7 +142,8 @@
 
 	a {
 		text-decoration: none;
-		color: $dark-grey;
+		color: $dark-grey !important;
+		border-color: $dark-grey !important;
 	}
 
 	.addIcon {font-size: 4.5rem}
@@ -139,7 +154,7 @@
 	}
 }
 
-/************* reservation details file **************/
+/************* bowl details file **************/
 .resDetailTop {
 	column-gap: 2rem;
 	h2{
@@ -160,12 +175,5 @@
 
 	.detailNumbers {
 		line-height: 1.4;
-	}
-}
-
-/************* reservation form file **************/
-.resForm {
-	.btnCtnr {
-		column-gap: 2em;
 	}
 }

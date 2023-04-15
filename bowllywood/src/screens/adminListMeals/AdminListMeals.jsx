@@ -1,5 +1,6 @@
 // data
-import { useState, useEffect, Select } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getAllBowls } from '../../services/meal';
 // front
 import { Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap';
@@ -7,14 +8,15 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReservationListStat from '../../components/ReservationListStat';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Checkbox from '@mui/material/Checkbox';
 // utils
 import { errorHandler } from '../../utils/errorHandler';
 import 'react-toastify/dist/ReactToastify.css';
 import './AdminListMeals.scss';
  
-function BowlAdminList ({message}) {
+function BowlAdminList () {
    const [bowls, setBowls] = useState([]),
-         [selectedType, setSelectedType] = useState('ALL'),
+         [selectedCategory, setSelectedCategory] = useState(['SALE', 'SUCRE']),
          [rotate, setRotate] = useState(false),
          [sortIcon, setSortIcon] = useState('up'),
          [refreshData, setRefreshData] = useState(false),
@@ -22,24 +24,28 @@ function BowlAdminList ({message}) {
          [saltedNumber, setSaltedNumber] = useState(0),
          [isLoaded, setIsLoaded] = useState(false);
 
-   if (message) {
-      toast.dismiss()
-      toast.success(message, {
-         position: "bottom-center",
-         autoClose: true,
-         closeOnClick: true,
-         pauseOnHover: true,
-         draggable: true,
-         progress: true,
-         theme: "light"
-      })
-   }
+   const location = useLocation();
 
-   const typeSelection = [
-      { value: 'ALL', label: 'Tous les types' },
-      { value: 'SUCRE', label: 'Sucré' },
-      { value: 'SALE', label: 'Salée' }
-   ]
+   useEffect(()=>{
+      let cleaning = false;
+      const message = location?.state?.message;
+      if (message) {
+         delete location?.state?.message;
+         toast?.dismiss()
+         toast.success(message, {
+            position: "bottom-center",
+            autoClose: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            progress: true,
+            theme: "light"
+         })
+      }
+
+      return () => {
+         cleaning = true
+      }
+   }, [location])
 
    useEffect(()=>{
       let cleaning = false;
@@ -48,11 +54,11 @@ function BowlAdminList ({message}) {
          if (cleaning) return;
          res.data.sort((first, second)=> (first.name < second.name) ? 1 : -1)
          
-         let sweetLentgh = res.data.filter(bowl => bowl.type === 'SUCRE').length;
-         let saltedLentgh = res.data.filter(bowl => bowl.type === 'SALE').length;
-         setSaltedNumber(sweetLentgh);
-         setSweetNumber(saltedLentgh);
-
+         let sweetLentgh = res.data.filter(bowl => bowl.category === 'SUCRE').length;
+         let saltedLentgh = res.data.filter(bowl => bowl.category === 'SALE').length;
+         setSaltedNumber(saltedLentgh);
+         setSweetNumber(sweetLentgh);
+         setBowls(res.data)
       }).catch((err)=>{
          setBowls([])
          setSaltedNumber(0)
@@ -73,11 +79,17 @@ function BowlAdminList ({message}) {
          setIsLoaded(true)
       })
 
-      return () => { 
-          cleaning = true
+      return () => {
+         cleaning = true
       }
-   }, [refreshData/*, selectedType*/])
+   }, [refreshData])
       
+   useEffect(()=>{
+      if (selectedCategory.length === 0) {
+         setSelectedCategory(['SALE', 'SUCRE'])
+      }
+   }, [selectedCategory])
+
    const sortList = () => {
       let newIcon = (sortIcon === 'down') ? 'up' : 'down';
       setSortIcon(newIcon)
@@ -87,86 +99,108 @@ function BowlAdminList ({message}) {
       })
    }
 
-   const formatType = (typeCode) => {
-      let type, typeColor;
-      switch (typeCode) {
+   const formatCategory = (categoryCode) => {
+      let category, categoryColor;
+      switch (categoryCode) {
          case 'SUCRE':
-            type = 'Sucré';
-            typeColor = 'pinkColor'; // vanilla strawberry
+            category = 'Sucré';
+            categoryColor = 'sweetColor';
             break;
          case 'SALE':
-            type = 'Salé';
-            typeColor = 'cyanColor';
+            category = 'Salé';
+            categoryColor = 'saltedColor';
             break;
          default:
-            type = 'Indéfini';
-            typeColor = '';
+            category = 'Indéfini';
+            categoryColor = '';
       }
-      return {type, typeColor};
+      return {category, categoryColor};
    }
 
    const BowlsRender = () => {
       if (bowls.length > 0)
       {
          return (bowls.map((bowl) => {
-            let {type, typeColor} = formatType(bowl?.type)
+            let {category, categoryColor} = formatCategory(bowl?.category)
 
             return (
             <ListGroupItem key={bowl?._id}
                action={true}
                active={true}
                href={`/menus/${bowl?._id}`}
-               className={`bowlListItem px-0 ${(selectedType !== 'ALL' && bowl.type !== selectedType) ? 'd-none' : '' }`} >
-
+               className={`bowlListItem px-0 ${(!selectedCategory.includes(bowl?.category)) ? 'd-none' : '' }`} >
                <Row className="d-flex justify-content-between m-0 pt-2 w-100">
                   <Col className="p-0">
-                     <span className="mediumText">{bowl?.ingredients?.length} ingrédients</span>
+                     <span className="largeText">{bowl?.allergenes?.length ?? 2} allergènes</span>
                      <p>{bowl?.name}</p>
                   </Col>
                   <Col md={7} xl={5} className="p-0">
-                     <p>{bowl?.allergenes?.length ?? 2 } allèrgènes</p>
-                     <span className={`${typeColor}`}>{type}</span>
+                     <p className={`${categoryColor}`}>{category}</p>
+                     <span className="largeText">{bowl?.ingredients?.length} ingrédients</span>
                   </Col>
                </Row>
-            </ListGroupItem>)
+            </ListGroupItem>
+            )
          }))
       }
       else
       {
          return(
             <div className="d-flex align-items-center justify-content-center text-center mt-5">
-                <span>Aucune bowl n'a encore été enregistré.</span>
+                <span>Aucune bowl n'a été trouvé.</span>
             </div>)
       }
    }
 
+   const CheckboxText = ({text, checked})=>(<span className={`rounded px-3 py-1 m-0 ${(checked) ? 'checked' : ''}`}>{text}</span>)
+
+   const handleChecked = ({target}) => {
+      const {value, checked} = target;
+      if (checked) {
+         setSelectedCategory((selectedCategory)=>[...selectedCategory, value])
+      } else {
+         setSelectedCategory(selectedCategory.filter((type)=>type !== value))
+      }
+   }
+
    return (
+
    <div className="bowlCtnr d-flex flex-column px-5 py-4">
 
       <h2>Gérer les bowls</h2>
-      <Row className="bowlStatistic justify-content-center" >
+      <Row className="bowlStatistic justify-content-center">
          <ReservationListStat number={saltedNumber} title="salés" />
          <ReservationListStat number={bowls.length} title="bowls en tout" />
          <ReservationListStat number={sweetNumber} title="sucrés" />
       </Row>
 
       <Row className="bowlListContent justify-content-center">
-         <Col xs={12} lg={11} xl={10} className="" >
-            <div className="mb-3 align-items-center">
+         <Col xs={12} lg={11} xl={10} >
+            <div className="d-flex align-items-center mb-3">
                <p className="d-inline">Liste des bowls</p>
-               <span className=" mx-2"> – </span> 
-               <span>{
-                  (selectedType !== 'ALL')
-                  ? (selectedType !== 'SUCRE') 
-                    ? 'sucrés'
-                    : 'salés' 
-                  : 'sucrés et salés'
-               }</span>
-               <Select options={typeSelection}
-                 value={selectedType}
-                 onChange={setSelectedType}
-                 class="hide"
-               />
+               <span className="ms-3"> – </span> 
+               
+               <Checkbox
+                  id='sale-checked'
+                  inputProps={{ 'aria-label': 'controlled' }}
+                  icon={<CheckboxText text='salé' />}
+                  checkedIcon={<CheckboxText text='salé' checked={true} />}
+                  value='SALE'
+                  checked={(selectedCategory.includes('SALE')) ? true : false}
+                  onChange={handleChecked}
+                  className="largeText"
+                  />
+
+               <Checkbox
+                  id='sucre-checked'
+                  inputProps={{ 'aria-label': 'controlled' }}
+                  icon={<CheckboxText text='sucré' />}
+                  checkedIcon={<CheckboxText text='sucré' checked={true} />}
+                  value='SUCRE'
+                  checked={(selectedCategory.includes('SUCRE')) ? true : false}
+                  onChange={handleChecked}
+                  className="largeText"
+                  />
 
             </div>
             <Row className="flex-column-reverse flex-md-row justify-content-between px-4" >

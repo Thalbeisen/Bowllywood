@@ -1,0 +1,11 @@
+.bowlBtnCtnr {
+	i {
+		font-size: 2.5rem;
+		cursor: pointer;
+	}
+
+	// overwrite
+	.fa-square-xmark {
+		line-height: .96;
+	}
+}
