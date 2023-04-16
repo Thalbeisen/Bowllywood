@@ -131,12 +131,12 @@ function BowlAdminList () {
                className={`bowlListItem px-0 ${(!selectedCategory.includes(bowl?.category)) ? 'd-none' : '' }`} >
                <Row className="d-flex justify-content-between m-0 pt-2 w-100">
                   <Col className="p-0">
-                     <span className="largeText">{bowl?.allergenes?.length ?? 2} allergènes</span>
+                     <span className="largeText">{bowl?.ingredients?.length} ingrédients</span>
                      <p>{bowl?.name}</p>
                   </Col>
-                  <Col md={7} xl={5} className="p-0">
-                     <p className={`${categoryColor}`}>{category}</p>
-                     <span className="largeText">{bowl?.ingredients?.length} ingrédients</span>
+                  <Col sm={6} md={7} lg={5} xl={4} className="p-0">
+                     <p className="">{bowl?.price}</p>
+                     <span className={`largeText ${categoryColor}`}>{category}</span>
                   </Col>
                </Row>
             </ListGroupItem>

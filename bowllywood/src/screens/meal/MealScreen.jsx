@@ -19,6 +19,9 @@ const MealScreen = () => {
          [ingredientsLoaded, setIngredientsLoaded] = useState(false),
          [ingredients, setIngredients] = useState([]);
 
+   const defaultImage = require('/bowlicon_grey.png')
+   const [filePath, setFilePath] = useState(defaultImage);
+
    const navigate = useNavigate(),
          { id } = useParams(),
          bowlID = id; // bowlID = useParams().id
@@ -60,6 +63,22 @@ const MealScreen = () => {
             }
             setIngredients(stockArr)
             setIngredientsLoaded(true)
+         }
+
+         // fetch image
+         try
+         {
+            let fecthedImage = require(`/menu/${bowl?.image}`)
+            if (fecthedImage)
+            {
+               setFilePath(fecthedImage)
+            }
+         }
+         catch(err)
+         {
+            err.code = '';
+            err.message = "L'image du bowl n'a pas pu être récupérée."
+            errorHandler('TOAST', err)      
          }
 
          fetchStocks()
@@ -119,7 +138,7 @@ const MealScreen = () => {
                   (isLoaded) 
                   ? <>
                      <Col xs={4} className="imgCtnr">
-                        <img src={(bowl?.image) ? `/menu/${bowl?.image}` : '/bowlicon_grey.png'} alt={bowl?.name} className="img-fluid"/>
+                        <img src={filePath} alt={bowl?.name} className="img-fluid"/>
                      </Col>
                      <Col xs={7}>
                         <div>

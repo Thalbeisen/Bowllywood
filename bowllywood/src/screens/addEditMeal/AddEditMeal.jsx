@@ -191,11 +191,22 @@ const AddEditMeal = ({action='ADD'}) => {
             return
         }*/
 
-        console.log(target.files[0]);
         const formData = new FormData(); 
         formData.append('bowl', file, file.name);
         setFieldValue('image', file.name);
         setBowlImage(formData);
+    }
+
+    const FileBowlLabel = () => {
+        if (!editMode || !bowl?.image) {
+            return 'Image de présentation du bowl'
+        } else {
+            return (
+                <>
+                Image de présentation du bowl. <br/><span>Fichier actuel : {values?.image}</span>
+                </>
+            )
+        }
     }
 
     return (
@@ -264,7 +275,7 @@ const AddEditMeal = ({action='ADD'}) => {
                                 name="image"
                                 type="file"
                                 onChange={handleFileInput}
-                                desc="Image de présentation : upload."
+                                desc={<FileBowlLabel />}
                                 error={errors.image}
                             />
                         </Col>

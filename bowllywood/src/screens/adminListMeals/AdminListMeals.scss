@@ -80,17 +80,6 @@
 	}
 }
 
-.resDetailTop, .resForm {
-	h2 {
-		font-size: 1.7rem;
-	  font-weight: 400;
-	    
-	    +p {
-	    	line-height: 1;
-	    }
-	}
-}
-
 /************* bowl list file **************/
 .bowlStatistic {
 	// column-gap: 3rem;
@@ -151,29 +140,5 @@
 	.ant-picker-input{
 		cursor: pointer;
 		input {display: none}
-	}
-}
-
-/************* bowl details file **************/
-.resDetailTop {
-	column-gap: 2rem;
-	h2{
-		font-family: $ibm-font;
-	}
-	// overwrite
-	.fa-square-xmark {
-		line-height: .85;
-	}
-}
-
-.resDetailContent {
-	border-left: 2px solid $dark-grey;
-
-	p {
-		font-size: 1.6em
-	}
-
-	.detailNumbers {
-		line-height: 1.4;
 	}
 }
