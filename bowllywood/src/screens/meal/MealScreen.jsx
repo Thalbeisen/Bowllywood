@@ -56,7 +56,6 @@ const MealScreen = () => {
                catch(err)
                {
                   // nothing to inform
-                  // console.log(err)
                }
             }
             setIngredients(stockArr)
@@ -79,7 +78,7 @@ const MealScreen = () => {
    }, [bowlID, userRole, navigate] )
 
    const navigateForm = () => {
-      navigate(`/menus/edit/${bowlID}`, { action: 'EDIT', replace: true })
+      navigate(`/menus/edit/${bowlID}`, { replace: true })
    }
 
    const cancelReservationBtn = (bowlID) => {

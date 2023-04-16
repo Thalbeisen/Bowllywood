@@ -1,5 +1,7 @@
 const Menu = require('../models/menu');
 const errors = require('../conf/errors');
+const multer = require('multer');
+const path = require('path');
 
 const entity = 'MENU';
 
@@ -19,9 +21,21 @@ exports.createMeal = async (req, res) => {
         delete menuObj.userID;
 
         const newMeal = await new Menu(menuObj).save();
-        if (!newMeal) res.status(404).json(errors.createError(entity));
+        if (!newMeal) 
+            res.status(404).json(errors.createError(entity));
+        else
+            res.status(201).json(newMeal);
+    } catch (err) {
+        res.status(400).json(errors.errorOccured + err.message);
+    }
+};
 
-        res.status(201).json(newMeal);
+/**
+ * upload bowl image
+ */
+exports.uploadImage = async (req, res) => {
+    try {
+        res.status(201).json(req.body);
     } catch (err) {
         res.status(400).json(errors.errorOccured + err.message);
     }
@@ -50,8 +64,11 @@ exports.getAllBowls = async (req, res) => {
 exports.getSaltedBowls = async (req, res) => {
     try {
         const meals = await Menu.find({ category: 'SALE' });
-        if (!meals) res.status(404).json(errors.emptyList);
-        res.status(200).json(meals);
+        if (!meals || meals.length === 0) {
+            res.status(404).json(errors.emptyList);
+        } else {
+            res.status(200).json(meals);
+        }
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
@@ -64,8 +81,12 @@ exports.getSaltedBowls = async (req, res) => {
 exports.getSweetBowls = async (req, res) => {
     try {
         const meals = await Menu.find({ category: 'SUCRE' });
-        if (!meals) res.status(404).json(errors.emptyList);
-        res.status(200).json(meals);
+        if (!meals || meals.length === 0) {
+            res.status(404).json(errors.emptyList);
+        } 
+        else {
+            res.status(200).json(meals);
+        }
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
@@ -81,12 +102,11 @@ exports.getOneMeal = async (req, res) => {
         const mealDetails = await Menu.findById({ _id: req.params.id });
 
         if (!mealDetails) {
-            res.status(404).json({
-                message: errors.emptyData(entity),
-            });
+            res.status(404).json(errors.emptyData(entity));
+        } else {
+            res.status(200).json(mealDetails);
         }
 
-        res.status(200).json(mealDetails);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
@@ -115,10 +135,9 @@ exports.updateMeal = async (req, res) => {
 
         if (!updatedMeal) {
             res.status(404).json(errors.updateError(entity));
-            return;
+        } else {
+            res.status(200).json(updatedMeal);
         }
-
-        res.status(200).json(updatedMeal);
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }
@@ -133,9 +152,10 @@ exports.deleteMeal = async (req, res) => {
     try {
         const deletedMeal = await Menu.findByIdAndDelete(req.params.id);
 
-        if (!deletedMeal) res.status(404).json(errors.deleteError);
-
-        res.status(200).json('Suppression réussie');
+        if (!deletedMeal)
+            res.status(404).json(errors.deleteError);
+        else
+            res.status(200).json('Suppression réussie');
     } catch (err) {
         res.status(500).json(errors.errorOccured + err.message);
     }

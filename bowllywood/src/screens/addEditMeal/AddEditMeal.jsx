@@ -1,19 +1,8 @@
-// console.log(event.target.files[0])
-// let file = event.target.files[0];
-// if (!FORMATS.includes(file?.type)) {
-//     setErrors({
-//         ...errors
-//     }) 
-// }
-// if (file?.size <= 1024 * 1024) {
-//     setErrors({...errors})
-// }
-
 // hooks
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // data
-import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
+import { createMeal, updateMeal, getOneMeal, imageUpload } from '../../services/meal';
 import { getAllStocks } from '../../services/stock';
 import { useFormik } from 'formik';
 import { errorHandler } from '../../utils/errorHandler';
@@ -40,7 +29,7 @@ const AddEditMeal = ({action='ADD'}) => {
           [bowl, setBowl] = useState({}),
           [isLoaded, setIsLoaded] = useState(false),
           [selectedIngredients, setSelectedIngredients] = useState(['635141dd6d2bc0f9d6b8f38b']),
-          [bowlImage, setBowlImage] = useState(),
+          [bowlImage, setBowlImage] = useState(null),
           [ingredientsLoaded, setIngredientsLoaded] = useState(false);
 
     const navigate = useNavigate(),
@@ -74,38 +63,33 @@ const AddEditMeal = ({action='ADD'}) => {
             .required('Veuillez sélectionner au moins un élément.'),
     
         image: yup
-        /* .mixed()
-            .test("fileSize", "The file is too large", (value) => {
-               if (!value.length) return true // attachment is optional
-               return value[0].size <= 2000000
-            })*/
-
             .mixed()
-            .nullable()
-            .test(
-                 "type",
-                 "Le format d'image est invalide.",
-                 (value) => {
-                   if (value)
-                    return FORMATS.includes(value[0]?.type)
-                }
-             )
-            .test(
-                "fileSize",
-                "Le fichier est trop lourd. 5MB maximum.",
-                (value) => {
-                   if (value)
-                    return value[0]?.size <= (1024 * 1024) // 5MB 
-                }
-             )
-            .required('Ce champ est obligatoire')
+            .required('Veuillez sélectionner insérer une image.')
     })
 
-    const onSubmit = (values) => {
+    const onSubmit = async (values) => {
+        let uploaded = false;
+        try
+        {
+            const uploading = await imageUpload(bowlImage);
+            if (uploading)
+            {
+                values.image = uploading.data.newFileName;
+                uploaded = true;
+            }
+        }
+        catch(err)
+        {
+            errorHandler('TOAST', err)
+        }
 
         let ingredientsID = []
-        selectedIngredients.map((object)=>{
-            ingredientsID.push(object.id);
+        selectedIngredients.forEach((item)=>{
+            if (typeof item === 'string') {
+                ingredientsID.push(item);
+            } else {
+                ingredientsID.push(item.id);
+            }
         })
         values.ingredients = ingredientsID;
 
@@ -114,16 +98,17 @@ const AddEditMeal = ({action='ADD'}) => {
         let priceCurr = values.price.charAt(values.price.length -1);
         values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
 
-        if (editMode)
+        let ended = false
+        if (editMode && uploaded)
         {
             // handlePromise(updateMeal(id, values));
             updateMeal(bowlID, values).then((res)=>{
-                navigate(`/menus/${res.data._id}`, {replace: true})
+                navigate(`/menus/${bowlID}`, {replace: true})
             }).catch((err) => {
                 errorHandler('TOAST', err)
             })
         }
-        else
+        else if (uploaded)
         {
             // handlePromise(createMeal.(values));
             createMeal(values).then((res)=>{
@@ -134,7 +119,7 @@ const AddEditMeal = ({action='ADD'}) => {
         }
     }
 
-    const { values, errors, handleSubmit, handleChange, setTouched, touched, setFieldValue/*, setErrors*/ } = useFormik({
+    const { values, errors, handleSubmit, handleChange, setTouched, touched, setFieldValue, setErrors} = useFormik({
         enableReinitialize: true,
         initialValues: {
             name: bowl.name ?? '',
@@ -142,7 +127,7 @@ const AddEditMeal = ({action='ADD'}) => {
             price: bowl.price ?? '',
             description: bowl.description ?? '',
             ingredients: selectedIngredients ?? [],
-            image: bowl.image ?? ''
+            image: bowl.image ?? undefined
         },
         validationSchema,
         onSubmit
@@ -156,7 +141,6 @@ const AddEditMeal = ({action='ADD'}) => {
         {
             getOneMeal(bowlID).then((res)=>{
                 if (cleaning) return; 
-
                 setSelectedIngredients(res.data.ingredients)
                 setBowl(res.data)
 
@@ -190,6 +174,29 @@ const AddEditMeal = ({action='ADD'}) => {
             cleaning = true;
         }
     }, [editMode, bowlID])
+
+    const handleFileInput = ({target}) => {
+        let file = target?.files[0];
+
+        if (!FORMATS.includes(file?.type))
+        {
+            setErrors({ ...errors, image: 'Le format d\'image est invalide.' })
+            setBowlImage(null)
+            return
+        }
+
+        /*if (file?.size >= 1024 * 2048) {
+            setErrors({ ...errors, image: 'Le fichier est trop lourd. 5MB maximum.' })
+            setBowlImage('')
+            return
+        }*/
+
+        console.log(target.files[0]);
+        const formData = new FormData(); 
+        formData.append('bowl', file, file.name);
+        setFieldValue('image', file.name);
+        setBowlImage(formData);
+    }
 
     return (
     <Container className="pb-5">
@@ -253,20 +260,10 @@ const AddEditMeal = ({action='ADD'}) => {
                             />
                         </Col>
                         <Col md={8} lg={4} className="d-flex justify-content-center px-4">
-                            <input
-                                type="file"
+                            <Input
                                 name="image"
-                                value={bowlImage}
-                                onChange={(event) => {
-                                    setTouched({
-                                      ...touched,
-                                      image: true,
-                                    })
-                                    // setFieldValue(
-                                    //   "image",
-                                    //   event.target.files[0]
-                                    // );
-                                  }}
+                                type="file"
+                                onChange={handleFileInput}
                                 desc="Image de présentation : upload."
                                 error={errors.image}
                             />
