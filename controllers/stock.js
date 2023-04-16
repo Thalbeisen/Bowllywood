@@ -64,13 +64,11 @@ exports.getOneStock = async (req, res) => {
         const stock = await Stock.findOne({ _id: req.params.id });
 
         if (!stock) {
-            res.status(404).json({
-                message: errors.emptyData(entity),
-            });
+            res.status(404).json(errors.emptyData(entity));
+        } else {
+            res.status(200).json(stock);
         }
 
-        // throw
-        res.status(200).json(stock);
     } catch (err) {
         res.status(400).json(errors.errorOccured + err.message);
     }

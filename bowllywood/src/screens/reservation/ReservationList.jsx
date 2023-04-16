@@ -85,7 +85,7 @@ function ReservationList () {
 				if (cancel) return;
 
 			    dataContent(res)
-			    res.data.map((reservation)=>{
+			    res.data.forEach((reservation)=>{
 				    getRestaurantDetail(reservation.restaurantID).then((res)=>{
 				    	reservation.city = res.data.city;
 				    }).catch((err)=>{
@@ -206,10 +206,6 @@ function ReservationList () {
 		return {status, statusColor};
 	}
 
-	const modifyDate = (current) => {
-		setSelectedDate(current)
-	}
-
 	const ReservationsRender = () => {
 		if (reservations.length > 0)
 		{
@@ -257,7 +253,7 @@ function ReservationList () {
 	return (
 	<div className="resCtnr d-flex flex-column px-5 py-4">
 
-		<h2>Gérer {(!isConsumer) ? 'des' : 'vos'} réservations</h2>
+		<h2>Gérer {(!isConsumer) ? 'les' : 'vos'} réservations</h2>
 		{ (!isConsumer)
         ? <Row className="resStatistic justify-content-center" >
 			<ReservationListStat number={(seatNumber !== 0) ? 12 : 27} title="Tables disponibles" subNumber={(seatNumber !== 0) ? 15 : '0'} subTitle="tables réservées" />
@@ -284,7 +280,7 @@ function ReservationList () {
 							bordered={false}
 							size='large'
 							value={selectedDate ? dayjs(selectedDate) : null}
-							onChange={modifyDate}/>
+							onChange={setSelectedDate}/>
 		                </>
 		               : ''
 		            }

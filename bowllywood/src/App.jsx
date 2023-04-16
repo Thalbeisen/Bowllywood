@@ -24,6 +24,7 @@ import Popup from 'react-popup';
 import ReservationForm from "./screens/reservation/ReservationForm";
 import ReservationDetail from "./screens/reservation/ReservationDetail";
 import ReservationList from "./screens/reservation/ReservationList";
+import AdminListMeals from './screens/adminListMeals';
 
 function App() {
     return (
@@ -43,12 +44,17 @@ function App() {
                                 <ReservationList />
                             </RouteProtector>
                         } />
-                        <Route path="/menus" element={<MenuScreen />} />
-                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
-                        <Route path="/menus/create" element={<AddEditMealScreen />} />
-                        <Route path="/menus/edit/:id" element={<AddEditMealScreen />} />
-                        <Route path="/menus/:id" element={<MealScreen />} />
-                        <Route path="/mark" />
+                       <Route path="/menus" element={<MenuScreen />} />
+                       <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
+                       <Route path="/menus/admin-list" element={
+                          <RouteProtector permittedRoles={['ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK', 'ROLE_WAITER']}>
+                             <AdminListMeals />
+                          </RouteProtector> } />
+                       <Route element={<RouteProtector permittedRoles={['ROLE_ADMIN']} />}>
+                          <Route path="/menus/create" element={<AddEditMealScreen action='ADD' />} />
+                          <Route path="/menus/edit/:id" element={<AddEditMealScreen action='EDIT' />} />
+                       </Route>
+                       <Route path="/menus/:id" element={<MealScreen />} />
                         <Route path="/register" element={<RegisterScreen />} />
                         <Route path="/login" element={<LoginScreen />}/>
                         <Route path="/franchise-request" element={<AddFranchiseRequestScreen/>}/>

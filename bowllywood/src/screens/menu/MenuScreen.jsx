@@ -2,19 +2,26 @@ import './MenuScreen.scss';
 import { useEffect, useState } from 'react';
 import { getSaltedBowls, getSweetBowls } from '../../services/meal';
 import HeaderTitle from '../../components/HeaderTitle';
-import { Oval } from 'react-loader-spinner';
-import { AuthProvider } from '../../providers/AuthProvider';
-
-let decodedTokens;
+import LoadingSpinner from '../../components/LoadingSpinner';
+import jwt_decode from "jwt-decode";
 
 function MenuScreen({ bowlsType="SALE" }) {
 
-	const [bowls, setBowls] = useState([]);
-	const [loaded, setLoaded] = useState(false);
-	const [isConnected, setIsConnected] = useState(false);
+	const [bowls, setBowls] = useState([]),
+		  [isAdmitted, setIsAdmitted] = useState(false),
+		  [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect( () => {
-		// check if the asked bowls are the sweet or salted ones.
+		// get user role
+		const currentTokens = localStorage.getItem("userTokens");
+		if (currentTokens) {
+			const decodedToken = jwt_decode(JSON.parse(currentTokens).token),
+				  userRole = decodedToken?.roleID ?? '',
+				  admittedRoles = ['ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK', 'ROLE_WAITER']
+	    	setIsAdmitted((admittedRoles.includes(userRole)) ? true : false)
+	    }
+
+		// get sweet or salted bowls
 		if (bowlsType === "SUCRE")
 		{
 			getSweetBowls().then((res) => {
@@ -22,8 +29,8 @@ function MenuScreen({ bowlsType="SALE" }) {
 			}).catch((err) => {
 				console.log(err);
 			}).finally(()=>{
-				setLoaded(true)
-			});
+				setIsLoaded(true)
+			})
 		}
 		else
 		{
@@ -32,12 +39,9 @@ function MenuScreen({ bowlsType="SALE" }) {
 			}).catch((err) => {
 				console.log(err);
 			}).finally(()=>{
-				setLoaded(true)
-			});
+				setIsLoaded(true)
+			})
 		}
-
-		decodedTokens = JSON.parse(localStorage.getItem('userTokens'));
-    	setIsConnected((decodedTokens?.token) ? true : false);
 	}, [bowlsType] );
 
 // template for the list
@@ -47,7 +51,7 @@ const MealTemp = ({ meal }) => {
 			<div className="d-flex flex-column flex-center">
 				<a href={`/menus/${meal._id}`} className="imgCtnr">
 					<img
-					src={`/menu/${meal.image}`}
+					src={(meal?.image) ? `/menu/${meal?.image}` : '/bowlicon_grey.png'}
 					alt={meal.name}
 					/>
 				</a>  	
@@ -91,11 +95,11 @@ return (
 	<>
 		<HeaderTitle>La carte <br/> {bowlsType === 'SALE' ? 'Nos bowls salés' : 'Nos desserts'}</HeaderTitle>
 		{
-			(isConnected)
+			(isAdmitted)
 			? <div className="d-flex justify-content-center">
-				<a href="/menus/create" className="addLink d-flex align-items-center">
-					<i className="fa-solid fa-circle-plus me-3"></i>
-					Créer un nouveau bowl
+				<a href="/menus/admin-list" className="addLink d-flex align-items-center border border-dark rounded py-3 px-4">
+					<i className="fa-solid fa-bookmark me-3"></i>
+					Gérer les bowls
 				</a>
 			</div>
 			: ''
@@ -103,19 +107,10 @@ return (
 		<section className="menuCtnr container">
 			<ul className="row align-items-center justify-content-center">
 				{
-					(loaded) 
+					(isLoaded) 
 					? <ListRendering /> 
 					: <span className='col-9'>
-						<Oval
-							strokeWidth="5"
-							strokeWidthSecondary="5"
-							secondaryColor="#000"
-							height="25"
-							width="25"
-							color="#CECECE"
-							ariaLabel="loading"
-							wrapperStyle
-						/>
+						<LoadingSpinner	/>
 					</span>
 				}
 			</ul>
