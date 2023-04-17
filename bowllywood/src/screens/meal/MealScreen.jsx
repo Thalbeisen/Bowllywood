@@ -19,7 +19,7 @@ const MealScreen = () => {
          [ingredientsLoaded, setIngredientsLoaded] = useState(false),
          [ingredients, setIngredients] = useState([]);
 
-   const defaultImage = require('/bowlicon_grey.png')
+   const defaultImage = '/bowlicon_grey.png';
    const [filePath, setFilePath] = useState(defaultImage);
 
    const navigate = useNavigate(),
