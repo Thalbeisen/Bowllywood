@@ -270,7 +270,7 @@ const AddEditMeal = ({action='ADD'}) => {
                                 error={errors.price}
                             />
                         </Col>
-                        <Col md={8} lg={4} className="d-flex justify-content-center px-4">
+                        <Col md={8} lg={4} className="d-flex bowlFile justify-content-center px-4">
                             <Input
                                 name="image"
                                 type="file"

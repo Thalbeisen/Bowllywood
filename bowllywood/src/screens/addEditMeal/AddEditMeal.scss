@@ -14,3 +14,13 @@
     column-gap: 2em;
   }
 }
+.bowlFile{
+  label {
+    line-height: 1;
+    span {
+      font-variant-caps: normal;
+      font-size: .8rem;
+      font-style: italic;
+    }
+  }
+}
