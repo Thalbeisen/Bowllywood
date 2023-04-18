@@ -11,7 +11,7 @@ import Template from './components/Template';
 import { AuthProvider } from './providers/AuthProvider';
 import AddFranchiseRequestScreen from './screens/addFranchiseRequest';
 import GetUserFranchiseRequestsScreen from './screens/getUserFranchiseRequests';
-import ProfileScreen from './screens/profiles/ProfileScreen';
+// import ProfileScreen from './screens/profiles/ProfileScreen';
 import HomeScreen from './screens/home/HomeScreen';
 import FranchiseRequestDetailsScreen from './screens/franchiseRequestDetails';
 import FranchiseRequestEditScreen from './screens/franchiseRequestEditScreen';
@@ -62,7 +62,7 @@ function App() {
                         <Route path="/my-franchise-requests/edit/:id" element={<FranchiseRequestEditScreen/>} />
                         <Route path="/my-franchise-requests/cancel/:id" element={<FranchiseRequestCancelScreen/>} />
                         <Route path="/my-franchise-requests" element={<GetUserFranchiseRequestsScreen/>}/>
-                        <Route path="/profile" element={<ProfileScreen/>}/>
+                        <Route path="/profile" element={<MaintenanceScreen/>}/>
                         <Route path="/reviews" element={<MaintenanceScreen/>}/>
                         <Route path="/restaurantList" element={<MaintenanceScreen/>}/>
                         <Route path="/erreur" element={<ErrorScreen />}/>
