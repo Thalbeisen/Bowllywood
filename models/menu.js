@@ -31,8 +31,8 @@ const menuSchema = new Schema(
             required: true,
         },
         image: {
-            type: String,
-            required: true,
+            type: Object,
+            required: false,
         },
         createdBy: {
             type: Schema.Types.ObjectId,

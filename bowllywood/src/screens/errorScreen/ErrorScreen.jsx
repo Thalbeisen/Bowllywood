@@ -4,7 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 const ErrorScreen = ({errCode='', errText}) => {
 
 	const location = useLocation();
-	const {code, message} = location?.state;
+	const code = location?.state?.code, 
+		  message = location?.state?.message;
 
 	if (!errText) errText = message ?? 'Une erreur inconnue est survenue. Veuillez recommencer ou retourner à la page d\'accueil.';
 	if (code) errCode = code;
@@ -17,7 +18,7 @@ const ErrorScreen = ({errCode='', errText}) => {
 					<div className="textCntr flex-column flex-center align-self-center">
 						<h2 className="mauikea_font text-center">Erreur {errCode}</h2>
 						<p className="text-center">Pas de bowl ! {errText}</p>
-					<Link to="/" className="homeLink flex-center text-decoration-none">
+					<Link to="/" className="homeLink flex-center text-decoration-none" replace>
 						<i className="fa-solid fa-house me-3" />
 						<span>Retourner à la page d'accueil</span>
 					</Link>

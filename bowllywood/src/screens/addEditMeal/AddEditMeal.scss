@@ -1,9 +1,26 @@
 .selectField {
-	background-color: transparent !important;
-	text-align: start;
+  text-align: start;
+  cursor: pointer;
 }
 
 .textMeal {
-	background-color: transparent !important;
-	width: 100% !important;
+  background-color: transparent !important;
+  width: 100% !important;
+}
+
+/************* bowl form file **************/
+.bowlForm {
+  .btnCtnr {
+    column-gap: 2em;
+  }
+}
+.bowlFile{
+  label {
+    line-height: 1;
+    span {
+      font-variant-caps: normal;
+      font-size: .8rem;
+      font-style: italic;
+    }
+  }
 }

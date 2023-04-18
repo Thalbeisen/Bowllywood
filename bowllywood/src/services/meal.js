@@ -25,5 +25,9 @@ import { AxiosInstance } from "../providers/axiosInstance";
 	}
 
 	export const getAllBowls = () => {
-		return AxiosInstance.get('/menus/adminlist');
+		return AxiosInstance.get('/menus/admin-list');
+	}
+
+	export const imageUpload = (image) => {
+		return AxiosInstance.post('/menus/image-upload', image);
 	}

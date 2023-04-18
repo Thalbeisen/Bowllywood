@@ -1,12 +1,11 @@
-import {Navigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import simplePopup from '../components/SimplePopup';
 import 'react-toastify/dist/ReactToastify.css';
 
 export function errorHandler(errType, errorCatched, navigate, subjectName) {
 	let errTitle, errMessage;
-	let errCode = errorCatched.response.status ?? errorCatched.code,
-		catchedMsg = errorCatched?.response?.data?.message ?? undefined;
+	let errCode = errorCatched?.response?.status ?? errorCatched?.code ?? '',
+		catchedMsg = errorCatched?.response?.data?.message ?? errorCatched?.message ?? undefined;
 
 	if (typeof navigate === 'string' && !subjectName) 
 	{
@@ -39,8 +38,8 @@ export function errorHandler(errType, errorCatched, navigate, subjectName) {
 				returnMsg = `Vous n'avez pas les droits pour accéder à ces informations.`
 				break;
 			case 'ERR_NETWORK':
-				let networkErr = 'Une erreur réseau est survenue durant la requête, notre équipe technique est sur la touche !'
-				returnMsg = (subjectName) ? `${subjectName} : ${networkErr}` : networkErr;
+				let networkErr = 'Une erreur réseau est survenue, êtes-vous encore connecté à internet ?'
+				returnMsg = (subjectName && subjectName !== 'élément') ? `${subjectName} : ${networkErr}` : networkErr;
 				break;
 			default:
 				// [EVOLUTION] : send the error to the service for analysis.
@@ -50,9 +49,12 @@ export function errorHandler(errType, errorCatched, navigate, subjectName) {
 		return returnMsg;
 	}
 	
-	if (catchedMsg && errCode != 'ERR_NETWORK') {
+	if (catchedMsg && errCode !== 'ERR_NETWORK' && errCode !== 0) {
 		errMessage = catchedMsg
 	} else {
+		if (errCode === 0) {
+			errCode = ''
+		}
 		errMessage = get_default_message(errCode, subjectName)
 	}
 	errTitle =`Erreur ${errCode}`
@@ -83,5 +85,7 @@ export function errorHandler(errType, errorCatched, navigate, subjectName) {
 				theme: "light",
 			});
 			break;
+		default:
+			return false;
 	}
 }
