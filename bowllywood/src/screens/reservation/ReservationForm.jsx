@@ -58,6 +58,7 @@ function ReservationDetail ({ action='ADD' }) {
 
 	const [ reservation, setReservation ] = useState({}),
 		  [ isLoaded, setIsLoaded ] = useState(false),
+		  [ refreshData, setRefreshData ] = useState(false),
 		  // current restaurant
 		  [ restaurantID, setRestaurantID ] = useState(''),
 		  [ restauCapacity, setRestauCapacity ] = useState(''),
@@ -100,7 +101,6 @@ function ReservationDetail ({ action='ADD' }) {
 	    delete values.resDate;
 	   	delete values.resTime;
 
-	   	debugger
     	if (!isConsumer) {
     		delete values.consumerID;
     	}

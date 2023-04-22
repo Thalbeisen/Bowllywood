@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // data
-import { createMeal, updateMeal, getOneMeal, imageUpload } from '../../services/meal';
+import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
+import { imgurUpload } from '../../services/imgur';
 import { getAllStocks } from '../../services/stock';
 import { useFormik } from 'formik';
 import { errorHandler } from '../../utils/errorHandler';
@@ -24,10 +25,12 @@ const categories = [{_id: 'SALE', label: 'Salé'}, {_id: 'SUCRE', label: 'Sucré
       FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
 const AddEditMeal = ({action='ADD'}) => {
-// [selectedIngredients, setSelectedIngredients] = useState([]),
     const [ingredients, setIngredients] = useState([]),
           [bowl, setBowl] = useState({}),
           [isLoaded, setIsLoaded] = useState(false),
+          [imageUploading, setImageUploading] = useState(false),
+          [uploaded, setUploaded] = useState(false),
+          [cleaning, setCleaning] = useState(false),
           [selectedIngredients, setSelectedIngredients] = useState(['635141dd6d2bc0f9d6b8f38b']),
           [bowlImage, setBowlImage] = useState(null),
           [ingredientsLoaded, setIngredientsLoaded] = useState(false);
@@ -37,7 +40,8 @@ const AddEditMeal = ({action='ADD'}) => {
           bowlID = id; // bowlID = useParams().id
     const editMode = (bowlID || action === 'EDIT') ? true : false;
 
-    // formik
+    let formData;
+
     const validationSchema = yup.object({
         name: yup
             .string()
@@ -68,54 +72,62 @@ const AddEditMeal = ({action='ADD'}) => {
     })
 
     const onSubmit = async (values) => {
-        let uploaded = false;
-        try
-        {
-            const uploading = await imageUpload(bowlImage);
-            if (uploading)
+        const uploadImage = async (formData) => {
+            setImageUploading(true)
+            try
             {
-                values.image = uploading.data.newFileName;
-                uploaded = true;
+                let imgurUploaded = await imgurUpload(formData)
+                if (imgurUploaded)
+                {
+                    values.image = imgurUploaded.data.data.link;
+                    delete values.formData;
+                    setUploaded(true)
+                }
             }
-        }
-        catch(err)
-        {
-            errorHandler('TOAST', err)
-        }
-
-        let ingredientsID = []
-        selectedIngredients.forEach((item)=>{
-            if (typeof item === 'string') {
-                ingredientsID.push(item);
-            } else {
-                ingredientsID.push(item.id);
+            catch(err)
+            {
+                err.message = "L'image n'a pas pu être téléchargée. Veuillez recommencer."
+                errorHandler('TOAST', err, 'Téléchargement de l\'image : ')
             }
-        })
-        values.ingredients = ingredientsID;
-
-        // add the currency caractere
-        values.price = values.price.trim();
-        let priceCurr = values.price.charAt(values.price.length -1);
-        values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
-
-        let ended = false
-        if (editMode && uploaded)
-        {
-            // handlePromise(updateMeal(id, values));
-            updateMeal(bowlID, values).then((res)=>{
-                navigate(`/menus/${bowlID}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
-            })
+            setImageUploading(false)
         }
-        else if (uploaded)
-        {
-            // handlePromise(createMeal.(values));
-            createMeal(values).then((res)=>{
-                navigate(`/menus/${res.data._id}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
+        
+        uploadImage(values.formData)
+        console.log(uploaded)
+
+        if (uploaded) {
+            console.log('bip')
+            let ingredientsID = []
+            selectedIngredients.forEach((item)=>{
+                if (typeof item === 'string') {
+                    ingredientsID.push(item);
+                } else {
+                    ingredientsID.push(item.id);
+                }
             })
+            values.ingredients = ingredientsID;
+
+            // add the currency caractere
+            values.price = values.price.trim();
+            let priceCurr = values.price.charAt(values.price.length -1);
+            values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
+
+            if (editMode)
+            {
+                updateMeal(bowlID, values).then((res)=>{
+                    navigate(`/menus/${bowlID}`, {replace: true})
+                }).catch((err) => {
+                    errorHandler('TOAST', err)
+                })
+            }
+            else
+            {
+                createMeal(values).then((res)=>{
+                    navigate(`/menus/${res.data._id}`, {replace: true})
+                }).catch((err) => {
+                    errorHandler('TOAST', err)
+                })
+            }
         }
     }
 
@@ -135,7 +147,7 @@ const AddEditMeal = ({action='ADD'}) => {
 
     // get data
     useEffect(()=>{
-        let cleaning = false;
+         setCleaning(false)
 
         if (editMode)
         {
@@ -170,8 +182,8 @@ const AddEditMeal = ({action='ADD'}) => {
             setIngredientsLoaded(true)
         })
 
-        return () => {
-            cleaning = true;
+        return ()=>{
+            setCleaning(true)
         }
     }, [editMode, bowlID])
 
@@ -185,16 +197,12 @@ const AddEditMeal = ({action='ADD'}) => {
             return
         }
 
-        /*if (file?.size >= 1024 * 2048) {
-            setErrors({ ...errors, image: 'Le fichier est trop lourd. 5MB maximum.' })
-            setBowlImage('')
-            return
-        }*/
+        formData = new FormData();
+        formData.append('image', file);
 
-        const formData = new FormData(); 
-        formData.append('bowl', file, file.name);
+        values.formData = formData;
+
         setFieldValue('image', file.name);
-        setBowlImage(formData);
     }
 
     const FileBowlLabel = () => {
@@ -340,7 +348,12 @@ const AddEditMeal = ({action='ADD'}) => {
                         </Col>
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
-                        <Button type="submit" onClick={()=>{onSubmit(values)}}>Soumettre</Button>
+                        <Button type="submit" onClick={handleSubmit}>
+                            <div className="d-flex align-items-center justify-content-evenly ">
+                                <span>Soumettre</span>
+                                {(imageUploading) ? <LoadingSpinner /> : '' }
+                            </div>
+                        </Button>
                     </div>
                 </form>
                 : <LoadingSpinner />}
