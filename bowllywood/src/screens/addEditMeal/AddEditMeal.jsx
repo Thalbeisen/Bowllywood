@@ -93,10 +93,8 @@ const AddEditMeal = ({action='ADD'}) => {
         }
         
         uploadImage(values.formData)
-        console.log(uploaded)
 
         if (uploaded) {
-            console.log('bip')
             let ingredientsID = []
             selectedIngredients.forEach((item)=>{
                 if (typeof item === 'string') {
@@ -328,7 +326,7 @@ const AddEditMeal = ({action='ADD'}) => {
                                 disabled />
                         </Col>
                     </Row>
-                    <Row className="justify-content-center mb-4">
+                    <Row className="justify-content-center align-items-center mb-4">
                         <Col lg={5}>
 
                             <div className="inputCtnr w-100 px-0 my-3">
@@ -346,6 +344,26 @@ const AddEditMeal = ({action='ADD'}) => {
                             </div>
 
                         </Col>
+                        {
+                                (editMode)
+                                ? 
+                                <Col lg={3}>
+                                <img src={values?.image}
+                                   alt={values?.name}
+                                   onError={(event) => {
+                                      let err = {
+                                         code: '',
+                                         message: "L'image du bowl n'a pas pu être récupérée."
+                                      }
+                                      errorHandler('TOAST', err)
+                                      event.target.src = "/bowlicon_grey.png"
+                                      event.onerror = null
+                                   }}
+                                   referrerpolicy="no-referrer"
+                                   className="img-fluid rounded"/>
+                                </Col>
+                                : ''
+                            }
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
                         <Button type="submit" onClick={handleSubmit}>

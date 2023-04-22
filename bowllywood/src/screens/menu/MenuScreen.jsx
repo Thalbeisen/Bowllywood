@@ -50,11 +50,15 @@ const MealTemp = ({ meal }) => {
 		<li className="col-2">
 			<div className="d-flex flex-column flex-center">
 				<a href={`/menus/${meal._id}`} className="imgCtnr">
-					<img
-					src={(meal?.image) ? `/menu/${meal?.image}` : '/bowlicon_grey.png'}
-					alt={meal.name}
-					/>
-				</a>  	
+					<img src={meal?.image}
+						alt={meal?.name}
+						onError={(event) => {
+						  event.target.src = "/bowlicon_grey.png"
+						  event.onerror = null
+						}}
+						referrerpolicy="no-referrer"
+						className="img-fluid"/>
+				</a>
 				<h3>{meal.name}</h3>
 			</div>
 		</li>

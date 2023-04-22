@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // data
 import { getOneMeal, deleteMeal } from '../../services/meal';
-import { testImgur } from '../../services/imgur';
 import { getOneStock } from '../../services/stock';
 import { errorHandler } from '../../utils/errorHandler';
 import jwt_decode from "jwt-decode";
@@ -18,7 +17,6 @@ const MealScreen = () => {
          [cleaning, setCleaning] = useState(false),
          [isAdmitted, setIsAdmitted] = useState(false),
          [isLoaded, setIsLoaded] = useState(false),
-         [imageLoaded, setImageLoaded] = useState(false),
          [ingredientsLoaded, setIngredientsLoaded] = useState(false),
          [ingredients, setIngredients] = useState([]);
 
@@ -61,15 +59,11 @@ const MealScreen = () => {
                   // nothing to inform
                }
             }
-
             setIngredients(stockArr)
             setIngredientsLoaded(true)
          }
 
          fetchStocks()
-
-         // ggRC6T7
-
          setBowl(res.data)
 
       }).catch((err)=>{
@@ -83,26 +77,6 @@ const MealScreen = () => {
       }
 
    }, [bowlID, userRole, navigate] )
-
-   useEffect(()=>{
-      setCleaning(false)
-
-      if (!cleaning && bowl) {
-         testImgur(bowl?.image).then((res)=>{
-            bowl.image = res.data.data.link;
-
-         }).catch((err)=>{
-            console.log(err)
-
-         }).finally(()=>{
-            setImageLoaded(true)
-         })
-      }
-
-      return ()=>{
-         setCleaning(true)
-      }
-   }, [bowl])
 
    const navigateForm = () => {
       navigate(`/menus/edit/${bowlID}`, { replace: true })
@@ -147,22 +121,20 @@ const MealScreen = () => {
                   ? <>
                      <Col xs={4} className="imgCtnr">
 
-                     {(imageLoaded) ?
                         <img
                            src={bowl?.image}
                            alt={bowl?.name}
                            onError={(event) => {
-                                 let err = {
-                                    code: '',
-                                    message: "L'image du bowl n'a pas pu être récupérée."
-                                 }
-                                 errorHandler('TOAST', err)
-                                 event.target.src = "/bowlicon_grey.png"
-                                 event.onerror = null
+                              let err = {
+                                 code: '',
+                                 message: "L'image du bowl n'a pas pu être récupérée."
+                              }
+                              errorHandler('TOAST', err)
+                              event.target.src = "/bowlicon_grey.png"
+                              event.onerror = null
                            }}
+                           referrerpolicy="no-referrer"
                            className="img-fluid"/>
-                        : <LoadingSpinner />
-                     }
                      </Col>
                      <Col xs={7}>
                         <div>
