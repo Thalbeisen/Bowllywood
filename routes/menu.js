@@ -180,7 +180,7 @@ const path = require('path');
 const auth = require('../middlewares/auth'),
     { permit } = require('../middlewares/permissions');
 
-const uploadFolder = path.join(__dirname, '../bowllywood/public/menu');
+/*const uploadFolder = path.join(__dirname, '../bowllywood/public/menu');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -192,10 +192,10 @@ const storage = multer.diskStorage({
         cb(null, fileName)
     }
 })
-const imageUpload = multer({storage: storage})
+const imageUpload = multer({storage: storage})*/
 
 // set the routers for each methods
-router.post('/image-upload', auth, permit('ROLE_ADMIN'), imageUpload.array('bowl'), menuCtrl.uploadImage);
+// router.post('/image-upload', auth, permit('ROLE_ADMIN'), imageUpload.array('bowl'), menuCtrl.uploadImage);
 router.get('/admin-list', auth, permit('ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK', 'ROLE_WAITER'), menuCtrl.getAllBowls);
 router.post('/update/:id', auth, permit('ROLE_ADMIN'), menuCtrl.updateMeal);
 router.post('/create', auth,permit('ROLE_ADMIN'), menuCtrl.createMeal);

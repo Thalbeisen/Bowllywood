@@ -31,17 +31,6 @@ exports.createMeal = async (req, res) => {
 };
 
 /**
- * upload bowl image
- */
-exports.uploadImage = async (req, res) => {
-    try {
-        res.status(201).json(req.body);
-    } catch (err) {
-        res.status(400).json(errors.errorOccured + err.message);
-    }
-};
-
-/**
  * Get all the bowls of the menu for the administration.
  * @param  {Response} res          Use the res.status 200 & 500.
  */
