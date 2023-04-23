@@ -30,6 +30,7 @@ const AddEditMeal = ({action='ADD'}) => {
           [imgError, setImgError] = useState(false),
           [isLoaded, setIsLoaded] = useState(false),
           [imageUploading, setImageUploading] = useState(false),
+          [initialImage, setInitialImage] = useState(false),
           [uploaded, setUploaded] = useState(false),
           [cleaning, setCleaning] = useState(false),
           [selectedIngredients, setSelectedIngredients] = useState(['635141dd6d2bc0f9d6b8f38b']),
@@ -73,29 +74,29 @@ const AddEditMeal = ({action='ADD'}) => {
     })
 
     const onSubmit = async (values) => {
-        const uploadImage = async (formData) => {
-            setImageUploading(true)
+        let imgurUploaded = false;
+
+        setImageUploading(true)
+        if (!editMode || (editMode && bowlImage)) {
             try
             {
-                let imgurUploaded = await imgurUpload(formData)
+                imgurUploaded = await imgurUpload(bowlImage)
                 if (imgurUploaded)
                 {
                     values.image = imgurUploaded.data.data.link;
-                    delete values.formData;
-                    setUploaded(true)
                 }
             }
             catch(err)
             {
                 err.message = "L'image n'a pas pu être téléchargée. Veuillez recommencer."
                 errorHandler('TOAST', err, 'Téléchargement de l\'image : ')
+                setImageUploading(false)
             }
-            setImageUploading(false)
+        } else if (editMode && !bowlImage) {
+            imgurUploaded = true
         }
-        
-        uploadImage(values.formData)
 
-        if (uploaded) {
+        if (imgurUploaded) {
             let ingredientsID = []
             selectedIngredients.forEach((item)=>{
                 if (typeof item === 'string') {
@@ -117,6 +118,8 @@ const AddEditMeal = ({action='ADD'}) => {
                     navigate(`/menus/${bowlID}`, {replace: true})
                 }).catch((err) => {
                     errorHandler('TOAST', err)
+                }).finally(()=>{
+                    setImageUploading(false)
                 })
             }
             else
@@ -125,6 +128,8 @@ const AddEditMeal = ({action='ADD'}) => {
                     navigate(`/menus/${res.data._id}`, {replace: true})
                 }).catch((err) => {
                     errorHandler('TOAST', err)
+                }).finally(()=>{
+                    setImageUploading(false)
                 })
             }
         }
@@ -153,8 +158,8 @@ const AddEditMeal = ({action='ADD'}) => {
             getOneMeal(bowlID).then((res)=>{
                 if (cleaning) return; 
                 setSelectedIngredients(res.data.ingredients)
+                setInitialImage(res.data?.image)
                 setBowl(res.data)
-
             }).catch((err)=>{
                 errorHandler('TOAST', err)
             }).finally(()=>{
@@ -198,7 +203,7 @@ const AddEditMeal = ({action='ADD'}) => {
 
         formData = new FormData();
         formData.append('image', file);
-        values.formData = formData;
+        setBowlImage(formData)
 
         setFieldValue('image', file.name);
     }
@@ -347,10 +352,10 @@ const AddEditMeal = ({action='ADD'}) => {
                         {
                             (editMode)
                             ? 
-                            <Col lg={3}>
+                            <Col xs={9} md={2} lg={3}>
                             {(!imgError)
                                 ? <img
-                                    src={values?.image}
+                                    src={initialImage}
                                     alt={values?.name}
                                     onError={(event) => {
                                         let err = {
