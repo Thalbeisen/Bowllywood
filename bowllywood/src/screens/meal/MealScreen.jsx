@@ -15,6 +15,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 const MealScreen = () => {
    const [bowl, setBowl] = useState(null),
          [cleaning, setCleaning] = useState(false),
+         [imgError, setImgError] = useState(false),
          [isAdmitted, setIsAdmitted] = useState(false),
          [isLoaded, setIsLoaded] = useState(false),
          [ingredientsLoaded, setIngredientsLoaded] = useState(false),
@@ -120,21 +121,26 @@ const MealScreen = () => {
                   (isLoaded) 
                   ? <>
                      <Col xs={4} className="imgCtnr">
-
-                        <img
-                           src={bowl?.image}
-                           alt={bowl?.name}
-                           onError={(event) => {
-                              let err = {
-                                 code: '',
-                                 message: "L'image du bowl n'a pas pu être récupérée."
-                              }
-                              errorHandler('TOAST', err)
-                              event.target.src = "/bowlicon_grey.png"
-                              event.onerror = null
-                           }}
-                           referrerpolicy="no-referrer"
-                           className="img-fluid"/>
+                        {(!imgError)
+                          ? <img
+                              src={bowl?.image}
+                              alt={bowl?.name}
+                              onError={(event) => {
+                                 let err = {
+                                      code: '',
+                                      message: "L'image du bowl n'a pas pu être récupérée."
+                                 }
+                                 errorHandler('TOAST', err)
+                                 setImgError(true)
+                              }}
+                              referrerPolicy="no-referrer"
+                              className="img-fluid"/>
+                          : <img 
+                              src="/bowlicon_grey.png"
+                              alt='Bowllywood default image'
+                              referrerPolicy="no-referrer"
+                              className="img-fluid" />
+                      }
                      </Col>
                      <Col xs={7}>
                         <div>

@@ -27,6 +27,7 @@ const categories = [{_id: 'SALE', label: 'Salé'}, {_id: 'SUCRE', label: 'Sucré
 const AddEditMeal = ({action='ADD'}) => {
     const [ingredients, setIngredients] = useState([]),
           [bowl, setBowl] = useState({}),
+          [imgError, setImgError] = useState(false),
           [isLoaded, setIsLoaded] = useState(false),
           [imageUploading, setImageUploading] = useState(false),
           [uploaded, setUploaded] = useState(false),
@@ -197,7 +198,6 @@ const AddEditMeal = ({action='ADD'}) => {
 
         formData = new FormData();
         formData.append('image', file);
-
         values.formData = formData;
 
         setFieldValue('image', file.name);
@@ -345,25 +345,32 @@ const AddEditMeal = ({action='ADD'}) => {
 
                         </Col>
                         {
-                                (editMode)
-                                ? 
-                                <Col lg={3}>
-                                <img src={values?.image}
-                                   alt={values?.name}
-                                   onError={(event) => {
-                                      let err = {
-                                         code: '',
-                                         message: "L'image du bowl n'a pas pu être récupérée."
-                                      }
-                                      errorHandler('TOAST', err)
-                                      event.target.src = "/bowlicon_grey.png"
-                                      event.onerror = null
-                                   }}
-                                   referrerpolicy="no-referrer"
-                                   className="img-fluid rounded"/>
-                                </Col>
-                                : ''
+                            (editMode)
+                            ? 
+                            <Col lg={3}>
+                            {(!imgError)
+                                ? <img
+                                    src={values?.image}
+                                    alt={values?.name}
+                                    onError={(event) => {
+                                        let err = {
+                                            code: '',
+                                            message: "L'image du bowl n'a pas pu être récupérée."
+                                        }
+                                        errorHandler('TOAST', err)
+                                        setImgError(true)
+                                    }}
+                                    referrerPolicy="no-referrer"
+                                    className="img-fluid"/>
+                                : <img 
+                                    src="/bowlicon_grey.png"
+                                    alt='Bowllywood default image'
+                                    referrerPolicy="no-referrer"
+                                    className="img-fluid" />
                             }
+                            </Col>
+                            : ''
+                        }
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
                         <Button type="submit" onClick={handleSubmit}>
