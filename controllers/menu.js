@@ -1,8 +1,5 @@
 const Menu = require('../models/menu');
 const errors = require('../conf/errors');
-const multer = require('multer');
-const path = require('path');
-
 const entity = 'MENU';
 
 /**
