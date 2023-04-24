@@ -14,6 +14,14 @@ export const imgurUpload = (formData) => {
 	})
 }
 
+export const imgurDeleteImage = (imageLink) =>{
+	return axios.delete(imageLink, {
+		headers: {
+			Authorization: beaderToken
+		}
+	})
+}
+
 export const generateAccessToken = () =>{
 
 		return axios.post('https://api.imgur.com/oauth2/token', {

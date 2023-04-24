@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // data
 import { getOneMeal, deleteMeal } from '../../services/meal';
 import { getOneStock } from '../../services/stock';
+import { imgurDeleteImage } from '../../services/imgur';
 import { errorHandler } from '../../utils/errorHandler';
 import jwt_decode from "jwt-decode";
 // front
@@ -83,8 +84,33 @@ const MealScreen = () => {
       navigate(`/menus/edit/${bowlID}`, { replace: true })
    }
 
-   const cancelReservationBtn = (bowlID) => {
-      deleteMeal(bowlID).then((res) => {
+   const cancelReservationBtn = async (bowlID, bowlImage) => {
+
+      try
+      {
+         let deletedMeal = await deleteMeal(bowlID);
+         console.log(deletedMeal)
+         if (deletedMeal)
+         {
+            let deletedImage = await imgurDeleteImage(bowlImage);
+            console.log(deletedImage)
+         }
+
+         navigate('/menus/admin-list', 
+         {
+            replace: true, 
+            state: {
+               message: 'Le bowl a été supprimé avec succès'
+            } 
+         })
+      }
+      catch(err)
+      {
+         console.log(err)
+         errorHandler('TOAST', err)
+      }
+
+      /*deleteMeal(bowlID).then((res) => {
          navigate('/menus/admin-list', 
          {
             replace: true, 
@@ -94,7 +120,7 @@ const MealScreen = () => {
          })
       }).catch((err) => {
          errorHandler('TOAST', err)
-      })
+      })*/
    }
 
    const Title = () => {
@@ -103,7 +129,7 @@ const MealScreen = () => {
          Le {bowl?.name}
          <div className="bowlBtnCtnr d-inline-flex align-items-end ms-5">
             <i className='fa-solid fa-pen-to-square me-3' onClick={()=>{navigateForm(bowl?._id)}}></i>
-            <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id)}}></i>
+            <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id, bowl?.image)}}></i>
          </div>
          </> )
       } else {
