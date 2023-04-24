@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // data
 import { getOneMeal, deleteMeal } from '../../services/meal';
 import { getOneStock } from '../../services/stock';
+import { imgurDeleteImage, getImageHash } from '../../services/imgur';
 import { errorHandler } from '../../utils/errorHandler';
 import jwt_decode from "jwt-decode";
 // front
@@ -83,18 +84,50 @@ const MealScreen = () => {
       navigate(`/menus/edit/${bowlID}`, { replace: true })
    }
 
-   const cancelReservationBtn = (bowlID) => {
-      deleteMeal(bowlID).then((res) => {
-         navigate('/menus/admin-list', 
+   const cancelReservationBtn = async (bowlID, bowlImage) => {
+
+      let deleted = false,
+          imgDeleted = false;
+
+      const goBackToList = (message) => {
+         navigate('/menus/admin-list',
          {
             replace: true, 
             state: {
-               message: 'Le bowl a été supprimé avec succès'
+               message: message
             } 
          })
-      }).catch((err) => {
+      }
+
+      try
+      {
+         let deletedMeal = await deleteMeal(bowlID);
+         if (deletedMeal)
+         {
+            deleted = true
+            let imageID = getImageHash(bowlImage);
+            let deletedImage = await imgurDeleteImage(imageID);
+
+
+            if (deletedImage.data.success){
+               imgDeleted = true;
+            }
+         }
+         goBackToList('Le bowl a été supprimé avec succès.')
+      }
+      catch(err)
+      {
+         if (!imgDeleted) {
+            err.code = ''
+            err.message = "L'image n'a pas pu être supprimée du serveur."
+         }
+
+         if (deleted) {
+            let message = (imgDeleted) ? 'Le bowl a été supprimé avec succès' : "Le bowl a été supprimé avec succès, mais son image n'a pas pu être retirée sur le serveur."
+            goBackToList(message)
+         }
          errorHandler('TOAST', err)
-      })
+      }
    }
 
    const Title = () => {
@@ -103,7 +136,7 @@ const MealScreen = () => {
          Le {bowl?.name}
          <div className="bowlBtnCtnr d-inline-flex align-items-end ms-5">
             <i className='fa-solid fa-pen-to-square me-3' onClick={()=>{navigateForm(bowl?._id)}}></i>
-            <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id)}}></i>
+            <i className='fa-solid fa-square-xmark negativeColor' onClick={()=>{cancelReservationBtn(bowl?._id, bowl?.image)}}></i>
          </div>
          </> )
       } else {

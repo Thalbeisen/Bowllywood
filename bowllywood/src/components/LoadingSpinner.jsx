@@ -9,7 +9,7 @@ const LoadingSpinner = () => {
 			width="25"
 			color="#CECECE"
 			ariaLabel="loading"
-			wrapperStyle/>
+			wrapperStyle />
 	)
 }
 
