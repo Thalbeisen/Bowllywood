@@ -17,11 +17,7 @@ const options = {
                 description: 'Serveur localhost',
             },
             {
-                url: 'https://bowllywood.herokuapp.com',
-                description: 'Serveur Heroku',
-            },
-            {
-                url: 'https://bowllywood.onrender.com/',
+                url: 'https://bowllywood-8llo.onrender.com/',
                 description: 'Serveur Onrender',
             },
         ],
