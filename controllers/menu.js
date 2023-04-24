@@ -1,8 +1,5 @@
 const Menu = require('../models/menu');
 const errors = require('../conf/errors');
-const multer = require('multer');
-const path = require('path');
-
 const entity = 'MENU';
 
 /**
@@ -25,17 +22,6 @@ exports.createMeal = async (req, res) => {
             res.status(404).json(errors.createError(entity));
         else
             res.status(201).json(newMeal);
-    } catch (err) {
-        res.status(400).json(errors.errorOccured + err.message);
-    }
-};
-
-/**
- * upload bowl image
- */
-exports.uploadImage = async (req, res) => {
-    try {
-        res.status(201).json(req.body);
     } catch (err) {
         res.status(400).json(errors.errorOccured + err.message);
     }
