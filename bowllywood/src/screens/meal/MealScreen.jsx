@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // data
 import { getOneMeal, deleteMeal } from '../../services/meal';
 import { getOneStock } from '../../services/stock';
-import { imgurDeleteImage } from '../../services/imgur';
+import { imgurDeleteImage, getImageHash } from '../../services/imgur';
 import { errorHandler } from '../../utils/errorHandler';
 import jwt_decode from "jwt-decode";
 // front
@@ -86,41 +86,48 @@ const MealScreen = () => {
 
    const cancelReservationBtn = async (bowlID, bowlImage) => {
 
+      let deleted = false,
+          imgDeleted = false;
+
+      const goBackToList = (message) => {
+         navigate('/menus/admin-list',
+         {
+            replace: true, 
+            state: {
+               message: message
+            } 
+         })
+      }
+
       try
       {
          let deletedMeal = await deleteMeal(bowlID);
-         console.log(deletedMeal)
          if (deletedMeal)
          {
-            let deletedImage = await imgurDeleteImage(bowlImage);
-            console.log(deletedImage)
-         }
+            deleted = true
+            let imageID = getImageHash(bowlImage);
+            let deletedImage = await imgurDeleteImage(imageID);
 
-         navigate('/menus/admin-list', 
-         {
-            replace: true, 
-            state: {
-               message: 'Le bowl a été supprimé avec succès'
-            } 
-         })
+
+            if (deletedImage.data.success){
+               imgDeleted = true;
+            }
+         }
+         goBackToList('Le bowl a été supprimé avec succès.')
       }
       catch(err)
       {
-         console.log(err)
+         if (!imgDeleted) {
+            err.code = ''
+            err.message = "L'image n'a pas pu être supprimée du serveur."
+         }
+
+         if (deleted) {
+            let message = (imgDeleted) ? 'Le bowl a été supprimé avec succès' : "Le bowl a été supprimé avec succès, mais son image n'a pas pu être retirée sur le serveur."
+            goBackToList(message)
+         }
          errorHandler('TOAST', err)
       }
-
-      /*deleteMeal(bowlID).then((res) => {
-         navigate('/menus/admin-list', 
-         {
-            replace: true, 
-            state: {
-               message: 'Le bowl a été supprimé avec succès'
-            } 
-         })
-      }).catch((err) => {
-         errorHandler('TOAST', err)
-      })*/
    }
 
    const Title = () => {

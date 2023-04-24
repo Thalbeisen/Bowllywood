@@ -378,12 +378,12 @@ const AddEditMeal = ({action='ADD'}) => {
                         }
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
-                        <Button type="submit" onClick={handleSubmit}>
-                            <div className="d-flex align-items-center justify-content-evenly ">
+                        <button type="submit" className='btn btn-primary text-black p-0' onClick={handleSubmit}>
+                             <div className="position-relative d-flex align-items-center justify-content-evenly ">
                                 <span>Soumettre</span>
                                 {(imageUploading) ? <LoadingSpinner /> : '' }
                             </div>
-                        </Button>
+                        </button>
                     </div>
                 </form>
                 : <LoadingSpinner />}
