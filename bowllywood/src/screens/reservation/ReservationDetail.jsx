@@ -29,7 +29,6 @@ function ReservationDetail () {
 
 		if (resID && !cancel)
 		{
-			debugger
 			getOneReservation(resID).then((res)=>{
 				formatStatus(res.data.status);
 
