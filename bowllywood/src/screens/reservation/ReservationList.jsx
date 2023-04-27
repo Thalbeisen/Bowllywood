@@ -47,7 +47,6 @@ function ReservationList () {
 	}
 
 	useEffect(()=>{
-		cl('Enter for rendering')
 
 		setCancel(false)
 
@@ -85,34 +84,31 @@ function ReservationList () {
 				if (cancel) return;
 
 			    dataContent(res)
-			    res.data.forEach((reservation)=>{
-				    getRestaurantDetail(reservation.restaurantID).then((res)=>{
-				    	reservation.city = res.data.city;
-				    }).catch((err)=>{
-				    	reservation.city = 'Ville introuvable';
-				    }).finally(()=>{
-						setReservations(res.data)
-				    })
-			    })
 
-				/*const restaurantPromises = res.data.map((item) => {
-					return getRestaurantDetail(item.restaurantID).catch((err)=>{
-						item.city = 'Ville introuvable';
-					})
-				});
+				let reservationArr = [];
+				let fetchCityName = async () => {
+				for (const reservation of res.data) {
+				   try
+				   {
+				      let restaurant = await getRestaurantDetail(reservation.restaurantID);
+				      reservation.city = restaurant?.data?.city;
+				      reservationArr.push(reservation)
+				   }
+				   catch(err)
+				   {
+				      reservation.city = 'Ville introuvable';
+				   }
+				}
+				setReservations(reservationArr)
+				setIsLoaded(true)
+				}
 
-			  	Promise.all(restaurantPromises).then((restaurantDetails) => {
-				    restaurantDetails.forEach((restaurant, index) => {
-				    if (restaurant) {
-				    	res.data[index].city = restaurant.data.city;
-				    }});
-			    });*/
+				fetchCityName()
+
 			}).catch((err)=>{
 				setSeatNumber(0)
 				setReservations([])
 				if (err?.response?.status !== 404) errorHandler('TOAST', err)
-			}).finally(()=>{
-				setIsLoaded(true)
 			})
 		}
 		else
@@ -146,7 +142,6 @@ function ReservationList () {
 
 		return () => { 
 		    setCancel(true);
-			cl('cleaned unmounting render')
 		}
 	}, [refreshData, capacity, openedHours, selectedDate, cancel, userRole])
 		

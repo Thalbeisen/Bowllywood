@@ -5,8 +5,6 @@ const entity = 'RESERV';
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-let nowTime = new Date().getTime()
-
 const defineFilters = async (request) =>
 {
     const connectedUser = request.body;
@@ -30,9 +28,11 @@ const getUserRestaurantID = async (connectedUser) => {
 }
 
 const setClosedStatus = (reservation) => {
-    let reservationTime = new Date(reservation.reservDate).getTime();
+    let reservationDate = new Date(reservation.reservDate)
+        reservationTime = new Date(reservationDate.setHours(reservationDate.getHours() - 2)).getTime(),
+        nowTime = new Date().getTime();
 
-    if (reservation.status !== 'CLD' && reservationTime <= nowTime)
+    if (reservation.status == 'KEPT' && reservationTime <= nowTime)
     {
         reservation.status = 'CLS';
     }
@@ -88,8 +88,7 @@ exports.getUserReservList = async (req, res) => {
         if (!reservations || reservations?.length === 0) {
             res.status(404).json(errors.emptyList);
         } else {
-            debugger
-            reservations.map((item, index) => {
+            reservations.map((item) => {
                 setClosedStatus(item)
             })
 
@@ -126,8 +125,7 @@ exports.getAllReserv = async (req, res) => {
         if (!reservations || reservations?.length === 0) {
             res.status(404).json(errors.emptyList);
         } else {
-            debugger
-            reservations.map((item, index) => {
+            reservations.map((item) => {
                 setClosedStatus(item)
             })
 
@@ -151,7 +149,6 @@ exports.getOneReserv = async (req, res) => {
         if (!reservation) {
             res.status(404).json(errors.emptyData(entity));
         } else {
-            debugger
             setClosedStatus(reservation)
             res.status(201).json(reservation);
         }

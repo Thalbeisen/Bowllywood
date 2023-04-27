@@ -345,6 +345,8 @@ function ReservationDetail ({ action='ADD' }) {
 					err.message="Nous ne pouvons pas vérifier la disponibilité du restaurant pour la journée sélectionnée. Veuillez recommencer plus tard.";
 					errorHandler('TOAST', err)
 					setDayOverBooked(true) // disable time selection
+				} else {
+					setDayOverBooked(false) // disable time selection
 				}
 
 				console.error('GET SEATS : ', err)
