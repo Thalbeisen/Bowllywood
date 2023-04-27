@@ -5,6 +5,8 @@ const entity = 'RESERV';
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+let nowTime = new Date().getTime()
+
 const defineFilters = async (request) =>
 {
     const connectedUser = request.body;
@@ -25,6 +27,15 @@ const getUserRestaurantID = async (connectedUser) => {
     }
 
     return restaurantID;
+}
+
+const setClosedStatus = (reservation) => {
+    let reservationTime = new Date(reservation.reservDate).getTime();
+
+    if (reservation.status !== 'CLD' && reservationTime <= nowTime)
+    {
+        reservation.status = 'CLS';
+    }
 }
 
 /**
@@ -74,12 +85,17 @@ exports.getUserReservList = async (req, res) => {
         
         const reservations = await Reserv.find({consumerID: req.body.userID});
         
-        if (!reservations || reservations?.length === 0)
+        if (!reservations || reservations?.length === 0) {
             res.status(404).json(errors.emptyList);
-        else
+        } else {
+            debugger
+            reservations.map((item, index) => {
+                setClosedStatus(item)
+            })
+
             res.status(200).json(reservations);
+        }
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -107,12 +123,17 @@ exports.getAllReserv = async (req, res) => {
         }
 
         const reservations = await Reserv.find(filters);
-        if (!reservations || reservations?.length === 0) 
+        if (!reservations || reservations?.length === 0) {
             res.status(404).json(errors.emptyList);
-        else
+        } else {
+            debugger
+            reservations.map((item, index) => {
+                setClosedStatus(item)
+            })
+
             res.status(200).json(reservations);
+        }
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -127,12 +148,14 @@ exports.getOneReserv = async (req, res) => {
         let filters = await defineFilters(req)
         const reservation = await Reserv.findOne(filters);
 
-        if (!reservation)
+        if (!reservation) {
             res.status(404).json(errors.emptyData(entity));
-        else
+        } else {
+            debugger
+            setClosedStatus(reservation)
             res.status(201).json(reservation);
+        }
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -163,7 +186,6 @@ exports.updateReserv = async (req, res) => {
 
         res.status(200).json(updatedReserv);
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -182,7 +204,6 @@ this.getDeletedDate = async function (req, res) {
 
         return reservation ? reservation.deletedAt : null;
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
@@ -203,7 +224,6 @@ exports.cancelReserv = async (req, res) => {
 
         res.status(200).json(canceledReserv);
     } catch (err) {
-        debugger
         res.status(500).json(errors.errorOccured + err.message);
     }
 };
