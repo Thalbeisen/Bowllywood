@@ -18,7 +18,7 @@ function MenuScreen({ bowlsType="SALE" }) {
 		if (currentTokens) {
 			const decodedToken = jwt_decode(JSON.parse(currentTokens).token),
 				  userRole = decodedToken?.roleID ?? '',
-				  admittedRoles = ['ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK', 'ROLE_WAITER']
+				  admittedRoles = ['ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK']
 	    	setIsAdmitted((admittedRoles.includes(userRole)) ? true : false)
 	    }
 
@@ -71,7 +71,7 @@ function MenuScreen({ bowlsType="SALE" }) {
 		return (
 			<section className={`menuNav ${bowlsType === 'SALE' ? 'rightNav' : 'leftNav'} px-4`}>
 				<a href={`/menus/${bowlsType === 'SALE' ? 'desserts' : ''}`} className="mauikea_font">
-					{bowlsType === 'SALE' ? 'Desserts' : 'Bowls'}
+					<span>{bowlsType === 'SALE' ? 'Desserts' : 'Bowls salés'}</span>
 					<i className={`d-block fa-solid fa-arrow-${bowlsType === 'SALE' ? 'right' : 'left'} text-center`}></i>
 				</a>
 			</section>

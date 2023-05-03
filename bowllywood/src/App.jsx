@@ -47,7 +47,7 @@ function App() {
                        <Route path="/menus" element={<MenuScreen />} />
                        <Route path="/menus/desserts" element={<MenuScreen bowlsType='SUCRE'/>} />
                        <Route path="/menus/admin-list" element={
-                          <RouteProtector permittedRoles={['ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK', 'ROLE_WAITER']}>
+                          <RouteProtector permittedRoles={['ROLE_SUPERADMIN', 'ROLE_ADMIN', 'ROLE_CEO', 'ROLE_MANAGER', 'ROLE_COOK']}>
                              <AdminListMeals />
                           </RouteProtector> } />
                        <Route element={<RouteProtector permittedRoles={['ROLE_ADMIN']} />}>
