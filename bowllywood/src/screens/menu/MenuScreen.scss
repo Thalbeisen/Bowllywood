@@ -27,18 +27,25 @@
 }
 
 .menuNav {
-	position: fixed !important;
+	position: fixed!important;
 	top: 60%;
 	a {
 		color: $dark-grey;
 		&:hover{
 			color: $dark-grey;
 		}
+		text-decoration: none !important;
+		span {
+			border-bottom: 1px solid;
+		}
 	}
 }
 
 .menuNav.rightNav {right: 0;}
-.menuNav.leftNav {left: 7em;}
+
+@media (min-width: 980px) {
+	.menuNav.leftNav {left: 17rem}
+}
 
 .addLink {
 	text-decoration: none;

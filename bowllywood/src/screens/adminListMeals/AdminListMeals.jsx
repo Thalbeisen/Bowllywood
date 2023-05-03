@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getAllBowls } from '../../services/meal';
+import jwt_decode from "jwt-decode";
 // front
 import { Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -22,24 +23,36 @@ function BowlAdminList () {
          [refreshData, setRefreshData] = useState(false),
          [sweetNumber, setSweetNumber] = useState(0),
          [saltedNumber, setSaltedNumber] = useState(0),
+         [isAdmitted, setIsAdmitted] = useState(false),
          [isLoaded, setIsLoaded] = useState(false);
 
    const location = useLocation();
 
    useEffect(()=>{
       let cleaning = false;
-      const message = location?.state?.message;
-      if (message) {
-         delete location?.state?.message;
-         toast?.dismiss()
-         toast.success(message, {
-            position: "bottom-center",
-            autoClose: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            progress: true,
-            theme: "light"
-         })
+      if (!cleaning) {
+         const message = location?.state?.message;
+         if (message) {
+            delete location?.state?.message;
+            toast?.dismiss()
+            toast.success(message, {
+               position: "bottom-center",
+               autoClose: true,
+               closeOnClick: true,
+               pauseOnHover: false,
+               progress: true,
+               theme: "light"
+            })
+         }
+
+         // get user role
+         const currentTokens = localStorage.getItem("userTokens");
+         if (currentTokens) {
+            const decodedToken = jwt_decode(JSON.parse(currentTokens).token),
+                 userRole = decodedToken?.roleID ?? '',
+                 admittedRoles = ['ROLE_ADMIN'];
+            setIsAdmitted((admittedRoles.includes(userRole)) ? true : false)
+         }
       }
 
       return () => {
@@ -225,10 +238,14 @@ function BowlAdminList () {
                   </ListGroup>
                </Col>
                <Col md={3} xxl={3}>
-                  <Link to="/menus/create" className="d-flex flex-column justify-content-center align-items-center text-decoration-none">
-                     <i className="addIcon fa-solid fa-plus mb-3"></i>
-                     <p className="addText text-center">Créer un bowl</p>
-                  </Link>
+                  {
+                     (isAdmitted) ?
+                     <Link to="/menus/create" className="d-flex flex-column justify-content-center align-items-center text-decoration-none">
+                        <i className="addIcon fa-solid fa-plus mb-3"></i>
+                        <p className="addText text-center">Créer un bowl</p>
+                     </Link>
+                     : ''
+                  }
                </Col>
             </Row>
          </Col>
