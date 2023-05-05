@@ -2,7 +2,8 @@ import axios from "axios";
 
 export const AxiosInstance = axios.create({
     baseURL: "https://bowllywood-8llo.onrender.com/"
-    // baseURL: 'http://localhost:5000'
+    // baseURL: 'http://localhost:5000',
+    // baseURL: "https://bowllywoodweb.onrender.com/",
 });
 
 AxiosInstance.interceptors.request.use(function(config) {
