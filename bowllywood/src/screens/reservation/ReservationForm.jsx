@@ -58,6 +58,7 @@ function ReservationDetail ({ action='ADD' }) {
 
 	const [ reservation, setReservation ] = useState({}),
 		  [ isLoaded, setIsLoaded ] = useState(false),
+		  [ refreshData, setRefreshData ] = useState(false),
 		  // current restaurant
 		  [ restaurantID, setRestaurantID ] = useState(''),
 		  [ restauCapacity, setRestauCapacity ] = useState(''),
@@ -99,8 +100,7 @@ function ReservationDetail ({ action='ADD' }) {
 	    values.reservDate = `${values.resDate}T${values.resTime}:00.000Z`
 	    delete values.resDate;
 	   	delete values.resTime;
-
-	   	debugger
+debugger
     	if (!isConsumer) {
     		delete values.consumerID;
     	}
@@ -173,8 +173,19 @@ function ReservationDetail ({ action='ADD' }) {
 					if (cancel) return;
 					setConsumerName(res.data.data.lastName);
 					setRestaurantID(res.data.data.favouriteRestaurant_id);
+
+					if (!res.data.data.favouriteRestaurant_id)
+					{
+						let err = {
+							code: '',					
+							message: 'Votre restaurant favori n\'a pas pu être récupéré. Les places restantes ne pourrons pas être calculées.'				
+						}
+						errorHandler('TOAST', err) 
+					}
 				}).catch((err)=>{
-					debugger
+					err.code = '';					
+					err.message = 'Votre restaurant favori n\'a pas pu être récupéré. Les places restantes ne pourrons pas être calculées.';					
+					errorHandler('TOAST', err) 
 				})
 			}
 		}
@@ -197,7 +208,7 @@ function ReservationDetail ({ action='ADD' }) {
 				if (err?.response?.status === 404) {
 					errorHandler('REDIRECT', err, navigate, 'réservation') 
 				}
-				console.error(err)
+				// console.error(err)
 			}).finally(()=>{
 				setIsLoaded(true)
 			})
@@ -213,7 +224,7 @@ function ReservationDetail ({ action='ADD' }) {
 		return () => { 
 		    cancel = true;
 		}
-	}, [editMode, resID, navigate, decodedToken, userRole]);
+	}, [editMode, resID, navigate]);
 
 	// get current restaurant infos
 	useEffect(()=>{   		
@@ -234,7 +245,10 @@ function ReservationDetail ({ action='ADD' }) {
 		        setSchedule(scheduleObj)
 				setConsumerRestau(`${res.data.city} – ${res.data.address}`)
 			}).catch((err)=>{
-				console.error('RESTAURANT : ', err)
+				// console.error('RESTAURANT : ', err)
+				err.code = '';					
+				err.message = 'Votre restaurant favori n\'a pas pu être récupéré. Les places restantes ne pourrons pas être calculées.';					
+				errorHandler('TOAST', err) 
 			})
 		}
 		return () => { 
@@ -345,9 +359,11 @@ function ReservationDetail ({ action='ADD' }) {
 					err.message="Nous ne pouvons pas vérifier la disponibilité du restaurant pour la journée sélectionnée. Veuillez recommencer plus tard.";
 					errorHandler('TOAST', err)
 					setDayOverBooked(true) // disable time selection
+				} else {
+					setDayOverBooked(false) // disable time selection
 				}
 
-				console.error('GET SEATS : ', err)
+				// console.error('GET SEATS : ', err)
 			})
 		}
 
@@ -436,28 +452,29 @@ function ReservationDetail ({ action='ADD' }) {
 	                        error={errors.resDate}
 						/>
 
-						<CustomTimePicker
-							name="resTime"
-	                        desc="Heure de la réservation"
-	          				format="HH:mm"
-							locale={locale}
-							allowClear={false}
-							size='large'
-							onChange={(timeVal)=>{
-								if (timeVal)
-								{
-	    							setFieldValue('resTime', timeVal.format('HH:mm'));
-								}
-	                        }}
-	      					value={values.resTime ? moment(values.resTime, 'HH:mm') : null}
-	      					minuteStep={30}
-	      					disabledTime={disabledTime}
-							showNow={false}
-							inputReadOnly={true}
-							disabled={dayOverBooked}
-	                        error={errors.resTime}
-							// cellRender
-						/>
+						{
+							(!editMode || (editMode && values.resTime))
+							? <CustomTimePicker
+								name="resTime"
+		                        desc="Heure de la réservation"
+		          				format="HH:mm"
+								locale={locale}
+								allowClear={false}
+								size='large'
+								onChange={(time)=>{
+									setFieldValue('resTime', time.format('HH:mm'));
+								}}
+		      					value={values.resTime ? dayjs(values.resTime, 'HH:mm') : null}
+		      					minuteStep={30}
+		      					disabledTime={disabledTime}
+								showNow={false}
+								inputReadOnly={true}
+								disabled={dayOverBooked}
+		                        error={errors.resTime}
+								// cellRender
+							/>
+							: <LoadingSpinner />
+						}
 
 						<Input 
 							name="seatNr"

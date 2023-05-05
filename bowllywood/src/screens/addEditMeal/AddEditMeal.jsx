@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // data
-import { createMeal, updateMeal, getOneMeal, imageUpload } from '../../services/meal';
+import { createMeal, updateMeal, getOneMeal } from '../../services/meal';
+import { imgurUpload } from '../../services/imgur';
 import { getAllStocks } from '../../services/stock';
 import { useFormik } from 'formik';
 import { errorHandler } from '../../utils/errorHandler';
@@ -24,10 +25,14 @@ const categories = [{_id: 'SALE', label: 'Salé'}, {_id: 'SUCRE', label: 'Sucré
       FORMATS = ["image/jpg", "image/png", "image/jpeg", "image/gif"];
 
 const AddEditMeal = ({action='ADD'}) => {
-// [selectedIngredients, setSelectedIngredients] = useState([]),
     const [ingredients, setIngredients] = useState([]),
           [bowl, setBowl] = useState({}),
+          [imgError, setImgError] = useState(false),
           [isLoaded, setIsLoaded] = useState(false),
+          [imageUploading, setImageUploading] = useState(false),
+          [initialImage, setInitialImage] = useState(false),
+          [uploaded, setUploaded] = useState(false),
+          [cleaning, setCleaning] = useState(false),
           [selectedIngredients, setSelectedIngredients] = useState(['635141dd6d2bc0f9d6b8f38b']),
           [bowlImage, setBowlImage] = useState(null),
           [ingredientsLoaded, setIngredientsLoaded] = useState(false);
@@ -37,7 +42,8 @@ const AddEditMeal = ({action='ADD'}) => {
           bowlID = id; // bowlID = useParams().id
     const editMode = (bowlID || action === 'EDIT') ? true : false;
 
-    // formik
+    let formData;
+
     const validationSchema = yup.object({
         name: yup
             .string()
@@ -68,54 +74,64 @@ const AddEditMeal = ({action='ADD'}) => {
     })
 
     const onSubmit = async (values) => {
-        let uploaded = false;
-        try
-        {
-            const uploading = await imageUpload(bowlImage);
-            if (uploading)
+        let imgurUploaded = false;
+
+        setImageUploading(true)
+        if (!editMode || (editMode && bowlImage)) {
+            try
             {
-                values.image = uploading.data.newFileName;
-                uploaded = true;
+                imgurUploaded = await imgurUpload(bowlImage)
+                if (imgurUploaded)
+                {
+                    values.image = imgurUploaded.data.data.link;
+                }
             }
-        }
-        catch(err)
-        {
-            errorHandler('TOAST', err)
-        }
-
-        let ingredientsID = []
-        selectedIngredients.forEach((item)=>{
-            if (typeof item === 'string') {
-                ingredientsID.push(item);
-            } else {
-                ingredientsID.push(item.id);
+            catch(err)
+            {
+                err.message = "L'image n'a pas pu être téléchargée. Veuillez recommencer."
+                errorHandler('TOAST', err, 'Téléchargement de l\'image : ')
+                setImageUploading(false)
             }
-        })
-        values.ingredients = ingredientsID;
-
-        // add the currency caractere
-        values.price = values.price.trim();
-        let priceCurr = values.price.charAt(values.price.length -1);
-        values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
-
-        let ended = false
-        if (editMode && uploaded)
-        {
-            // handlePromise(updateMeal(id, values));
-            updateMeal(bowlID, values).then((res)=>{
-                navigate(`/menus/${bowlID}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
-            })
+        } else if (editMode && !bowlImage) {
+            imgurUploaded = true
         }
-        else if (uploaded)
-        {
-            // handlePromise(createMeal.(values));
-            createMeal(values).then((res)=>{
-                navigate(`/menus/${res.data._id}`, {replace: true})
-            }).catch((err) => {
-                errorHandler('TOAST', err)
+
+        if (imgurUploaded) {
+            let ingredientsID = []
+            selectedIngredients.forEach((item)=>{
+                if (typeof item === 'string') {
+                    ingredientsID.push(item);
+                } else {
+                    ingredientsID.push(item.id);
+                }
             })
+            values.ingredients = ingredientsID;
+
+            // add the currency caractere
+            values.price = values.price.trim();
+            let priceCurr = values.price.charAt(values.price.length -1);
+            values.price = (priceCurr !== '€') ? values.price + '€' : values.price;
+
+            if (editMode)
+            {
+                updateMeal(bowlID, values).then((res)=>{
+                    navigate(`/menus/${bowlID}`, {replace: true})
+                }).catch((err) => {
+                    errorHandler('TOAST', err)
+                }).finally(()=>{
+                    setImageUploading(false)
+                })
+            }
+            else
+            {
+                createMeal(values).then((res)=>{
+                    navigate(`/menus/${res.data._id}`, {replace: true})
+                }).catch((err) => {
+                    errorHandler('TOAST', err)
+                }).finally(()=>{
+                    setImageUploading(false)
+                })
+            }
         }
     }
 
@@ -135,15 +151,15 @@ const AddEditMeal = ({action='ADD'}) => {
 
     // get data
     useEffect(()=>{
-        let cleaning = false;
+         setCleaning(false)
 
         if (editMode)
         {
             getOneMeal(bowlID).then((res)=>{
                 if (cleaning) return; 
                 setSelectedIngredients(res.data.ingredients)
+                setInitialImage(res.data?.image)
                 setBowl(res.data)
-
             }).catch((err)=>{
                 errorHandler('TOAST', err)
             }).finally(()=>{
@@ -170,8 +186,8 @@ const AddEditMeal = ({action='ADD'}) => {
             setIngredientsLoaded(true)
         })
 
-        return () => {
-            cleaning = true;
+        return ()=>{
+            setCleaning(true)
         }
     }, [editMode, bowlID])
 
@@ -185,16 +201,11 @@ const AddEditMeal = ({action='ADD'}) => {
             return
         }
 
-        /*if (file?.size >= 1024 * 2048) {
-            setErrors({ ...errors, image: 'Le fichier est trop lourd. 5MB maximum.' })
-            setBowlImage('')
-            return
-        }*/
+        formData = new FormData();
+        formData.append('image', file);
+        setBowlImage(formData)
 
-        const formData = new FormData(); 
-        formData.append('bowl', file, file.name);
         setFieldValue('image', file.name);
-        setBowlImage(formData);
     }
 
     const FileBowlLabel = () => {
@@ -320,7 +331,7 @@ const AddEditMeal = ({action='ADD'}) => {
                                 disabled />
                         </Col>
                     </Row>
-                    <Row className="justify-content-center mb-4">
+                    <Row className="justify-content-center align-items-center mb-4">
                         <Col lg={5}>
 
                             <div className="inputCtnr w-100 px-0 my-3">
@@ -338,9 +349,41 @@ const AddEditMeal = ({action='ADD'}) => {
                             </div>
 
                         </Col>
+                        {
+                            (editMode)
+                            ? 
+                            <Col xs={9} md={2} lg={3}>
+                            {(!imgError)
+                                ? <img
+                                    src={initialImage}
+                                    alt={values?.name}
+                                    onError={(event) => {
+                                        let err = {
+                                            code: '',
+                                            message: "L'image du bowl n'a pas pu être récupérée."
+                                        }
+                                        errorHandler('TOAST', err)
+                                        setImgError(true)
+                                    }}
+                                    referrerPolicy="no-referrer"
+                                    className="img-fluid"/>
+                                : <img 
+                                    src="/bowlicon_grey.png"
+                                    alt='Bowllywood default image'
+                                    referrerPolicy="no-referrer"
+                                    className="img-fluid" />
+                            }
+                            </Col>
+                            : ''
+                        }
                     </Row>
                     <div className="d-flex justify-content-center gap-5">
-                        <Button type="submit" onClick={()=>{onSubmit(values)}}>Soumettre</Button>
+                        <button type="submit" className='btn btn-primary text-black p-0' onClick={handleSubmit}>
+                             <div className="position-relative d-flex align-items-center justify-content-evenly ">
+                                <span>Soumettre</span>
+                                {(imageUploading) ? <LoadingSpinner /> : '' }
+                            </div>
+                        </button>
                     </div>
                 </form>
                 : <LoadingSpinner />}

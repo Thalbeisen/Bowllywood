@@ -29,7 +29,6 @@ function ReservationDetail () {
 
 		if (resID && !cancel)
 		{
-			debugger
 			getOneReservation(resID).then((res)=>{
 				formatStatus(res.data.status);
 
@@ -142,14 +141,14 @@ function ReservationDetail () {
 			<Row className="resDetailTop ps-5 ms-1">
 				<Col xs={4} md={3} className=" ps-2 pe-0">
 					<p>Réservation de</p>
-					<h2 className="m-0" >M&#183;Mme {reservation.reservName}</h2>
-					<p>{(reservation.phone) ? <p>{formatPhone(reservation.phone)}</p> : 'Aucun tél. renseigné' }</p>
+					<h2 className="m-0" >M&#183;Mme {reservation?.reservName}</h2>
+					<p>{(reservation?.reservPhone) ? <span>{formatPhone(reservation?.reservPhone)}</span> : 'Aucun tél. renseigné' }</p>
 				</Col>
 
 				<Col xs={4} md={2}>
 					<div className="d-flex align-items-end">
-						<i className={`fa-solid fa-pen-to-square me-3 ${ (!isEditable) ? 'disabled' : '' }`} onClick={()=>{navigateForm(reservation._id)}}></i>
-						<i className={`fa-solid fa-square-xmark negativeColor ${ (!isEditable) ? 'disabled' : '' }`} onClick={()=>{cancelReservationBtn(reservation._id)}}></i>
+						<i className={`fa-solid fa-pen-to-square me-3 ${ (!isEditable) ? 'disabled' : '' }`} onClick={()=>{navigateForm(reservation?._id)}}></i>
+						<i className={`fa-solid fa-square-xmark negativeColor ${ (!isEditable) ? 'disabled' : '' }`} onClick={()=>{cancelReservationBtn(reservation?._id)}}></i>
 					</div>
 				</Col>
 			</Row>
@@ -164,7 +163,7 @@ function ReservationDetail () {
 						</div>
 						<div className="detailNumbers">
 							<p>
-								<span className="font-weight-bold me-2">{reservation.seatNr}</span> 
+								<span className="font-weight-bold me-2">{reservation?.seatNr}</span> 
 								<span className="largeText">Personnes</span>
 							</p>
 							<p>
