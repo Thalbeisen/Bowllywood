@@ -100,7 +100,7 @@ function ReservationDetail ({ action='ADD' }) {
 	    values.reservDate = `${values.resDate}T${values.resTime}:00.000Z`
 	    delete values.resDate;
 	   	delete values.resTime;
-debugger
+
     	if (!isConsumer) {
     		delete values.consumerID;
     	}

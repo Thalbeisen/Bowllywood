@@ -66,7 +66,7 @@ function App() {
                         <Route path="/reviews" element={<MaintenanceScreen/>}/>
                         <Route path="/restaurantList" element={<MaintenanceScreen/>}/>
                         <Route path="/erreur" element={<ErrorScreen />}/>
-                        <Route path="*" element={<ErrorScreen errCode={404} errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
+                        <Route path="*" element={<ErrorScreen errCode="Page non trouvée" errText="La page demandée n'existe pas. Veuillez recommencer ou retourner sur la pge d'accueil." />}/>
                       </Route>
                     </Routes>
                 </Router>

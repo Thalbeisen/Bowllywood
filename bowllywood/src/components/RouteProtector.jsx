@@ -40,7 +40,7 @@ const RouteProtector = ({permittedRoles, children}) => {
         } else {
             return (permittedRoles.length === 0) // means the user only needed to be connected.
             ? <Navigate to="/login" state={{ from: location }} replace />
-            : <Navigate to="/erreur" state={{ code: 'Forbidden', message: "Vous n'êtes pas autorisé à accéder à cette page." }} replace />
+            : <Navigate to="/erreur" state={{ code: 'Accès refusé', message: "Vous n'êtes pas autorisé à accéder à cette page." }} replace />
         }
     }
 
